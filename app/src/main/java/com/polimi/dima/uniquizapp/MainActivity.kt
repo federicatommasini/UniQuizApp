@@ -53,7 +53,7 @@ fun Login(){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Icon(
-            painter = painterResource(id = R.drawable.password_eye),
+            painter = painterResource(id = R.drawable.visibility),
             null,
             Modifier.size(80.dp),
             tint = Color.White
@@ -198,7 +198,7 @@ fun SignUp(){
 
 }*/
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SignUp(){
     SignUpPage()
