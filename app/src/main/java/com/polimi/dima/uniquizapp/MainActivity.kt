@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
-import com.polimi.dima.uniquizapp.ui.screens.SignUpPage
+import com.polimi.dima.uniquizapp.composables.SignUpPage
 import com.polimi.dima.uniquizapp.ui.theme.UniQuizAppTheme
 
 

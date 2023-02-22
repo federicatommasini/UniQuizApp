@@ -1,9 +1,11 @@
-package com.polimi.dima.uniquizapp.ui.screens
+package com.polimi.dima.uniquizapp.composables
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -71,11 +74,11 @@ fun SignUpPage() {
             )
             Spacer(modifier = Modifier.padding(15.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CustomTextField(field = usernameValue, nameField = "Username")
+                CustomTextField(field = usernameValue, nameField = "Username", Icons.Default.Person)
                 CustomSpacer()
-                CustomTextField(field = emailValue, nameField = "Email Address")
+                CustomTextField(field = emailValue, nameField = "Email Address", Icons.Default.Email)
                 CustomSpacer()
-                CustomTextField(field = universityValue, nameField = "University")
+                CustomTextField(field = universityValue, nameField = "University", Icons.Default.School)
                 CustomSpacer()
                 PasswordTextField(field = passwordValue, nameField = "Password", visibility = passwordVisibility)
                 CustomSpacer()
@@ -105,7 +108,7 @@ fun SignUpPage() {
 
 
 @Composable
-fun CustomTextField(field: MutableState<String>, nameField: String){
+fun CustomTextField(field: MutableState<String>, nameField: String, customImageVector: ImageVector){
     TextField(
         value = field.value,
         onValueChange = { field.value = it },
@@ -117,7 +120,8 @@ fun CustomTextField(field: MutableState<String>, nameField: String){
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .background(grayBackground, RoundedCornerShape(20.dp))
+            .background(grayBackground, RoundedCornerShape(20.dp)),
+        trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null)}
     )
 }
 
