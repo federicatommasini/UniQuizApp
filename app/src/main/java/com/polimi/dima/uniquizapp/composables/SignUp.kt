@@ -7,25 +7,20 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 
 @Composable
 fun SignUpPage() {
@@ -74,7 +69,7 @@ fun SignUpPage() {
             )
             Spacer(modifier = Modifier.padding(15.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CustomTextField(field = usernameValue, nameField = "Username", Icons.Default.Person)
+                CustomTextField(field = usernameValue, nameField = "Username", customImageVector = Icons.Default.Person)
                 CustomSpacer()
                 CustomTextField(field = emailValue, nameField = "Email Address", Icons.Default.Email)
                 CustomSpacer()
@@ -106,71 +101,12 @@ fun SignUpPage() {
     }
 }
 
-
-@Composable
-fun CustomTextField(field: MutableState<String>, nameField: String, customImageVector: ImageVector){
-    TextField(
-        value = field.value,
-        onValueChange = { field.value = it },
-        colors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent),
-        label = { Text(text = nameField) },
-        placeholder = { Text(text = nameField) },
-        singleLine = true,
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .background(grayBackground, RoundedCornerShape(20.dp)),
-        trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null)}
-    )
-}
-
-@Composable
-fun PasswordTextField(field: MutableState<String>, nameField: String, visibility: MutableState<Boolean>){
-    TextField(
-        value = field.value,
-        onValueChange = { field.value = it },
-        colors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent),
-        label = { Text(text = nameField) },
-        placeholder = { Text(text = nameField) },
-        singleLine = true,
-        modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .background(grayBackground, RoundedCornerShape(20.dp)),
-        shape = RoundedCornerShape(20.dp),
-        visualTransformation = if (visibility.value) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
-        trailingIcon = {
-            if (visibility.value) {
-                IconButton(
-                    onClick = {
-                        visibility.value = false
-                    },
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.visibility), contentDescription = null)
-                }
-            } else {
-                IconButton(
-                    onClick = {
-                        visibility.value = true
-                    },
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.visibility_off), contentDescription = null)
-                }
-            }
-        }
-    )
-}
-
 @Composable
 fun CustomSpacer(){
     Spacer(
         modifier = Modifier
             .padding(5.dp)
-            .background(whiteBackground))
+            .background(whiteBackground)
+    )
 }
 
