@@ -23,13 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Login(/*navController: NavController*/) {
+fun Login(navController: NavController) {
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -119,8 +120,8 @@ fun Login(/*navController: NavController*/) {
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
                     text = "Create An Account",
-                    /*modifier = Modifier.clickable {
-                        navController.navigate(route = Screen.SignUp.route)}*/
+                    modifier = Modifier.clickable {
+                        navController.navigate(route = Screen.SignUp.route)}
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
             }

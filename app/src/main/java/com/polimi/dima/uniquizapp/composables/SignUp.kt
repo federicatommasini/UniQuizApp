@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -147,14 +148,14 @@ fun SignUp(navController: NavController) {
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
                     text = "Login Instead",
-                    /*modifier = Modifier.clickable {
+                    modifier = Modifier.clickable {
                         //navController.popBackStack()
                         navController.navigate(Screen.Login.route){
                             popUpTo(Screen.Login.route){
                                 inclusive = true
                             }
                         }
-                    }*/
+                    }
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
             }
