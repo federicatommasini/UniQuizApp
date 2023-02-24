@@ -1,48 +1,30 @@
 package com.polimi.dima.uniquizapp.composables
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.School
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType.Companion.Text
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
-import org.w3c.dom.Text
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -58,9 +40,12 @@ fun Login(navController: NavController) {
     val context = LocalContext.current
     val passwordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     Column(
         modifier = Modifier
+            .imePadding()
             .fillMaxSize()
             .background(whiteBackground)
             .padding(18.dp),
@@ -111,6 +96,7 @@ fun Login(navController: NavController) {
                     visibility = passwordVisibility,
                     keyboardActions = KeyboardActions(onDone = {
                         focusManager.clearFocus()
+                        keyboardController?.hide()
                         //context.doLogin()
                     }),
                     focusRequester = passwordFocusRequester

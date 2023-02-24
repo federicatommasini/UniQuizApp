@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.input.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,11 +18,24 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
+
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.focus.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
@@ -45,20 +59,18 @@ fun SignUpPage() {
     val emailFocusRequester = remember { FocusRequester() }
     val universityFocusRequester = remember { FocusRequester() }
     val passwordFocusRequester = remember { FocusRequester() }
-
-
     val confirmPasswordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
     Column(
         modifier = Modifier
+            .imePadding()
             .fillMaxSize()
             .background(whiteBackground)
             .padding(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

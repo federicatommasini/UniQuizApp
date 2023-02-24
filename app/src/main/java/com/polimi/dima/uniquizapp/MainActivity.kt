@@ -40,6 +40,6 @@ class MainActivity : ComponentActivity() {
 fun SignUp(){
     val navController = rememberNavController()
 
-    //SignUpPage()
-    Login(navController = navController)
+    SignUpPage()
+    //Login(navController = navController)
 }
