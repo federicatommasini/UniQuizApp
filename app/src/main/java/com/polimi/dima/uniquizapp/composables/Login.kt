@@ -29,7 +29,7 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Login(navController: NavController) {
+fun Login(/*navController: NavController*/) {
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -119,12 +119,8 @@ fun Login(navController: NavController) {
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
                     text = "Create An Account",
-                    modifier = Modifier.clickable(onClick = {
-                        navController.navigate("register_page") {
-                            popUpTo = navController.graph.startDestinationId
-                            launchSingleTop = true
-                        }
-                    })
+                    /*modifier = Modifier.clickable {
+                        navController.navigate(route = Screen.SignUp.route)}*/
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
             }
@@ -142,41 +138,5 @@ private fun Context.doLogin() {
         "Something went wrong, try again later!",
         Toast.LENGTH_SHORT
     ).show()
-}
-@Composable
-fun Login() {
-    val context = LocalContext.current
-    val passwordFocusRequester = FocusRequester()
-    val focusManager = LocalFocusManager.current
-
-
-    ProvideWindowInsets {
-        Column(
-            Modifier
-                .navigationBarsWithImePadding()
-                .padding(24.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Button(onClick = {
-                context.doLogin()
-            }, modifier = Modifier.fillMaxWidth()) {
-                Text("SIGN IN", Modifier.padding(vertical = 8.dp))
-            }
-            Divider(
-                color = Color.White.copy(alpha = 0.3f),
-                thickness = 1.dp,
-                modifier = Modifier.padding(top = 48.dp)
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Don't have an account?", color = Color.White)
-                TextButton(onClick = {}) {
-                    Text("SING UP")
-                }
-            }
-        }
-    }
 }
 */

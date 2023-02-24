@@ -38,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 import com.polimi.dima.uniquizapp.R
@@ -45,7 +46,7 @@ import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignUpPage() {
+fun SignUp(navController: NavController) {
 
     val usernameValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -146,7 +147,14 @@ fun SignUpPage() {
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
                     text = "Login Instead",
-                    modifier = Modifier.clickable(onClick = {/*TODO*/ })
+                    /*modifier = Modifier.clickable {
+                        //navController.popBackStack()
+                        navController.navigate(Screen.Login.route){
+                            popUpTo(Screen.Login.route){
+                                inclusive = true
+                            }
+                        }
+                    }*/
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
             }
