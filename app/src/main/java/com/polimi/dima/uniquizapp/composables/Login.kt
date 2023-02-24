@@ -121,11 +121,14 @@ fun Login(navController: NavController) {
                     onClick = {
                         //context.doLogin()
                     },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
+                    shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
-                        .height(50.dp)
+                        .height(58.dp)
+                        .padding(start = 60.dp, end = 60.dp)
                 ) {
-                    Text(text = "Login", fontSize = 20.sp)
+                    Text(text = "Login", fontSize = 28.sp, color = Color.White)
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
