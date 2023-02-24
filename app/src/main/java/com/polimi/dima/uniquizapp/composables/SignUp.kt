@@ -11,13 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
@@ -25,6 +29,7 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpPage() {
 
@@ -36,9 +41,16 @@ fun SignUpPage() {
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
 
-    val focusRequester = remember { FocusRequester() }
-    val passwordFocusRequester = FocusRequester()
+    val usernameFocusRequester = remember { FocusRequester() }
+    val emailFocusRequester = remember { FocusRequester() }
+    val universityFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
+
+
+    val confirmPasswordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
 
     Column(
         modifier = Modifier
@@ -77,34 +89,36 @@ fun SignUpPage() {
             Spacer(modifier = Modifier.padding(15.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CustomTextField(field = usernameValue, nameField = "Username", customImageVector = Icons.Default.Person,
-                    focusRequester,
+                    usernameFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
-                        passwordFocusRequester.requestFocus()
+                        emailFocusRequester.requestFocus()
                     }))
                 CustomSpacer()
-                CustomTextField(field = emailValue, nameField = "Email Address", Icons.Default.Email,focusRequester,
+                CustomTextField(field = emailValue, nameField = "Email Address", Icons.Default.Email,
+                    emailFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
-                        passwordFocusRequester.requestFocus()
+                        universityFocusRequester.requestFocus()
                     }))
                 CustomSpacer()
-                CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,focusRequester,
+                CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,
+                    universityFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         passwordFocusRequester.requestFocus()
                     }))
                 CustomSpacer()
                 PasswordTextField(field = passwordValue, nameField = "Password", visibility = passwordVisibility,
-                    keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
-                        //context.doLogin()
+                    keyboardActions = KeyboardActions(onNext = {
+                        confirmPasswordFocusRequester.requestFocus()
                     }),
                     focusRequester = passwordFocusRequester)
                 CustomSpacer()
                 PasswordTextField(field = confirmPasswordValue, nameField = "Confirm Password", visibility = confirmPasswordVisibility,
                     keyboardActions = KeyboardActions(onDone = {
+                        keyboardController?.hide()
                         focusManager.clearFocus()
                         //context.doLogin()
                     }),
-                    focusRequester = passwordFocusRequester)
+                    focusRequester = confirmPasswordFocusRequester)
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {   /*TODO*/  },
