@@ -3,12 +3,18 @@ package com.polimi.dima.uniquizapp.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -16,7 +22,11 @@ import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 
 @Composable
-fun PasswordTextField(field: MutableState<String>, nameField: String, visibility: MutableState<Boolean>){
+fun PasswordTextField(field: MutableState<String>,
+                      nameField: String,
+                      visibility: MutableState<Boolean>,
+                      focusRequester: FocusRequester,//? = null
+                      keyboardActions: KeyboardActions){
     TextField(
         value = field.value,
         onValueChange = { field.value = it },
@@ -25,10 +35,12 @@ fun PasswordTextField(field: MutableState<String>, nameField: String, visibility
         label = { Text(text = nameField) },
         placeholder = { Text(text = nameField) },
         singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .background(grayBackground, RoundedCornerShape(20.dp)),
-        shape = RoundedCornerShape(20.dp),
+            .background(grayBackground, RoundedCornerShape(20.dp))
+            .focusRequester(focusRequester ?: FocusRequester()),
+    shape = RoundedCornerShape(20.dp),
         visualTransformation = if (visibility.value) {
             VisualTransformation.None
         } else {
@@ -52,6 +64,7 @@ fun PasswordTextField(field: MutableState<String>, nameField: String, visibility
                     Icon(painter = painterResource(id = R.drawable.visibility_off), contentDescription = null)
                 }
             }
-        }
+        },
+        keyboardActions = keyboardActions
     )
 }
