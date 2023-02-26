@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
@@ -106,6 +107,7 @@ fun Login(navController: NavController) {
 
                 Button(
                     onClick = {
+                        navController.navigate(route = BottomNavItem.Home.screen_route)
                         //context.doLogin()
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
