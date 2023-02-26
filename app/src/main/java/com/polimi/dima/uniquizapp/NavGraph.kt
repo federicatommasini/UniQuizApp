@@ -45,21 +45,6 @@ fun SetupNavGraph(navController: NavHostController){
     }
 }
 
-/*@Composable
-fun BottomBarMain(navController : NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
-        composable(BottomNavItem.Home.screen_route) {
-            Home()
-        }
-        composable(BottomNavItem.Subjects.screen_route) {
-            Subjects()
-        }
-        composable(BottomNavItem.Groups.screen_route) {
-            Groups()
-        }
-    }
-}*/
-
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
