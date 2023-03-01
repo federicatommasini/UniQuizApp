@@ -9,16 +9,28 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 @Composable
@@ -37,17 +49,22 @@ fun Profile(navController: NavController){
             .imePadding()
             .fillMaxSize()
             .background(whiteBackground)
-            .padding(18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(40.dp, 0.dp),
+                .background(customizedBlue),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ){
+            Text(text = "Profile",
+                fontSize = 32.sp,
+                color = whiteBackground,
+                style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center){
             imageUri?.let{
                 if(Build.VERSION.SDK_INT < 28){
                     bitmap.value = MediaStore.Images
@@ -60,15 +77,32 @@ fun Profile(navController: NavController){
                     Image(
                         bitmap = btm.asImageBitmap(),
                         contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(400.dp)
+                            .size(200.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Color.White, CircleShape)
                             .padding(20.dp))
                 }
             }
+
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        Button(onClick = { launcher.launch("image/*") }) {
-            Text(text = "Pick Image")
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center){
+            Text(text = "Name")
+        }
+            Spacer(modifier = Modifier.height(12.dp))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
+                    shape = RoundedCornerShape(20.dp),
+                    onClick = { launcher.launch("image/*") }) {
+                    Text(text = "Pick Image")
+                }
+            }
+            Divider()
         }
     }
-}
