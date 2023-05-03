@@ -25,6 +25,7 @@ import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow.Companion.Clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,6 +44,9 @@ fun Profile(navController: NavController) {
         notification.value = ""
     }
 
+    var isEditable by remember { mutableStateOf(false) }
+
+    val text = remember { mutableStateOf("") }
     var username by rememberSaveable() { mutableStateOf("Username") }
     var university by rememberSaveable() { mutableStateOf("University") }
     var test1 by rememberSaveable() { mutableStateOf("test1") }
@@ -55,7 +59,7 @@ fun Profile(navController: NavController) {
 
     Column(
         modifier = Modifier
-            //.fillMaxSize()
+            .fillMaxSize()
             //.background(whiteBackground)
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
@@ -79,33 +83,29 @@ fun Profile(navController: NavController) {
                 style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
             )*/
         }
-        /*Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center){
-            imageUri?.let{
-                if(Build.VERSION.SDK_INT < 28){
-                    bitmap.value = MediaStore.Images
-                        .Media.getBitmap(context.contentResolver, it)
-                } else {
-                    val source = ImageDecoder.createSource(context.contentResolver, it)
-                    bitmap.value = ImageDecoder.decodeBitmap(source)
-                }
-                bitmap.value?.let{ btm ->
-                    Image(
-                        bitmap = btm.asImageBitmap(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(200.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color.White, CircleShape)
-                            .padding(20.dp))
-                }
-            }*/
+
 
         ProfileImage()
 
+        Button(
+            onClick = { isEditable = !isEditable },
+            content = {
+                Text(text = if (isEditable) "Save" else "Edit")
+            }
+        )
+
+        // Define some fields that should be editable when the button is clicked
+        val isEnabled = remember { mutableStateOf(false) }
+
+        // Use the isEditable state variable to control the enabled/disabled state of the fields
+        TextField(
+            value = username,
+            onValueChange = { username = it },
+            enabled = isEditable
+        )
+
         /*horizontalArrangement = Arrangement.Center)*/
-        Row(
+        /*Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
@@ -122,7 +122,7 @@ fun Profile(navController: NavController) {
                     textColor = Color.Black
                 )
             )
-        }
+        }*/
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,7 +177,7 @@ fun Profile(navController: NavController) {
                 )
             )
         }
-        //Spacer(modifier = Modifier.height(12.dp))}
+        EditableFieldButton()}
         /*Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -194,7 +194,7 @@ fun Profile(navController: NavController) {
 
 
     }
-}
+
 
 @Composable
 fun ProfileImage() {
@@ -230,5 +230,12 @@ fun ProfileImage() {
         }
         Text(text = "Change profile picture")
     }
+}
+
+@Composable
+fun EditableFieldButton() {
+
+
+
 }
 
