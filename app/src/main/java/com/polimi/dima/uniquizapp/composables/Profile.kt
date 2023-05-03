@@ -34,50 +34,50 @@ import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 @Composable
-fun Profile(navController: NavController){
+fun Profile(navController: NavController) {
 
-    var notification = rememberSaveable{ mutableStateOf("") }
+    var notification = rememberSaveable { mutableStateOf("") }
 
-    if(notification.value.isNotEmpty()){
+    if (notification.value.isNotEmpty()) {
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
     }
+
+    var username by rememberSaveable() { mutableStateOf("Username") }
+    var university by rememberSaveable() { mutableStateOf("University") }
+    var test1 by rememberSaveable() { mutableStateOf("test1") }
+    var test2 by rememberSaveable() { mutableStateOf("test2") }
+
 
     //var imageUri by remember{ mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
-    /*val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
-        uri: Uri? -> imageUri = uri
-    }*/
-    
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(whiteBackground)
+            //.fillMaxSize()
+            //.background(whiteBackground)
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
-            .imePadding()
+        //.imePadding()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
-                .background(customizedBlue),
+                .padding(8.dp),
+            //.background(customizedBlue),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
-        ){
-            Text(text = "Cancel", modifier = Modifier.clickable {
-                notification.value = "Cancelled"
-            })
-            Text(text = "Save", modifier = Modifier.clickable {
-                notification.value = "Profile updated"
-            })
-            Text(text = "Profile",
+            //verticalAlignment = Alignment.Top
+        ) {
+            Text(text = "Cancel",
+                modifier = Modifier.clickable { notification.value = "Cancelled" })
+            Text(text = "Save",
+                modifier = Modifier.clickable { notification.value = "Profile updated" })
+            /*Text(text = "Profile",
                 fontSize = 32.sp,
                 color = whiteBackground,
                 style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-            )
+            )*/
         }
         /*Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center){
@@ -101,14 +101,84 @@ fun Profile(navController: NavController){
                             .padding(20.dp))
                 }
             }*/
+
         ProfileImage()
+
+        /*horizontalArrangement = Arrangement.Center)*/
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        /*horizontalArrangement = Arrangement.Center)*/
+        {
+            Text(text = "Username", modifier = Modifier.width(100.dp))
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black
+                )
+            )
         }
-        Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center){
-            Text(text = "Name")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        /*horizontalArrangement = Arrangement.Center)*/
+        {
+            Text(text = "University", modifier = Modifier.width(100.dp))
+            TextField(
+                value = university,
+                onValueChange = { university = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black
+                )
+            )
         }
-            Spacer(modifier = Modifier.height(12.dp))}
-            /*Column(
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        /*horizontalArrangement = Arrangement.Center)*/
+        {
+            Text(text = "test", modifier = Modifier.width(100.dp))
+            TextField(
+                value = test1,
+                onValueChange = { test1 = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black
+                )
+            )
+        }
+        Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+        )
+        /*horizontalArrangement = Arrangement.Center)*/
+        {
+            Text(text = "test2", modifier = Modifier.width(100.dp))
+            TextField(
+                value = test2,
+                onValueChange = { test2 = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black
+                )
+            )
+        }
+        //Spacer(modifier = Modifier.height(12.dp))}
+        /*Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -122,9 +192,18 @@ fun Profile(navController: NavController){
             Divider()
         }*/
 
+
+    }
+}
+
 @Composable
-fun ProfileImage(){
+fun ProfileImage() {
     val imageUri = rememberSaveable { mutableStateOf("") }
+
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
+            uri: Uri? -> uri?.let { imageUri.value = it.toString() }
+    }
+
     val painter = rememberImagePainter(
         if(imageUri.value.isEmpty()){
             R.drawable.ic_user
@@ -136,7 +215,7 @@ fun ProfileImage(){
     Column(modifier = Modifier
         .padding(8.dp)
         .fillMaxWidth(),
-    horizontalAlignment = Alignment.CenterHorizontally){
+        horizontalAlignment = Alignment.CenterHorizontally){
         Card(shape = CircleShape,
             modifier = Modifier
                 .padding(8.dp)
@@ -145,11 +224,11 @@ fun ProfileImage(){
             Image(painter = painter, contentDescription = null,
                 modifier = Modifier
                     .wrapContentSize()
-                    .clickable { },
+                    .clickable { launcher.launch("image/*") },
                 contentScale = ContentScale.Crop
             )
         }
         Text(text = "Change profile picture")
     }
-
 }
+
