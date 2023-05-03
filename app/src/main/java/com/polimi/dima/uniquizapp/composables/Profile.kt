@@ -1,10 +1,7 @@
 package com.polimi.dima.uniquizapp.composables
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,27 +9,21 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow.Companion.Clip
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
-import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 
 @Composable
 fun Profile(navController: NavController) {
@@ -46,7 +37,6 @@ fun Profile(navController: NavController) {
 
     var isEditable by remember { mutableStateOf(false) }
 
-    val text = remember { mutableStateOf("") }
     var username by rememberSaveable() { mutableStateOf("Username") }
     var university by rememberSaveable() { mutableStateOf("University") }
     var test1 by rememberSaveable() { mutableStateOf("test1") }
@@ -93,16 +83,32 @@ fun Profile(navController: NavController) {
                 Text(text = if (isEditable) "Save" else "Edit")
             }
         )
-
-        // Define some fields that should be editable when the button is clicked
-        val isEnabled = remember { mutableStateOf(false) }
-
         // Use the isEditable state variable to control the enabled/disabled state of the fields
-        TextField(
-            value = username,
-            onValueChange = { username = it },
-            enabled = isEditable
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(text = "Username", modifier = Modifier.width(100.dp))
+            TextField(
+                value = username, //here we should pass the username of the user
+                onValueChange = { username = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    unfocusedIndicatorColor = Color.Transparent),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                //.focusRequester(focusRequester ?: FocusRequester()),
+                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
+                //keyboardActions = keyboardActions
+                enabled = isEditable
+            )
+        }
+
 
         /*horizontalArrangement = Arrangement.Center)*/
         /*Row(
@@ -177,33 +183,18 @@ fun Profile(navController: NavController) {
                 )
             )
         }
-        EditableFieldButton()}
-        /*Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
-                    shape = RoundedCornerShape(20.dp),
-                    onClick = { launcher.launch("image/*") }) {
-                    Text(text = "Pick Image")
-                }
-            }*/
-            Divider()
-        }*/
-
-
     }
+
+}
 
 
 @Composable
 fun ProfileImage() {
-    val imageUri = rememberSaveable { mutableStateOf("") }
 
+    val imageUri = rememberSaveable { mutableStateOf("") }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
             uri: Uri? -> uri?.let { imageUri.value = it.toString() }
     }
-
     val painter = rememberImagePainter(
         if(imageUri.value.isEmpty()){
             R.drawable.ic_user
@@ -212,6 +203,7 @@ fun ProfileImage() {
             imageUri.value
         }
     )
+
     Column(modifier = Modifier
         .padding(8.dp)
         .fillMaxWidth(),
@@ -231,11 +223,3 @@ fun ProfileImage() {
         Text(text = "Change profile picture")
     }
 }
-
-@Composable
-fun EditableFieldButton() {
-
-
-
-}
-
