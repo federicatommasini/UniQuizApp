@@ -41,6 +41,9 @@ fun SetupNavGraph(navController: NavHostController){
         composable(BottomNavItem.Groups.screen_route) {
             Groups(navController = navController)
         }
+        composable(BottomNavItem.Calendar.screen_route) {
+            Calendar(navController = navController)
+        }
 
     }
 }
@@ -50,7 +53,8 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Subjects,
-        BottomNavItem.Groups
+        BottomNavItem.Groups,
+        BottomNavItem.Calendar
     )
     BottomNavigation(
         backgroundColor = customizedBlue,
