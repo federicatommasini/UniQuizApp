@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.composables
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.SearchView
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
+import com.polimi.dima.uniquizapp.data.api.RestClient
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.*
+import retrofit2.awaitResponse
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -129,8 +133,9 @@ fun Subjects(navController: NavController){
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )
-            val items by remember { mutableStateOf(listOf("Subject 1", "subject 2", "subject 3")) }
-            LazyGrid(state = mutableStateOf(items))
+            val items by remember { mutableStateOf(listOf("Subject 1", "subject 2", "subject 3","subject 4","subject 5","subject 6","subject 7","subject 8","subject 9",
+                "subject 3","subject 3","subject 3","subject 3","subject 3", "subject 3","subject 3")) }
+            LazyGrid(state = mutableStateOf(items), type = "subjects", navController)
         }
     }
 }
@@ -145,8 +150,9 @@ fun Groups(navController: NavController){
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
         ) {
+
             Text(
-                text = "Groups Screen",
+                text = "groups screen",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -157,6 +163,18 @@ fun Groups(navController: NavController){
     }
 }
 
+public suspend fun getUsers(): List<User>? {
+    try {
+        val call = RestClient().getService().fetchAllUsers()
+        val response = call?.awaitResponse()
+        if (response?.isSuccessful == true) {
+            return response.body()
+        }
+    }catch (e: Exception) {
+        Log.e("BookViewModel", e.message ?: "", e)
+    }
+    return emptyList()
+}
 @Composable
 fun Calendar(navController: NavController){
     Scaffold(
