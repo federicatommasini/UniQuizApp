@@ -30,7 +30,7 @@ fun CustomTextField(field: MutableState<String>,
         value = field.value,
         onValueChange = { field.value = it },
         colors = TextFieldDefaults.textFieldColors(
-        unfocusedIndicatorColor = Color.Transparent),
+            unfocusedIndicatorColor = Color.Transparent),
         label = { Text(text = nameField) },
         placeholder = { Text(text = nameField) },
         singleLine = true,

@@ -18,12 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
+import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 @Composable
 fun Profile(navController: NavController) {
@@ -37,20 +41,20 @@ fun Profile(navController: NavController) {
 
     var isEditable by remember { mutableStateOf(false) }
 
-    var username by rememberSaveable() { mutableStateOf("Username") }
-    var university by rememberSaveable() { mutableStateOf("University") }
-    var test1 by rememberSaveable() { mutableStateOf("test1") }
-    var test2 by rememberSaveable() { mutableStateOf("test2") }
+    var username by rememberSaveable { mutableStateOf("Username") }
+    var university by rememberSaveable { mutableStateOf("University") }
+    var password by rememberSaveable { mutableStateOf("Password") }
+    var email by rememberSaveable { mutableStateOf("Email") }
 
 
-    //var imageUri by remember{ mutableStateOf<Uri?>(null) }
+    //var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.background(whiteBackground)
+            .background(whiteBackground)
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
         //.imePadding()
@@ -59,7 +63,6 @@ fun Profile(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            //.background(customizedBlue),
             horizontalArrangement = Arrangement.SpaceBetween,
             //verticalAlignment = Alignment.Top
         ) {
@@ -67,22 +70,22 @@ fun Profile(navController: NavController) {
                 modifier = Modifier.clickable { notification.value = "Cancelled" })
             Text(text = "Save",
                 modifier = Modifier.clickable { notification.value = "Profile updated" })
-            /*Text(text = "Profile",
-                fontSize = 32.sp,
-                color = whiteBackground,
-                style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-            )*/
         }
-
-
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+    horizontalArrangement = Arrangement.Center)
+        {
+            Text(text = "Profile",
+                fontSize = 32.sp,
+                color = customizedBlue,
+                style = androidx.compose.ui.text.TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp
+                ))
+        }
         ProfileImage()
 
-        Button(
-            onClick = { isEditable = !isEditable },
-            content = {
-                Text(text = if (isEditable) "Save" else "Edit")
-            }
-        )
         // Use the isEditable state variable to control the enabled/disabled state of the fields
         Row(
             modifier = Modifier
@@ -108,79 +111,98 @@ fun Profile(navController: NavController) {
                 enabled = isEditable
             )
         }
-
-
-        /*horizontalArrangement = Arrangement.Center)*/
-        /*Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        /*horizontalArrangement = Arrangement.Center)*/
-        {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
-            TextField(
-                value = username,
-                onValueChange = { username = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
-            )
-        }*/
+        CustomSpacer()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         )
-        /*horizontalArrangement = Arrangement.Center)*/
         {
             Text(text = "University", modifier = Modifier.width(100.dp))
             TextField(
                 value = university,
                 onValueChange = { university = it },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
+                    unfocusedIndicatorColor = Color.Transparent),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                //.focusRequester(focusRequester ?: FocusRequester()),
+                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
+                //keyboardActions = keyboardActions
+                enabled = isEditable
             )
         }
+        CustomSpacer()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         )
-        /*horizontalArrangement = Arrangement.Center)*/
         {
-            Text(text = "test", modifier = Modifier.width(100.dp))
+            Text(text = "Password", modifier = Modifier.width(100.dp))
             TextField(
-                value = test1,
-                onValueChange = { test1 = it },
+                value = password,
+                onValueChange = { password = it },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
+                    unfocusedIndicatorColor = Color.Transparent),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                //.focusRequester(focusRequester ?: FocusRequester()),
+                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
+                //keyboardActions = keyboardActions
+                enabled = isEditable
             )
         }
+        CustomSpacer()
         Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 4.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically
         )
-        /*horizontalArrangement = Arrangement.Center)*/
         {
-            Text(text = "test2", modifier = Modifier.width(100.dp))
+            Text(text = "Email", modifier = Modifier.width(100.dp))
             TextField(
-                value = test2,
-                onValueChange = { test2 = it },
+                value = email,
+                onValueChange = { email = it },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    textColor = Color.Black
-                )
+                    unfocusedIndicatorColor = Color.Transparent),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                //.focusRequester(focusRequester ?: FocusRequester()),
+                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
+                //keyboardActions = keyboardActions
+                enabled = isEditable
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center)
+        {
+            Button(
+                onClick = { isEditable = !isEditable },
+                colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
+                shape = RoundedCornerShape(20.dp),
+                content = {
+                    Text(text = if (isEditable) "Save" else "Edit", color = whiteBackground)
+                }
             )
         }
     }
