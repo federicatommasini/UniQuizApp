@@ -15,11 +15,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -46,8 +51,8 @@ fun Profile(navController: NavController) {
     var password by rememberSaveable { mutableStateOf("Password") }
     var email by rememberSaveable { mutableStateOf("Email") }
 
-
     //var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val passwordVisibility = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
@@ -57,7 +62,6 @@ fun Profile(navController: NavController) {
             .background(whiteBackground)
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
-        //.imePadding()
     ) {
         Row(
             modifier = Modifier
@@ -86,7 +90,6 @@ fun Profile(navController: NavController) {
         }
         ProfileImage()
 
-        // Use the isEditable state variable to control the enabled/disabled state of the fields
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,7 +110,6 @@ fun Profile(navController: NavController) {
                     .background(grayBackground, RoundedCornerShape(20.dp)),
                 //.focusRequester(focusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
-                //keyboardActions = keyboardActions
                 enabled = isEditable
             )
         }
@@ -124,14 +126,15 @@ fun Profile(navController: NavController) {
                 value = university,
                 onValueChange = { university = it },
                 colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent),
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
-                //.focusRequester(focusRequester ?: FocusRequester()),
+                    //.focusRequester(usernameFocusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
                 //keyboardActions = keyboardActions
                 enabled = isEditable
@@ -157,6 +160,30 @@ fun Profile(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
+                visualTransformation = if (passwordVisibility.value) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    if (passwordVisibility.value) {
+                        IconButton(
+                            onClick = {
+                                passwordVisibility.value = false
+                            },
+                        ) {
+                            Icon(painter = painterResource(id = R.drawable.visibility), contentDescription = null)
+                        }
+                    } else {
+                        IconButton(
+                            onClick = {
+                                passwordVisibility.value = true
+                            },
+                        ) {
+                            Icon(painter = painterResource(id = R.drawable.visibility_off), contentDescription = null)
+                        }
+                    }
+                },
                 //.focusRequester(focusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
                 //keyboardActions = keyboardActions
@@ -186,7 +213,7 @@ fun Profile(navController: NavController) {
                 //.focusRequester(focusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
                 //keyboardActions = keyboardActions
-                enabled = isEditable
+                enabled = false
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -205,6 +232,7 @@ fun Profile(navController: NavController) {
                 }
             )
         }
+        // Use the isEditable state variable to control the enabled/disabled state of the fields
     }
 
 }
