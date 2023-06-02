@@ -12,17 +12,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +28,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
@@ -62,6 +57,11 @@ fun Profile(navController: NavController) {
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
+     val customizedColors = TextFieldDefaults.textFieldColors(
+            unfocusedIndicatorColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,8 +72,9 @@ fun Profile(navController: NavController) {
         Box(modifier = Modifier
             .fillMaxWidth()
             .background(customizedBlue)
-            .padding(10.dp)
-            .size(300.dp))
+            .size(290.dp)
+            //.clip(RoundedCornerShape(36.dp)) does not work
+            .padding(0.dp))
         {
             Row(modifier = Modifier
                 .fillMaxWidth()
@@ -90,6 +91,7 @@ fun Profile(navController: NavController) {
             }
             ProfileImage()
         }
+
         CustomSpacer()
         Row(
             modifier = Modifier
@@ -102,16 +104,14 @@ fun Profile(navController: NavController) {
             TextField(
                 value = username, //here we should pass the username of the user
                 onValueChange = { username = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent),
+                colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
+
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
-                //.focusRequester(focusRequester ?: FocusRequester()),
-                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
                 enabled = isEditable
             )
         }
@@ -128,18 +128,14 @@ fun Profile(navController: NavController) {
             TextField(
                 value = university,
                 onValueChange = { university = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent),
+                colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                    //.focusRequester(usernameFocusRequester ?: FocusRequester()),
-                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
-                //keyboardActions = keyboardActions
+                    .background(grayBackground, RoundedCornerShape(20.dp))
+                    .border(0.dp, Color.Transparent, RoundedCornerShape(20.dp)), //does not work
                 enabled = isEditable
             )
         }
@@ -156,8 +152,7 @@ fun Profile(navController: NavController) {
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent),
+                colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
@@ -168,29 +163,24 @@ fun Profile(navController: NavController) {
                     VisualTransformation.None
                 } else {
                     PasswordVisualTransformation()
-                },
+                    },
                 trailingIcon = {
                     if (passwordVisibility.value) {
                         IconButton(
                             onClick = {
-                                passwordVisibility.value = false
-                            },
+                                passwordVisibility.value = false },
                         ) {
                             Icon(painter = painterResource(id = R.drawable.visibility), contentDescription = null)
                         }
                     } else {
                         IconButton(
                             onClick = {
-                                passwordVisibility.value = true
-                            },
+                                passwordVisibility.value = true },
                         ) {
                             Icon(painter = painterResource(id = R.drawable.visibility_off), contentDescription = null)
                         }
                     }
                 },
-                //.focusRequester(focusRequester ?: FocusRequester()),
-                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
-                //keyboardActions = keyboardActions
                 enabled = isEditable
             )
         }
@@ -207,17 +197,13 @@ fun Profile(navController: NavController) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent),
+                colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
-                //.focusRequester(focusRequester ?: FocusRequester()),
-                //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
-                //keyboardActions = keyboardActions
                 enabled = false
             )
         }
@@ -229,7 +215,8 @@ fun Profile(navController: NavController) {
             horizontalArrangement = Arrangement.Center)
         {
             Button(
-                onClick = { isEditable = !isEditable },
+                onClick = { isEditable = !isEditable
+                          /* TO DO*/ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
                 content = {
@@ -238,11 +225,12 @@ fun Profile(navController: NavController) {
             )
         }
         // Use the isEditable state variable to control the enabled/disabled state of the fields
-    }
 
+        }
 }
 
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProfileImage() {
 
@@ -250,6 +238,9 @@ fun ProfileImage() {
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
             uri: Uri? -> uri?.let { imageUri.value = it.toString() }
     }
+
+    var showDialog by remember { mutableStateOf(false) }
+
     val painter = rememberImagePainter(
         if(imageUri.value.isEmpty()){
             R.drawable.ic_user
@@ -269,23 +260,43 @@ fun ProfileImage() {
         Card(shape = CircleShape,
             modifier = Modifier
                 .padding(50.dp)
-                .size(140.dp),
+                .size(140.dp)
+                //.clickable { showDialog = true }
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
 
                 Image(
                     painter = painter, contentDescription = null,
                     modifier = Modifier
-                        .wrapContentSize(),
+                        .wrapContentSize()
+                        .clickable { showDialog = true},
                     //.clickable { launcher.launch("image/*") },
                     contentScale = ContentScale.Crop
                 )
-                IconButton(
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        modifier = Modifier.wrapContentSize(Alignment.Center),
+                        buttons = {
+                            Button(onClick = { showDialog = false }) {
+                                Text(text = "Close")
+                            }
+                        }
+                    ) /*{ Image(
+                            painter = imageResource,
+                            contentDescription = "Full-screen Image"
+                        )
+                    }*/
+                }
+            }
+        }
+
+        IconButton(
                     onClick = { launcher.launch("image/*") },
                     modifier = Modifier
                         .size(40.dp)
-                        .padding(0.dp)
-                        .align(Alignment.BottomEnd),
+                        .padding(0.dp),
+                        //.align(Alignment.BottomEnd),
                     content = {
                         Icon(
                             Icons.Default.PhotoCamera,
@@ -299,11 +310,10 @@ fun ProfileImage() {
                     }
                 )
             }
-        }
+
         Text(text = "Name", fontSize = 26.sp,
             color = whiteBackground,
             style = androidx.compose.ui.text.TextStyle(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp))
     }
-}
