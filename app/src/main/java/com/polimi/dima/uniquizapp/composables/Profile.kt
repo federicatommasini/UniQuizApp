@@ -11,12 +11,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -61,40 +67,36 @@ fun Profile(navController: NavController) {
             .fillMaxSize()
             .background(whiteBackground)
             .verticalScroll(rememberScrollState())
-            .padding(8.dp)
+            .padding(0.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            //verticalAlignment = Alignment.Top
-        ) {
-            Text(text = "Cancel",
-                modifier = Modifier.clickable { notification.value = "Cancelled" })
-            Text(text = "Save",
-                modifier = Modifier.clickable { notification.value = "Profile updated" })
-        }
-        Row(modifier = Modifier
+        Box(modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-    horizontalArrangement = Arrangement.Center)
+            .background(customizedBlue)
+            .padding(10.dp)
+            .size(300.dp))
         {
-            Text(text = "Profile",
-                fontSize = 32.sp,
-                color = customizedBlue,
-                style = androidx.compose.ui.text.TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 2.sp
-                ))
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp),
+                horizontalArrangement = Arrangement.Center)
+            {
+                Text(text = "Profile",
+                    fontSize = 32.sp,
+                    color = whiteBackground,
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp
+                    ))
+            }
+            ProfileImage()
         }
-        ProfileImage()
-
+        CustomSpacer()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ){
             Text(text = "Username", modifier = Modifier.width(100.dp))
             TextField(
@@ -106,7 +108,7 @@ fun Profile(navController: NavController) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
                 //.focusRequester(focusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
@@ -118,7 +120,8 @@ fun Profile(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         )
         {
             Text(text = "University", modifier = Modifier.width(100.dp))
@@ -132,7 +135,7 @@ fun Profile(navController: NavController) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
                     //.focusRequester(usernameFocusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
@@ -145,7 +148,8 @@ fun Profile(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         )
         {
             Text(text = "Password", modifier = Modifier.width(100.dp))
@@ -158,7 +162,7 @@ fun Profile(navController: NavController) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
                 visualTransformation = if (passwordVisibility.value) {
                     VisualTransformation.None
@@ -192,10 +196,11 @@ fun Profile(navController: NavController) {
         }
         CustomSpacer()
         Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, end = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         )
         {
             Text(text = "Email", modifier = Modifier.width(100.dp))
@@ -208,7 +213,7 @@ fun Profile(navController: NavController) {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
                 //.focusRequester(focusRequester ?: FocusRequester()),
                 //trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
@@ -255,21 +260,50 @@ fun ProfileImage() {
     )
 
     Column(modifier = Modifier
-        .padding(8.dp)
+        .padding(5.dp)
         .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally){
+        horizontalAlignment = Alignment.CenterHorizontally)
+        //verticalArrangement = Arrangement.Top)
+
+    {
         Card(shape = CircleShape,
             modifier = Modifier
-                .padding(8.dp)
-                .size(100.dp)
-        ){
-            Image(painter = painter, contentDescription = null,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable { launcher.launch("image/*") },
-                contentScale = ContentScale.Crop
-            )
+                .padding(50.dp)
+                .size(140.dp),
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+
+                Image(
+                    painter = painter, contentDescription = null,
+                    modifier = Modifier
+                        .wrapContentSize(),
+                    //.clickable { launcher.launch("image/*") },
+                    contentScale = ContentScale.Crop
+                )
+                IconButton(
+                    onClick = { launcher.launch("image/*") },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(0.dp)
+                        .align(Alignment.BottomEnd),
+                    content = {
+                        Icon(
+                            Icons.Default.PhotoCamera,
+                            contentDescription = "Edit Icon",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(4.dp)
+                        )
+                    }
+                )
+            }
         }
-        Text(text = "Change profile picture")
+        Text(text = "Name", fontSize = 26.sp,
+            color = whiteBackground,
+            style = androidx.compose.ui.text.TextStyle(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp))
     }
 }
