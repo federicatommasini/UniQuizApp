@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -28,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
@@ -81,7 +85,7 @@ fun Profile(navController: NavController) {
         {
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp),
+                .padding(12.dp),
                 horizontalArrangement = Arrangement.Center)
             {
                 Text(text = "Profile",
@@ -268,17 +272,15 @@ fun ProfileImage() {
                     .padding(0.dp)
                     .size(140.dp)
                     .align(Alignment.Center),
-                //.clickable { showDialog = true }
             ) {
                     Image(
                         painter = painter, contentDescription = null,
                         modifier = Modifier
                             .wrapContentSize()
                             .clickable { showDialog = true},
-                        //.clickable { launcher.launch("image/*") },
                         contentScale = ContentScale.Crop
                     )
-                    if (showDialog) {
+                    /*if (showDialog) {
                         AlertDialog(
                             onDismissRequest = { showDialog = false },
                             modifier = Modifier.wrapContentSize(Alignment.Center),
@@ -291,8 +293,22 @@ fun ProfileImage() {
                             painter = imageResource,
                             contentDescription = "Full-screen Image"
                         )
-                    }*/
-                    }
+                    }*/*/
+
+
+
+
+                if(showDialog) {
+                    Dialog(onDismissRequest = { showDialog = false },
+                        content = {
+                            FullImage(
+                                imageResource = painter,
+                                onDismiss = { showDialog = false }
+                            )
+                        }
+                    )
+
+                }
             }
             IconButton(
                 onClick = { launcher.launch("image/*") },
@@ -300,7 +316,6 @@ fun ProfileImage() {
                     .size(40.dp)
                     .padding(0.dp)
                     .align(Alignment.BottomEnd),
-                //.align(Alignment.BottomEnd),
                 content = {
                     Icon(
                         Icons.Default.PhotoCamera,
@@ -315,33 +330,51 @@ fun ProfileImage() {
             )
         }
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(26.dp),
+            horizontalArrangement = Arrangement.Center){
             Text(text = "Name", fontSize = 26.sp,
                 color = whiteBackground,
                 style = androidx.compose.ui.text.TextStyle(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 2.sp))
         }
-        }
-
-
-
-
-
-}
-/*
-Column(){
-    Box(){
-       Card(){
-           Image(){}
-       }
-        IconButton(){
-
-        }
-    }
-    Row(){
-        "Name"
     }
 }
- */
+
+@Composable
+fun FullImage(
+    imageResource : Painter,
+    onDismiss: () -> Unit
+    ){
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Transparent, RectangleShape)){
+        Image(
+            painter = imageResource,
+            contentDescription = "Full-screen Image",
+            modifier = Modifier
+                .fillMaxSize()
+                .size(16.dp),
+            contentScale = ContentScale.Fit
+        )
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .size(48.dp)
+                .background(Color.White, RoundedCornerShape(24.dp))
+        ){
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Close",
+                tint = Color.Black
+            )
+        }
+    }
+
+}
+
 
