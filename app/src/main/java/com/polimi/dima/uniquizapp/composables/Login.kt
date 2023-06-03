@@ -115,7 +115,17 @@ fun Login(navController: NavController) {
                         .height(58.dp)
                         .padding(start = 60.dp, end = 60.dp)
                 ) {
-                    Text(text = "Login", fontSize = 28.sp, color = Color.White)
+                    Text(text = "Login",
+                        fontSize = 28.sp,
+                        color = Color.White,
+                        modifier = Modifier.clickable {
+                            //navController.popBackStack()  //is it needed? figure it out
+                            navController.navigate(Screen.Profile.route){
+                                popUpTo(Screen.Profile.route){
+                                    inclusive = true
+                                }
+                            }
+                        })
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(

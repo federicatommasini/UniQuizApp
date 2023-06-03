@@ -21,8 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             UniQuizAppTheme {
                 navController = rememberNavController()
-                //SetupNavGraph(navController = navController)
-                test(navController = navController)
+                SetupNavGraph(navController = navController)
+                //test(navController = navController)
 
             }
         }

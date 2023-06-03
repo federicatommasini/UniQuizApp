@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.*
@@ -36,6 +37,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
@@ -74,31 +76,62 @@ fun Profile(navController: NavController) {
             .verticalScroll(rememberScrollState())
             .padding(0.dp)
     ) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .size(290.dp)
-            .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)) //not working
-           // .clip(RoundedCornerShape(16.dp)) //does not work
-            .padding(0.dp)
-            .background(customizedBlue)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(290.dp)
+                .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp))
+                .padding(0.dp)
+                .background(customizedBlue)
         )
         {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-                horizontalArrangement = Arrangement.Center)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                //horizontalArrangement = Arrangement.Center
+            )
             {
-                Text(text = "Profile",
-                    fontSize = 32.sp,
-                    color = whiteBackground,
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.sp
-                    ))
+                Box(modifier = Modifier.fillMaxWidth()){
+                    IconButton(
+                        onClick = {
+                            //navController.popBackStack()  //figure out why this was needed or not
+                            navController.navigate(Screen.Login.route){
+                                popUpTo(Screen.Login.route){
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(0.dp)
+                            .align(Alignment.TopStart),
+                        content = {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = "Back Icon",
+                                tint = Color.Black,
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .background(Color.Transparent, CircleShape)
+                                    .padding(4.dp)
+                            )
+                        }
+                    )
+                    Text(
+                        text = "Profile",
+                        fontSize = 32.sp,
+                        modifier = Modifier.align(Alignment.Center),
+                        color = whiteBackground,
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.sp
+                        )
+                    )
+                }
             }
             ProfileImage()
         }
-
         CustomSpacer()
         Row(
             modifier = Modifier
@@ -106,7 +139,7 @@ fun Profile(navController: NavController) {
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(text = "Username", modifier = Modifier.width(100.dp))
             TextField(
                 value = username, //here we should pass the username of the user
@@ -170,21 +203,29 @@ fun Profile(navController: NavController) {
                     VisualTransformation.None
                 } else {
                     PasswordVisualTransformation()
-                    },
+                },
                 trailingIcon = {
                     if (passwordVisibility.value) {
                         IconButton(
                             onClick = {
-                                passwordVisibility.value = false },
+                                passwordVisibility.value = false
+                            },
                         ) {
-                            Icon(painter = painterResource(id = R.drawable.visibility), contentDescription = null)
+                            Icon(
+                                painter = painterResource(id = R.drawable.visibility),
+                                contentDescription = null
+                            )
                         }
                     } else {
                         IconButton(
                             onClick = {
-                                passwordVisibility.value = true },
+                                passwordVisibility.value = true
+                            },
                         ) {
-                            Icon(painter = painterResource(id = R.drawable.visibility_off), contentDescription = null)
+                            Icon(
+                                painter = painterResource(id = R.drawable.visibility_off),
+                                contentDescription = null
+                            )
                         }
                     }
                 },
@@ -215,26 +256,31 @@ fun Profile(navController: NavController) {
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, end = 4.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center)
+            horizontalArrangement = Arrangement.Center
+        )
         {
             Button(
-                onClick = { isEditable = !isEditable
-                          /* TO DO*/ },
+                onClick = {
+                    isEditable = !isEditable
+                    //context.updateProfile()
+                    /* TO DO*/
+                },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
                 content = {
                     Text(text = if (isEditable) "Save" else "Edit", color = whiteBackground)
+                    // Use the isEditable state variable to control the enabled/disabled state of the fields
                 }
             )
         }
-        // Use the isEditable state variable to control the enabled/disabled state of the fields
-
-        }
+    }
 }
+
 
 
 @OptIn(ExperimentalCoilApi::class)
@@ -261,8 +307,6 @@ fun ProfileImage() {
         .padding(5.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally)
-        //verticalArrangement = Arrangement.Top)
-
     {
         Spacer(modifier = Modifier.padding(30.dp))
         Box(modifier = Modifier
@@ -273,31 +317,13 @@ fun ProfileImage() {
                     .size(140.dp)
                     .align(Alignment.Center),
             ) {
-                    Image(
-                        painter = painter, contentDescription = null,
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .clickable { showDialog = true},
-                        contentScale = ContentScale.Crop
-                    )
-                    /*if (showDialog) {
-                        AlertDialog(
-                            onDismissRequest = { showDialog = false },
-                            modifier = Modifier.wrapContentSize(Alignment.Center),
-                            buttons = {
-                                Button(onClick = { showDialog = false }) {
-                                    Text(text = "Close")
-                                }
-                            }
-                        ) /*{ Image(
-                            painter = imageResource,
-                            contentDescription = "Full-screen Image"
-                        )
-                    }*/*/
-
-
-
-
+                Image(
+                    painter = painter, contentDescription = null,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable { showDialog = true },
+                    contentScale = ContentScale.Crop
+                )
                 if(showDialog) {
                     Dialog(onDismissRequest = { showDialog = false },
                         content = {
@@ -307,7 +333,6 @@ fun ProfileImage() {
                             )
                         }
                     )
-
                 }
             }
             IconButton(
@@ -329,16 +354,17 @@ fun ProfileImage() {
                 }
             )
         }
-
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(26.dp),
-            horizontalArrangement = Arrangement.Center){
+            horizontalArrangement = Arrangement.Center)
+        {
             Text(text = "Name", fontSize = 26.sp,
                 color = whiteBackground,
                 style = androidx.compose.ui.text.TextStyle(
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 2.sp))
+                    letterSpacing = 2.sp)
+            )
         }
     }
 }
@@ -346,8 +372,8 @@ fun ProfileImage() {
 @Composable
 fun FullImage(
     imageResource : Painter,
-    onDismiss: () -> Unit
-    ){
+    onDismiss: () -> Unit)
+{
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Transparent, RectangleShape)){
@@ -374,7 +400,6 @@ fun FullImage(
             )
         }
     }
-
 }
 
 
