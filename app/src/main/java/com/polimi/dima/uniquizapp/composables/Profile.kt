@@ -72,11 +72,12 @@ fun Profile(navController: NavController) {
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
-            .background(customizedBlue)
             .size(290.dp)
             .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)) //not working
-            //.clip(RoundedCornerShape(36.dp)) does not work
-            .padding(0.dp))
+           // .clip(RoundedCornerShape(16.dp)) //does not work
+            .padding(0.dp)
+            .background(customizedBlue)
+        )
         {
             Row(modifier = Modifier
                 .fillMaxWidth()
