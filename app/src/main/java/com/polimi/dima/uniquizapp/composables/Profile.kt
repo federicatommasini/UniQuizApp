@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -73,6 +74,7 @@ fun Profile(navController: NavController) {
             .fillMaxWidth()
             .background(customizedBlue)
             .size(290.dp)
+            .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)) //not working
             //.clip(RoundedCornerShape(36.dp)) does not work
             .padding(0.dp))
         {
@@ -257,63 +259,88 @@ fun ProfileImage() {
         //verticalArrangement = Arrangement.Top)
 
     {
-        Card(shape = CircleShape,
-            modifier = Modifier
-                .padding(50.dp)
-                .size(140.dp)
+        Spacer(modifier = Modifier.padding(30.dp))
+        Box(modifier = Modifier
+            .size(140.dp, 140.dp)){
+            Card(shape = CircleShape,
+                modifier = Modifier
+                    .padding(0.dp)
+                    .size(140.dp)
+                    .align(Alignment.Center),
                 //.clickable { showDialog = true }
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-
-                Image(
-                    painter = painter, contentDescription = null,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .clickable { showDialog = true},
-                    //.clickable { launcher.launch("image/*") },
-                    contentScale = ContentScale.Crop
-                )
-                if (showDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showDialog = false },
-                        modifier = Modifier.wrapContentSize(Alignment.Center),
-                        buttons = {
-                            Button(onClick = { showDialog = false }) {
-                                Text(text = "Close")
+            ) {
+                    Image(
+                        painter = painter, contentDescription = null,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clickable { showDialog = true},
+                        //.clickable { launcher.launch("image/*") },
+                        contentScale = ContentScale.Crop
+                    )
+                    if (showDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showDialog = false },
+                            modifier = Modifier.wrapContentSize(Alignment.Center),
+                            buttons = {
+                                Button(onClick = { showDialog = false }) {
+                                    Text(text = "Close")
+                                }
                             }
-                        }
-                    ) /*{ Image(
+                        ) /*{ Image(
                             painter = imageResource,
                             contentDescription = "Full-screen Image"
                         )
                     }*/
-                }
+                    }
             }
+            IconButton(
+                onClick = { launcher.launch("image/*") },
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(0.dp)
+                    .align(Alignment.BottomEnd),
+                //.align(Alignment.BottomEnd),
+                content = {
+                    Icon(
+                        Icons.Default.PhotoCamera,
+                        contentDescription = "Edit Icon",
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(44.dp)
+                            .background(Color.White, CircleShape)
+                            .padding(4.dp)
+                    )
+                }
+            )
         }
 
-        IconButton(
-                    onClick = { launcher.launch("image/*") },
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(0.dp),
-                        //.align(Alignment.BottomEnd),
-                    content = {
-                        Icon(
-                            Icons.Default.PhotoCamera,
-                            contentDescription = "Edit Icon",
-                            tint = Color.Black,
-                            modifier = Modifier
-                                .size(44.dp)
-                                .background(Color.White, CircleShape)
-                                .padding(4.dp)
-                        )
-                    }
-                )
-            }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+            Text(text = "Name", fontSize = 26.sp,
+                color = whiteBackground,
+                style = androidx.compose.ui.text.TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp))
+        }
+        }
 
-        Text(text = "Name", fontSize = 26.sp,
-            color = whiteBackground,
-            style = androidx.compose.ui.text.TextStyle(
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp))
+
+
+
+
+}
+/*
+Column(){
+    Box(){
+       Card(){
+           Image(){}
+       }
+        IconButton(){
+
+        }
     }
+    Row(){
+        "Name"
+    }
+}
+ */
+
