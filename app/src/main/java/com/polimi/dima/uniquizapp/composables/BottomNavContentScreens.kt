@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
-import com.polimi.dima.uniquizapp.data.api.RestClient
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.*
 import retrofit2.awaitResponse
@@ -163,18 +162,6 @@ fun Groups(navController: NavController){
     }
 }
 
-public suspend fun getUsers(): List<User>? {
-    try {
-        val call = RestClient().getService().fetchAllUsers()
-        val response = call?.awaitResponse()
-        if (response?.isSuccessful == true) {
-            return response.body()
-        }
-    }catch (e: Exception) {
-        Log.e("BookViewModel", e.message ?: "", e)
-    }
-    return emptyList()
-}
 @Composable
 fun Calendar(navController: NavController){
     Scaffold(

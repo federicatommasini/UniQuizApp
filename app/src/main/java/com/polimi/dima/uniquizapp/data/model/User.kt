@@ -8,6 +8,8 @@ data class User(
     val firstName: String,
     val lastName: String,
     val universityId: String,
-    val subjectIds: List<String>
+    val subjectIds: List<String>,
+    val exams: List<String>,
+    val schedules: List<String>
 ) {
 }
