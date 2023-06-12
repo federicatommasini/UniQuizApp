@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.polimi.dima.uniquizapp.composables.Profile
 import androidx.lifecycle.Observer
@@ -17,10 +16,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.UniQuizAppTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
+class MainActivity : androidx.activity.ComponentActivity() {
+    //private lateinit var viewModel: UserViewModel
 
-class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: UserViewModel
 
     lateinit var navController: NavHostController
 
@@ -35,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-
+/*
         val repository = UserRepository()
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
             else{
                 Log.d("Response", response.errorBody().toString())
             }
-        })
+        })*/
     }
 
 }
@@ -57,9 +59,4 @@ fun DefaultPreview() {
     UniQuizAppTheme {
         //Home()
     }
-}
-
-@Composable
-fun test(navController: NavController){
-    Profile(navController)
 }

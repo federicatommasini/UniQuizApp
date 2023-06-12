@@ -1,7 +1,10 @@
 package com.polimi.dima.uniquizapp.composables
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
@@ -21,17 +24,35 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.UserViewModel
+import com.polimi.dima.uniquizapp.data.api.UserApi
+import com.polimi.dima.uniquizapp.data.di.UserApiModule
+import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
+
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(navController: NavController) {
+    val userApi = UserApiModule.provideApi(UserApiModule.provideRetrofit())
+    val userRepo = UserRepository(userApi)
+
+    val userViewModel = UserViewModel(userRepo)
+    //val userViewModel = viewModel(modelClass = UserViewModel::class.java)
+    val state by userViewModel.state.collectAsState()
+    Log.d("Response", state.toString())
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -45,7 +66,9 @@ fun Login(navController: NavController) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
+
     Column(
+
         modifier = Modifier
             .imePadding()
             .fillMaxSize()
@@ -54,6 +77,7 @@ fun Login(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -121,6 +145,8 @@ fun Login(navController: NavController) {
                         fontSize = 28.sp,
                         color = Color.White,
                         modifier = Modifier.clickable {
+
+
                             //navController.popBackStack()  //is it needed? figure it out
                             navController.navigate(Screen.Profile.route){
                                 popUpTo(Screen.Profile.route){
@@ -130,6 +156,26 @@ fun Login(navController: NavController) {
                         })
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
+                /*Column(modifier = Modifier.fillMaxSize()){
+                    if(state.isEmpty()){
+                        item{
+                            CircularProgressIndicator(modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize(align = Alignment.Center))
+                        }
+                    }*/
+                if(state.isEmpty()){
+                    Log.i("Response", "non c'è")
+                }
+                else{
+                    Log.i("Response", "${state[0].firstName}")
+                    /*items(state){user: User ->
+                        usersStuff(user = user)
+                    }*/
+
+                }
+                //Text(
+                //    text = "Name: ${state[0].firstName}")
                 Text(
                     text = "Create An Account",
                     modifier = Modifier.clickable {
@@ -153,3 +199,9 @@ private fun Context.doLogin() {
     ).show()
 }
 */
+
+
+@Composable
+fun usersStuff(user: User){
+    Text(text = "Name: ${user.firstName}")
+}

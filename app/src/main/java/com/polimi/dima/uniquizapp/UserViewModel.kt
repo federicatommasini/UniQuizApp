@@ -1,14 +1,37 @@
 package com.polimi.dima.uniquizapp
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class UserViewModel(private val repository: UserRepository): ViewModel() {
+
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val userRepo: UserRepository
+): ViewModel() {
+    private val _state = MutableStateFlow(emptyList<User>())
+    val state: StateFlow<List<User>>
+
+        get() = _state
+
+    init{
+        viewModelScope.launch {
+            val users = userRepo.getUsers()
+            _state.value = users
+        }
+    }
+
+} /*private val repository: UserRepository): ViewModel() {
 
     val allUserResponse: MutableLiveData<Response<List<User>>> = MutableLiveData()
     val userByIdResponse: MutableLiveData<Response<User>> = MutableLiveData()
@@ -26,4 +49,4 @@ class UserViewModel(private val repository: UserRepository): ViewModel() {
             userByIdResponse.value = response
         }
     }
-}
+}*/
