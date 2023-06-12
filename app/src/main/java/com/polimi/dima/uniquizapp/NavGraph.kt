@@ -14,6 +14,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.polimi.dima.uniquizapp.composables.Login
+import com.polimi.dima.uniquizapp.composables.Profile
+import com.polimi.dima.uniquizapp.composables.SignUp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.polimi.dima.uniquizapp.composables.*
@@ -32,6 +35,10 @@ fun SetupNavGraph(navController: NavHostController){
         composable(route = Screen.SignUp.route) {
             SignUp(navController = navController)
         }
+
+        composable(route = Screen.Profile.route){
+            Profile(navController = navController)
+
        composable(BottomNavItem.Home.screen_route) {
             Home(navController = navController)
         }
