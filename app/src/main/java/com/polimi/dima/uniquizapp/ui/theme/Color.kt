@@ -7,7 +7,10 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
-val primaryColor = Color(0xFF7848B6)
+
 val whiteBackground = Color(0XFFF7F7F7)
 val grayBackground = Color(255,255, 254,0xFF)
 val customizedBlue = Color(14, 120, 134, 0xFF)
+val customLightGray = Color(0xFFEBECF0)
+val primaryColor = customizedBlue
+
