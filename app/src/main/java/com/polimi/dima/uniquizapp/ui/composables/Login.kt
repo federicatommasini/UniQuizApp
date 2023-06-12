@@ -1,5 +1,6 @@
-package com.polimi.dima.uniquizapp.composables
+package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,12 +22,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
+import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.repository.LoginRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import com.polimi.dima.uniquizapp.ui.viewModels.LoginViewModel
+import hilt_aggregated_deps._dagger_hilt_android_internal_modules_ApplicationContextModule
+import kotlinx.coroutines.MainScope
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -121,9 +130,18 @@ fun Login(navController: NavController) {
                         fontSize = 28.sp,
                         color = Color.White,
                         modifier = Modifier.clickable {
+                            /*loginViewModel.getUsers()
+
+                            loginViewModel.allUserResponse.observe(this, Observer { response ->
+                                if(response.isSuccessful)
+                                    Log.d("Response", response.body()?.get(0).toString())
+                                else{
+                                    Log.d("Response", response.errorBody().toString())
+                                }
+                            })*/
                             //navController.popBackStack()  //is it needed? figure it out
-                            navController.navigate(Screen.Profile.route){
-                                popUpTo(Screen.Profile.route){
+                            navController.navigate(BottomNavItem.Home.screen_route){
+                                popUpTo(BottomNavItem.Home.screen_route){
                                     inclusive = true
                                 }
                             }
@@ -139,6 +157,10 @@ fun Login(navController: NavController) {
             }
         }
     }
+}
+
+private fun checkCredentials( viewModel: LoginViewModel){
+
 }
 
 /*

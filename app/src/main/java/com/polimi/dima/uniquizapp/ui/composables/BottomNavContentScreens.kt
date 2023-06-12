@@ -1,4 +1,4 @@
-package com.polimi.dima.uniquizapp.composables
+package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -42,6 +42,7 @@ fun Home(navController: NavController){
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
         ) {
+            AppBar()
             Text(text = "Welcome to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
