@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.User
-import com.polimi.dima.uniquizapp.data.repository.Repository
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
