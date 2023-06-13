@@ -35,14 +35,15 @@ import kotlin.collections.ArrayList
 @Composable
 fun Home(navController: NavController){
     Scaffold(
+        topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
+    ) {padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(padding)
         ) {
-            AppBar()
             Text(text = "Welcome to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
@@ -108,47 +109,62 @@ fun Home(navController: NavController){
             }
         }
     }
-
 }
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun Subjects(navController: NavController){
+fun Subjects(navController: NavController) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            SearchView(textState)
-            ItemList(state = textState)
-            Spacer(modifier = Modifier.padding(15.dp))
-            Text(
-                text = "Your Subjects",
-                fontWeight = FontWeight.Bold,
-                color = customizedBlue,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
-            val items by remember { mutableStateOf(listOf("Subject 1", "subject 2", "subject 3","subject 4","subject 5","subject 6","subject 7","subject 8","subject 9",
-                "subject 3","subject 3","subject 3","subject 3","subject 3", "subject 3","subject 3")) }
-            LazyGrid(state = mutableStateOf(items), type = "subjects", navController)
+        bottomBar = { BottomNavigationBar(navController = navController) },
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                SearchView(textState)
+                ItemList(state = textState)
+                Spacer(modifier = Modifier.padding(15.dp))
+                Text(
+                    text = "Your Subjects",
+                    fontWeight = FontWeight.Bold,
+                    color = customizedBlue,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+                val items by remember {
+                    mutableStateOf(
+                        listOf(
+                            "Subject 1",
+                            "subject 2",
+                            "subject 3",
+                            "subject 4",
+                            "subject 5",
+                            "subject 6",
+                            "subject 7",
+                            "subject 8",
+                            "subject 9"
+                        )
+                    )
+                }
+                LazyGrid(state = mutableStateOf(items), type = "subjects", navController)
+            }
         }
-    }
+    )
 }
 
 @Composable
 fun Groups(navController: NavController){
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(padding)
         ) {
 
             Text(
