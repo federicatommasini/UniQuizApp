@@ -22,6 +22,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
@@ -37,11 +39,16 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 @Composable
 fun Login(navController: NavController) {
 
+    Log.d("Response", "ricomincio")
+    //come puoi vedere ricompila in continuazione lo screen, chi sa perchè
     val userApi = UserApiModule.provideApi(UserApiModule.provideRetrofit())
     val userRepo = UserRepository(userApi)
     val userViewModel = UserViewModel(userRepo)
+
+
     val state by userViewModel.state.collectAsState()
     Log.d("response", state.toString())
+    var test = "Ciao"
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -132,6 +139,9 @@ fun Login(navController: NavController) {
                         color = Color.White,
                         modifier = Modifier.clickable {
 
+                            //userViewModel.getUsers()  questo qui non funziona
+                            //Log.d("Response", "${state[0].firstName}")
+
                             //navController.popBackStack()  //is it needed? figure it out
                             navController.navigate(Screen.Profile.route){
                                 popUpTo(Screen.Profile.route){
@@ -142,14 +152,19 @@ fun Login(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
 
-                if(state .isEmpty()){
+                if(state.isEmpty()){
                     Log.i("Response", "non c'è")
                 }
                 else{
                     Log.i("Response", "${state[0].firstName}")
+                    test = "${state[0].firstName} e ${state[0].lastName}"
 
                 }
-                //Text(text = userViewModel.state.collectAsState().value[0].firstName, color = Color.Black)
+                //for testing purposes the following text and outlinedtextfield object
+                Text(text = test, color = Color.Black)
+                
+                OutlinedTextField(value = test, onValueChange = {test = it} )
+                
                 Text(
                     text = "Create An Account",
                     modifier = Modifier.clickable {
@@ -160,6 +175,7 @@ fun Login(navController: NavController) {
         }
     }
 }
+
 
 /*
 Questa non l'ho capita, ma l'ho copiata la capiremo più avanti
