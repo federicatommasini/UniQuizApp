@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.data.repository
 
-import com.polimi.dima.uniquizapp.data.api.RetrofitInstance
 import com.polimi.dima.uniquizapp.data.api.UserApi
 import com.polimi.dima.uniquizapp.data.model.User
 import javax.inject.Inject
@@ -20,6 +19,6 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun getUserById(userId: String): Response<User> {
-        return RetrofitInstance.api.getUserById(userId)
+        return userApi.getUserById(userId)
     }
 }

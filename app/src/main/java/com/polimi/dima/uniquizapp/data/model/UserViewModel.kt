@@ -1,4 +1,4 @@
-package com.polimi.dima.uniquizapp
+package com.polimi.dima.uniquizapp.data.model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -28,6 +28,13 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val users = userRepo.getUsers()
             _state.value = users
+        }
+    }
+
+    fun getUsers(){
+        viewModelScope.launch{
+            val response = userRepo.getUsers()
+            _state.value = response
         }
     }
 

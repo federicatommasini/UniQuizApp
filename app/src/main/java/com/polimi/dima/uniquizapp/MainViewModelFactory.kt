@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.polimi.dima.uniquizapp.data.model.UserViewModel
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 
 
