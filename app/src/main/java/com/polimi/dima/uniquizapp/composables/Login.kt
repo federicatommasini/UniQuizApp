@@ -22,20 +22,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.UserViewModel
 import com.polimi.dima.uniquizapp.data.di.UserApiModule
+import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -47,7 +45,7 @@ fun Login(navController: NavController) {
     val userViewModel = UserViewModel(userRepo)
     val rememberedUserViewModel = remember { userViewModel }
 
-    val state by rememberedUserViewModel.state.collectAsState()
+    val state by rememberedUserViewModel.allUsersState.collectAsState()
     var test = "Ciao"
 
     val emailValue = remember { mutableStateOf("") }
@@ -138,10 +136,13 @@ fun Login(navController: NavController) {
                         fontSize = 28.sp,
                         color = Color.White,
                         modifier = Modifier.clickable {
+                            Log.d("request", emailValue.value + " "+ passwordValue.value)
+                            val loginReq = LoginRequest(emailValue.value,passwordValue.value)
+                            val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
+                            if (user != null)
+                                Log.d("login","logged in!")
+                            else Log.d("error", "credentials wrong!" )
 
-                            rememberedUserViewModel.getUsers()
-
-                            //navController.popBackStack()  //is it needed? figure it out
                             /*navController.navigate(Screen.Profile.route){
                                 popUpTo(Screen.Profile.route){
                                     inclusive = true

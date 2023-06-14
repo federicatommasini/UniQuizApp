@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.data.api
 
 
+import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.User
 import retrofit2.Call
 import retrofit2.Response
@@ -22,5 +23,5 @@ interface UserApi {
     ): Response<User>
 
     @POST("/login")
-    suspend fun login(@Body user : User) : User?
+    suspend fun login(@Body loginRequest : LoginRequest) : User?
 }

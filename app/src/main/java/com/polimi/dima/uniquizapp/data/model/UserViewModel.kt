@@ -1,18 +1,16 @@
 package com.polimi.dima.uniquizapp.data.model
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -21,25 +19,38 @@ class UserViewModel @Inject constructor(
     private val userRepo: UserRepository
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(emptyList<User>())
-    val state: StateFlow<List<User>> = _state.asStateFlow()
+    private val _allUsersState = MutableStateFlow(emptyList<User>())
+    val allUsersState: StateFlow<List<User>> = _allUsersState.asStateFlow()
+
+    private val _loginState = MutableStateFlow<User?>(null)
+    val loginState: StateFlow<User?> = _loginState.asStateFlow()
 
     init{
         viewModelScope.launch {
             val users = userRepo.getUsers()
-            _state.value = users
+            _allUsersState.value = users
         }
     }
 
     fun getUsers(){
         viewModelScope.launch{
             val response = userRepo.getUsers()
-            _state.value = response
+            _allUsersState.value = response
         }
     }
 
+    fun login(loginRequest : LoginRequest) : User? {
+        viewModelScope.launch{
+            Log.d("request", "dentro login")
+            val response = userRepo.login(loginRequest)
+            _loginState.value = response
+            _loginState.value?.let { Log.d("response", it.firstName) }
+        }
+        return _loginState.value
+    }
+
     fun getState() : List<User> {
-        return state.value
+        return allUsersState.value
     }
 
 }
