@@ -46,12 +46,12 @@ fun Login(navController: NavController) {
     val rememberedUserViewModel = remember { userViewModel }
 
     val state by rememberedUserViewModel.allUsersState.collectAsState()
-    var test = "Ciao"
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    val message = remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val passwordFocusRequester = FocusRequester()
@@ -122,8 +122,22 @@ fun Login(navController: NavController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(route = BottomNavItem.Home.screen_route)
-                        //context.doLogin()
+                        Log.d("request", emailValue.value + " "+ passwordValue.value)
+                        val loginReq = LoginRequest(emailValue.value,passwordValue.value)
+                        val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
+                        if (user != null){
+                            message.value = ""
+                            Log.d("login","logged in!")
+                            navController.navigate(BottomNavItem.Home.screen_route){
+                                popUpTo(Screen.Profile.route){
+                                    inclusive = true
+                                }
+                            }
+                        }
+                        else {
+                            message.value = "Wrong credentials, retry!"
+                        }
+                        keyboardController?.hide()
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                     shape = RoundedCornerShape(20.dp),
@@ -134,32 +148,13 @@ fun Login(navController: NavController) {
                 ) {
                     Text(text = "Login",
                         fontSize = 28.sp,
-                        color = Color.White,
-                        modifier = Modifier.clickable {
-                            Log.d("request", emailValue.value + " "+ passwordValue.value)
-                            val loginReq = LoginRequest(emailValue.value,passwordValue.value)
-                            val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
-                            if (user != null)
-                                Log.d("login","logged in!")
-                            else Log.d("error", "credentials wrong!" )
+                        color = Color.White)
 
-                            /*navController.navigate(Screen.Profile.route){
-                                popUpTo(Screen.Profile.route){
-                                    inclusive = true
-                                }
-                            }*/
-                        })
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
-
-                if(state.isEmpty()){
-                    Log.i("Response", "non c'è")
-                }
-                else{
-                    Log.i("Response", state[0].firstName)
-                    test = state[0].firstName + " " + state[0].lastName
-                }
-                
+                Text(
+                    text = message.value,
+                    color = Color.Red)
                 Text(
                     text = "Create An Account",
                     modifier = Modifier.clickable {

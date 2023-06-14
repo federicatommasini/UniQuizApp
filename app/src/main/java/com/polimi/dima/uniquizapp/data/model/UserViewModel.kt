@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -42,11 +43,14 @@ class UserViewModel @Inject constructor(
     fun login(loginRequest : LoginRequest) : User? {
         viewModelScope.launch{
             Log.d("request", "dentro login")
-            val response = userRepo.login(loginRequest)
-            _loginState.value = response
-            _loginState.value?.let { Log.d("response", it.firstName) }
+            val response = runBlocking { userRepo.login(loginRequest)}
+            if(response.validity==ResponseValidity.VALID)
+                _loginState.value = response.user
+            else _loginState.value = null
         }
-        return _loginState.value
+        if(_loginState.value==null)
+            return null
+        else return _loginState.value
     }
 
     fun getState() : List<User> {
