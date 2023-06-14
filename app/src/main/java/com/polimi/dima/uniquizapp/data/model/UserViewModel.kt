@@ -20,17 +20,16 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepo: UserRepository
 ): ViewModel() {
+
     private val _state = MutableStateFlow(emptyList<User>())
     val state: StateFlow<List<User>> = _state.asStateFlow()
 
-        //get() = _state
-
-    /*init{
+    init{
         viewModelScope.launch {
             val users = userRepo.getUsers()
             _state.value = users
         }
-    }*/
+    }
 
     fun getUsers(){
         viewModelScope.launch{
@@ -39,22 +38,8 @@ class UserViewModel @Inject constructor(
         }
     }
 
-} /*private val repository: UserRepository): ViewModel() {
-
-    val allUserResponse: MutableLiveData<Response<List<User>>> = MutableLiveData()
-    val userByIdResponse: MutableLiveData<Response<User>> = MutableLiveData()
-
-    fun getUsers(){
-        viewModelScope.launch{
-            val response = repository.getUsers()
-            allUserResponse.value = response
-        }
+    fun getState() : List<User> {
+        return state.value
     }
 
-    fun getUserById(userId: String){
-        viewModelScope.launch{
-            val response = repository.getUserById(userId)
-            userByIdResponse.value = response
-        }
-    }
-}*/
+}

@@ -5,8 +5,10 @@ import com.polimi.dima.uniquizapp.data.model.User
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface UserApi {
@@ -18,4 +20,7 @@ interface UserApi {
     suspend fun getUserById(
         @Path("userId") number : String
     ): Response<User>
+
+    @POST("/login")
+    suspend fun login(@Body user : User) : User?
 }

@@ -30,24 +30,24 @@ import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.UserViewModel
 import com.polimi.dima.uniquizapp.data.di.UserApiModule
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(navController: NavController) {
 
-    Log.d("Response", "ricomincio")
-    //come puoi vedere ricompila in continuazione lo screen, chi sa perchè
     val userApi = UserApiModule.provideApi(UserApiModule.provideRetrofit())
     val userRepo = UserRepository(userApi)
     val userViewModel = UserViewModel(userRepo)
+    val rememberedUserViewModel = remember { userViewModel }
 
-
-    val state by userViewModel.state.collectAsState()
-    Log.d("response", state.toString())
+    val state by rememberedUserViewModel.state.collectAsState()
     var test = "Ciao"
 
     val emailValue = remember { mutableStateOf("") }
@@ -139,15 +139,14 @@ fun Login(navController: NavController) {
                         color = Color.White,
                         modifier = Modifier.clickable {
 
-                            //userViewModel.getUsers()  questo qui non funziona
-                            //Log.d("Response", "${state[0].firstName}")
+                            rememberedUserViewModel.getUsers()
 
                             //navController.popBackStack()  //is it needed? figure it out
-                            navController.navigate(Screen.Profile.route){
+                            /*navController.navigate(Screen.Profile.route){
                                 popUpTo(Screen.Profile.route){
                                     inclusive = true
                                 }
-                            }
+                            }*/
                         })
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
@@ -156,14 +155,9 @@ fun Login(navController: NavController) {
                     Log.i("Response", "non c'è")
                 }
                 else{
-                    Log.i("Response", "${state[0].firstName}")
-                    test = "${state[0].firstName} e ${state[0].lastName}"
-
+                    Log.i("Response", state[0].firstName)
+                    test = state[0].firstName + " " + state[0].lastName
                 }
-                //for testing purposes the following text and outlinedtextfield object
-                Text(text = test, color = Color.Black)
-                
-                OutlinedTextField(value = test, onValueChange = {test = it} )
                 
                 Text(
                     text = "Create An Account",
@@ -175,17 +169,3 @@ fun Login(navController: NavController) {
         }
     }
 }
-
-
-/*
-Questa non l'ho capita, ma l'ho copiata la capiremo più avanti
- */
-/*
-private fun Context.doLogin() {
-    Toast.makeText(
-        this,
-        "Something went wrong, try again later!",
-        Toast.LENGTH_SHORT
-    ).show()
-}
-*/
