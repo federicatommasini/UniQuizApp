@@ -42,7 +42,6 @@ class UserViewModel @Inject constructor(
 
     fun login(loginRequest : LoginRequest) : User? {
         viewModelScope.launch{
-            Log.d("request", "dentro login")
             val response = runBlocking { userRepo.login(loginRequest)}
             if(response.validity==ResponseValidity.VALID)
                 _loginState.value = response.user

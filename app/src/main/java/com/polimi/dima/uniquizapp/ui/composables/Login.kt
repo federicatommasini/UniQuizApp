@@ -29,12 +29,10 @@ import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.UserViewModel
 import com.polimi.dima.uniquizapp.data.di.UserApiModule
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
-import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
-import com.polimi.dima.uniquizapp.data.repository.LoginRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
-
+import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalComposeUiApi::class)
