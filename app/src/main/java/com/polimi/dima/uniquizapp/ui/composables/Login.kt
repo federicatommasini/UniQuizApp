@@ -22,37 +22,42 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
-import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.model.UserViewModel
+import com.polimi.dima.uniquizapp.data.di.UserApiModule
+import com.polimi.dima.uniquizapp.data.model.LoginRequest
+import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.data.repository.LoginRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
-import com.polimi.dima.uniquizapp.ui.viewModels.LoginViewModel
-import hilt_aggregated_deps._dagger_hilt_android_internal_modules_ApplicationContextModule
-import kotlinx.coroutines.MainScope
+
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(navController: NavController) {
 
+    val userApi = UserApiModule.provideApi(UserApiModule.provideRetrofit())
+    val userRepo = UserRepository(userApi)
+    val userViewModel = UserViewModel(userRepo)
+    val rememberedUserViewModel = remember { userViewModel }
+
+    val state by rememberedUserViewModel.allUsersState.collectAsState()
+
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
-
     val passwordVisibility = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    val message = remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val passwordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
 
     Column(
         modifier = Modifier
@@ -116,8 +121,22 @@ fun Login(navController: NavController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(route = BottomNavItem.Home.screen_route)
-                        //context.doLogin()
+                        Log.d("request", emailValue.value + " "+ passwordValue.value)
+                        val loginReq = LoginRequest(emailValue.value,passwordValue.value)
+                        val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
+                        if (user != null){
+                            message.value = ""
+                            Log.d("login","logged in!")
+                            navController.navigate(BottomNavItem.Home.screen_route){
+                                popUpTo(Screen.Profile.route){
+                                    inclusive = true
+                                }
+                            }
+                        }
+                        else {
+                            message.value = "Wrong credentials, retry!"
+                        }
+                        keyboardController?.hide()
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                     shape = RoundedCornerShape(20.dp),
@@ -128,26 +147,13 @@ fun Login(navController: NavController) {
                 ) {
                     Text(text = "Login",
                         fontSize = 28.sp,
-                        color = Color.White,
-                        modifier = Modifier.clickable {
-                            /*loginViewModel.getUsers()
+                        color = Color.White)
 
-                            loginViewModel.allUserResponse.observe(this, Observer { response ->
-                                if(response.isSuccessful)
-                                    Log.d("Response", response.body()?.get(0).toString())
-                                else{
-                                    Log.d("Response", response.errorBody().toString())
-                                }
-                            })*/
-                            //navController.popBackStack()  //is it needed? figure it out
-                            navController.navigate(BottomNavItem.Home.screen_route){
-                                popUpTo(BottomNavItem.Home.screen_route){
-                                    inclusive = true
-                                }
-                            }
-                        })
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
+                Text(
+                    text = message.value,
+                    color = Color.Red)
                 Text(
                     text = "Create An Account",
                     modifier = Modifier.clickable {
@@ -158,20 +164,3 @@ fun Login(navController: NavController) {
         }
     }
 }
-
-private fun checkCredentials( viewModel: LoginViewModel){
-
-}
-
-/*
-Questa non l'ho capita, ma l'ho copiata la capiremo più avanti
- */
-/*
-private fun Context.doLogin() {
-    Toast.makeText(
-        this,
-        "Something went wrong, try again later!",
-        Toast.LENGTH_SHORT
-    ).show()
-}
-*/

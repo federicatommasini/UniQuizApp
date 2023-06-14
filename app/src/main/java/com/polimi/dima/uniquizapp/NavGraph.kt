@@ -43,7 +43,7 @@ fun SetupNavGraph(navController: NavHostController){
         composable(route = Screen.Profile.route) {
             Profile(navController = navController)
         }
-       composable(BottomNavItem.Home.screen_route) {
+        composable(BottomNavItem.Home.screen_route) {
             Home(navController = navController)
         }
         composable(BottomNavItem.Subjects.screen_route) {
