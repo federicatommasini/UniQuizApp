@@ -6,8 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
+import com.polimi.dima.uniquizapp.ui.composables.SubjectScreen
+import com.polimi.dima.uniquizapp.ui.composables.Subjects
 import com.polimi.dima.uniquizapp.ui.theme.UniQuizAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.security.auth.Subject
 
 @AndroidEntryPoint
 class MainActivity : androidx.activity.ComponentActivity() {
@@ -29,7 +32,10 @@ class MainActivity : androidx.activity.ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    var navController: NavHostController
     UniQuizAppTheme {
-        //Home()
+        navController = rememberNavController()
+        SetupNavGraph(navController = navController)
+        Subjects(navController)
     }
 }
