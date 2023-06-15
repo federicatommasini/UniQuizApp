@@ -26,7 +26,8 @@ object UserApiModule  {
     fun provideRetrofit(): Retrofit.Builder{
         return Retrofit.Builder()
             //.baseUrl("http://10.0.2.2:8080")
-            .baseUrl("http://192.168.101.167:8080")
+            .baseUrl("http://192.168.43.82:8080")
+            //.baseUrl("http://192.168.101.167:8080")
             .addConverterFactory(NullOnEmptyConverterFactory())
             .addConverterFactory(GsonConverterFactory.create())
 

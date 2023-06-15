@@ -4,6 +4,8 @@ package com.polimi.dima.uniquizapp.data.api
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.LoginResponse
 import com.polimi.dima.uniquizapp.data.model.User
+import kotlinx.coroutines.Deferred
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,5 +23,5 @@ interface UserApi {
     ): Response<User>
 
     @POST("/login")
-    suspend fun login(@Body loginRequest : LoginRequest) : LoginResponse
+    suspend fun login(@Body loginRequest : LoginRequest) : Call<User>
 }

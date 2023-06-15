@@ -29,10 +29,13 @@ import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.UserViewModel
 import com.polimi.dima.uniquizapp.data.di.UserApiModule
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -40,6 +43,8 @@ import kotlinx.coroutines.runBlocking
 fun Login(navController: NavController) {
 
     val userApi = UserApiModule.provideApi(UserApiModule.provideRetrofit())
+
+
     val userRepo = UserRepository(userApi)
     val userViewModel = UserViewModel(userRepo)
     val rememberedUserViewModel = remember { userViewModel }
@@ -119,9 +124,13 @@ fun Login(navController: NavController) {
 
                 Button(
                     onClick = {
-                        Log.d("request", emailValue.value + " "+ passwordValue.value)
                         val loginReq = LoginRequest(emailValue.value,passwordValue.value)
+
+                        Log.d("request", emailValue.value + " "+ passwordValue.value)
                         val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
+
+
+
                         if (user != null){
                             message.value = ""
                             Log.d("login","logged in!")

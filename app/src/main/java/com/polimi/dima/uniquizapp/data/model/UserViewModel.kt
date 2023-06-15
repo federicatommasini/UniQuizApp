@@ -40,7 +40,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun login(loginRequest : LoginRequest) : User? {
+    /*fun login(loginRequest : LoginRequest) : User? {
         viewModelScope.launch{
             val response = runBlocking { userRepo.login(loginRequest)}
             if(response.validity==ResponseValidity.VALID)
@@ -50,6 +50,20 @@ class UserViewModel @Inject constructor(
         if(_loginState.value==null)
             return null
         else return _loginState.value
+    }*/
+
+    fun login(loginRequest: LoginRequest) : User? {
+        viewModelScope.launch{
+            val response = runBlocking { userRepo.login(loginRequest)}
+            _loginState.value = response
+            /*if(response.validity==ResponseValidity.VALID)
+                _loginState.value = response.user
+            else _loginState.value = null*/
+        }
+        /*if(_loginState.value==null)
+            return null
+        else return _loginState.value*/
+        return _loginState.value
     }
 
     fun getState() : List<User> {
