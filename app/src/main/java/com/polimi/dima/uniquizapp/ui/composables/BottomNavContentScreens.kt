@@ -36,6 +36,7 @@ import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.*
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import com.polimi.dima.uniquizapp.ui.viewModels.SubjectViewModel
 import com.polimi.dima.uniquizapp.ui.viewModels.UserViewModel
 import kotlinx.coroutines.runBlocking
@@ -43,7 +44,11 @@ import java.util.*
 
 
 @Composable
-fun Home(navController: NavController){
+fun Home(navController: NavController, sharedViewModel: SharedViewModel){
+    //var user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+
+    val user = sharedViewModel.user
+
     Scaffold(
         topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -54,7 +59,7 @@ fun Home(navController: NavController){
                 .wrapContentSize(Alignment.Center)
                 .padding(padding)
         ) {
-            Text(text = "Welcome ${navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")?.firstName} to the UniQuiz app!",
+            Text(text = "Welcome ${user?.firstName} to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
                 modifier = Modifier

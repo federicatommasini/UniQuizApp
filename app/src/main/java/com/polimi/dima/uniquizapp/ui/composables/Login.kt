@@ -32,12 +32,13 @@ import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Login(navController: NavController) {
+fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val userApi = ApiModule.provideUserApi(ApiModule.provideRetrofit())
     val userRepo = UserRepository(userApi)
@@ -125,10 +126,11 @@ fun Login(navController: NavController) {
                         if (user != null){
                             message.value = ""
                             Log.d("login","logged in!")
-                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                            /*navController.currentBackStackEntry?.savedStateHandle?.set(
                                 key = "user",
                                 value = user
-                            )
+                            )*/
+                            sharedViewModel.addUser(user)
                             navController.navigate(BottomNavItem.Home.screen_route){
                                 popUpTo(Screen.Profile.route){
                                     inclusive = true

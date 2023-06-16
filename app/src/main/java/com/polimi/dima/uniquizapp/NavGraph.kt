@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -28,16 +29,20 @@ import com.polimi.dima.uniquizapp.ui.composables.Home
 import com.polimi.dima.uniquizapp.ui.composables.SubjectScreen
 import com.polimi.dima.uniquizapp.ui.composables.Subjects
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @Composable
 fun SetupNavGraph(navController: NavHostController){
+
+    val sharedViewModel: SharedViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = Screen.Login.route
     ){
         //the following lines map the route to the screen object
         composable(route = Screen.Login.route) {
-            Login(navController = navController)
+            Login(navController = navController, sharedViewModel)
         }
         composable(route = Screen.SignUp.route) {
             SignUp(navController = navController)
@@ -46,13 +51,13 @@ fun SetupNavGraph(navController: NavHostController){
             Profile(navController = navController)
         }
         composable(BottomNavItem.Home.screen_route){
-            LaunchedEffect(key1 = it){
+            /*LaunchedEffect(key1 = it){
                 val result = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
                 if (result != null) {
                     Log.d("home scree", "${result.firstName}")
                 }
-            }
-            Home(navController = navController)
+            }*/
+            Home(navController = navController, sharedViewModel)
         }
         composable(BottomNavItem.Subjects.screen_route) {
             Subjects(navController = navController)
