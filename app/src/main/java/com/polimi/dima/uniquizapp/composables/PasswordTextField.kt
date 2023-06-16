@@ -15,6 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.ImeOptions
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -27,6 +30,14 @@ fun PasswordTextField(field: MutableState<String>,
                       visibility: MutableState<Boolean>,
                       focusRequester: FocusRequester,//? = null
                       keyboardActions: KeyboardActions){
+
+    val customKeyboardOptions = KeyboardOptions(
+        capitalization = KeyboardCapitalization.None,
+        autoCorrect = false,
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Next
+    )
+
     TextField(
         value = field.value,
         onValueChange = { field.value = it },
@@ -35,7 +46,10 @@ fun PasswordTextField(field: MutableState<String>,
         label = { Text(text = nameField) },
         placeholder = { Text(text = nameField) },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardOptions = customKeyboardOptions,
+
+
+        //keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         modifier = Modifier
             .fillMaxWidth(0.8f)
             .background(grayBackground, RoundedCornerShape(20.dp))

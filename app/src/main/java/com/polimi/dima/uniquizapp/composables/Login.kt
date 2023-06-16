@@ -59,7 +59,6 @@ fun Login(navController: NavController) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-
         modifier = Modifier
             .imePadding()
             .fillMaxSize()
@@ -68,7 +67,6 @@ fun Login(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
