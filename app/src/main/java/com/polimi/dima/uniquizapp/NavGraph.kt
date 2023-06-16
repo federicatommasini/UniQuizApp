@@ -14,12 +14,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.polimi.dima.uniquizapp.composables.Login
-import com.polimi.dima.uniquizapp.composables.Profile
-import com.polimi.dima.uniquizapp.composables.SignUp
+import com.polimi.dima.uniquizapp.ui.composables.Login
+import com.polimi.dima.uniquizapp.ui.composables.Profile
+import com.polimi.dima.uniquizapp.ui.composables.SignUp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.polimi.dima.uniquizapp.composables.*
+import com.polimi.dima.uniquizapp.ui.composables.Calendar
+import com.polimi.dima.uniquizapp.ui.composables.Groups
+import com.polimi.dima.uniquizapp.ui.composables.Home
+import com.polimi.dima.uniquizapp.ui.composables.SubjectScreen
+import com.polimi.dima.uniquizapp.ui.composables.Subjects
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
 @Composable

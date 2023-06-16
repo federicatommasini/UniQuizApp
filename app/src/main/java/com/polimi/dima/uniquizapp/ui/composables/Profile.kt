@@ -1,4 +1,4 @@
-package com.polimi.dima.uniquizapp.composables
+package com.polimi.dima.uniquizapp.ui.composables
 
 import android.graphics.Bitmap
 import android.net.Uri

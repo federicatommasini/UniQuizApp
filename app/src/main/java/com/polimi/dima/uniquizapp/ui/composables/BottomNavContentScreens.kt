@@ -1,46 +1,57 @@
-package com.polimi.dima.uniquizapp.composables
+package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
-import android.util.Log
-import android.widget.SearchView
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarColors
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarDefaults.inputFieldColors
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
-import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.di.ApiModule
+import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
+import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.*
-import retrofit2.awaitResponse
+import com.polimi.dima.uniquizapp.ui.viewModels.SubjectViewModel
+import com.polimi.dima.uniquizapp.ui.viewModels.UserViewModel
+import kotlinx.coroutines.runBlocking
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Composable
 fun Home(navController: NavController){
     Scaffold(
+        topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
+    ) {padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(padding)
         ) {
             Text(text = "Welcome to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
@@ -107,47 +118,59 @@ fun Home(navController: NavController){
             }
         }
     }
-
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun Subjects(navController: NavController){
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
+fun Subjects(navController: NavController) {
+
+    val subjectApi = ApiModule.provideSubjectApi(ApiModule.provideRetrofit())
+    val subjectRepo = SubjectRepository(subjectApi)
+    val subjectViewModel = SubjectViewModel(subjectRepo)
+    subjectViewModel.getState()
+    val state by subjectViewModel.allSubjectsState.collectAsState()
+
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            SearchView(textState)
-            ItemList(state = textState)
-            Spacer(modifier = Modifier.padding(15.dp))
-            Text(
-                text = "Your Subjects",
-                fontWeight = FontWeight.Bold,
-                color = customizedBlue,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
-            val items by remember { mutableStateOf(listOf("Subject 1", "subject 2", "subject 3","subject 4","subject 5","subject 6","subject 7","subject 8","subject 9",
-                "subject 3","subject 3","subject 3","subject 3","subject 3", "subject 3","subject 3")) }
-            LazyGrid(state = mutableStateOf(items), type = "subjects", navController)
+        topBar = {AppBar(navController = navController)},
+        bottomBar = { BottomNavigationBar(navController = navController) },
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                CustomSearchBar(state,navController)
+                Spacer(modifier = Modifier.padding(15.dp))
+                Text(
+                    text = "Your Subjects",
+                    fontWeight = FontWeight.Bold,
+                    color = customizedBlue,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+                //TODO these should be only your subjects not all of them
+                val subjectNames = mutableListOf<String>()
+                for(i in state)
+                    subjectNames.add(i.name)
+                LazyGrid(state = mutableStateOf(subjectNames), type = "subjects", navController)
+            }
         }
-    }
+    )
 }
 
 @Composable
 fun Groups(navController: NavController){
     Scaffold(
+        topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(padding)
         ) {
 
             Text(
@@ -165,12 +188,14 @@ fun Groups(navController: NavController){
 @Composable
 fun Calendar(navController: NavController){
     Scaffold(
+        topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {
+    ) {padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(padding)
         ) {
             Text(
                 text = "Calendar Screen",
@@ -183,3 +208,5 @@ fun Calendar(navController: NavController){
         }
     }
 }
+
+

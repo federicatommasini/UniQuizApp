@@ -1,4 +1,4 @@
-package com.polimi.dima.uniquizapp.composables
+package com.polimi.dima.uniquizapp.ui.composables
 
 
 import androidx.compose.foundation.background
@@ -52,23 +52,5 @@ fun LazyGrid(state: MutableState<List<String>>, type: String, navController: Nav
                     }
                 }
             }
-            /*items(state.value) {
-                Card(
-                    backgroundColor = customizedBlue,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(),
-                    elevation = 8.dp,
-                ) {
-                    Text(
-                        text = "boh",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }*/
         })
 }

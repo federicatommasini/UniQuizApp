@@ -1,10 +1,10 @@
-package com.polimi.dima.uniquizapp.data.model
+package com.polimi.dima.uniquizapp.ui.viewModels
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polimi.dima.uniquizapp.data.model.LoginRequest
+import com.polimi.dima.uniquizapp.data.model.ResponseValidity
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,9 +42,8 @@ class UserViewModel @Inject constructor(
 
     fun login(loginRequest : LoginRequest) : User? {
         viewModelScope.launch{
-            Log.d("request", "dentro login")
             val response = runBlocking { userRepo.login(loginRequest)}
-            if(response.validity==ResponseValidity.VALID)
+            if(response.validity== ResponseValidity.VALID)
                 _loginState.value = response.user
             else _loginState.value = null
         }
