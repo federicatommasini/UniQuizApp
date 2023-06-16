@@ -1,10 +1,12 @@
 package com.polimi.dima.uniquizapp
 
+import android.util.Log
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -19,6 +21,7 @@ import com.polimi.dima.uniquizapp.ui.composables.Profile
 import com.polimi.dima.uniquizapp.ui.composables.SignUp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.composables.Calendar
 import com.polimi.dima.uniquizapp.ui.composables.Groups
 import com.polimi.dima.uniquizapp.ui.composables.Home
@@ -39,11 +42,16 @@ fun SetupNavGraph(navController: NavHostController){
         composable(route = Screen.SignUp.route) {
             SignUp(navController = navController)
         }
-
         composable(route = Screen.Profile.route) {
             Profile(navController = navController)
         }
-        composable(BottomNavItem.Home.screen_route) {
+        composable(BottomNavItem.Home.screen_route){
+            LaunchedEffect(key1 = it){
+                val result = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+                if (result != null) {
+                    Log.d("home scree", "${result.firstName}")
+                }
+            }
             Home(navController = navController)
         }
         composable(BottomNavItem.Subjects.screen_route) {

@@ -47,9 +47,6 @@ fun PasswordTextField(field: MutableState<String>,
         placeholder = { Text(text = nameField) },
         singleLine = true,
         keyboardOptions = customKeyboardOptions,
-
-
-        //keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         modifier = Modifier
             .fillMaxWidth(0.8f)
             .background(grayBackground, RoundedCornerShape(20.dp))

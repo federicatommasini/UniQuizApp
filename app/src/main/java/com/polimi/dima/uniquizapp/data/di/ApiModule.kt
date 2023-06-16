@@ -1,10 +1,12 @@
 package com.polimi.dima.uniquizapp.data.di
 
+import com.polimi.dima.uniquizapp.data.api.SubjectApi
 import com.polimi.dima.uniquizapp.data.api.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit

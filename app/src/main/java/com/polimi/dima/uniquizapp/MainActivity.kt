@@ -36,6 +36,6 @@ fun DefaultPreview() {
     UniQuizAppTheme {
         navController = rememberNavController()
         SetupNavGraph(navController = navController)
-        Subjects(navController)
+        //Subjects(navController)
     }
 }

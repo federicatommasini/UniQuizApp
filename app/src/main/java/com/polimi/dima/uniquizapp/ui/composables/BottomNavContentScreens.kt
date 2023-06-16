@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.data.di.ApiModule
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.*
@@ -53,7 +54,7 @@ fun Home(navController: NavController){
                 .wrapContentSize(Alignment.Center)
                 .padding(padding)
         ) {
-            Text(text = "Welcome to the UniQuiz app!",
+            Text(text = "Welcome ${navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")?.firstName} to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
                 modifier = Modifier

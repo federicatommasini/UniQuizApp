@@ -1,5 +1,9 @@
 package com.polimi.dima.uniquizapp.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class User(
     val id: String,
     val username: String,
@@ -11,5 +15,5 @@ data class User(
     val subjectIds: List<String>,
     val exams: List<String>,
     val schedules: List<String>
-) {
+) : Parcelable {
 }

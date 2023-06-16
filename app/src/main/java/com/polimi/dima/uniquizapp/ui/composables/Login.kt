@@ -125,6 +125,10 @@ fun Login(navController: NavController) {
                         if (user != null){
                             message.value = ""
                             Log.d("login","logged in!")
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "user",
+                                value = user
+                            )
                             navController.navigate(BottomNavItem.Home.screen_route){
                                 popUpTo(Screen.Profile.route){
                                     inclusive = true
