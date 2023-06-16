@@ -1,12 +1,10 @@
 package com.polimi.dima.uniquizapp
 
-import android.util.Log
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -22,7 +20,6 @@ import com.polimi.dima.uniquizapp.ui.composables.Profile
 import com.polimi.dima.uniquizapp.ui.composables.SignUp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.composables.Calendar
 import com.polimi.dima.uniquizapp.ui.composables.Groups
 import com.polimi.dima.uniquizapp.ui.composables.Home
@@ -48,7 +45,7 @@ fun SetupNavGraph(navController: NavHostController){
             SignUp(navController = navController)
         }
         composable(route = Screen.Profile.route) {
-            Profile(navController = navController)
+            Profile(navController = navController, sharedViewModel)
         }
         composable(BottomNavItem.Home.screen_route){
             /*LaunchedEffect(key1 = it){
@@ -60,13 +57,13 @@ fun SetupNavGraph(navController: NavHostController){
             Home(navController = navController, sharedViewModel)
         }
         composable(BottomNavItem.Subjects.screen_route) {
-            Subjects(navController = navController)
+            Subjects(navController = navController, sharedViewModel)
         }
         composable(BottomNavItem.Groups.screen_route) {
-            Groups(navController = navController)
+            Groups(navController = navController, sharedViewModel)
         }
         composable(BottomNavItem.Calendar.screen_route) {
-            Calendar(navController = navController)
+            Calendar(navController = navController, sharedViewModel)
         }
         composable(Screen.SubjectScreen.route, arguments = listOf(navArgument("subjectId"){
             type = NavType.StringType

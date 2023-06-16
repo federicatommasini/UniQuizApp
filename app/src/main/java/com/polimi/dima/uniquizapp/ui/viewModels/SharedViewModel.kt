@@ -8,6 +8,9 @@ import com.polimi.dima.uniquizapp.data.model.User
 
 class SharedViewModel : ViewModel() {
 
+    /*private val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
+    private val uniRepo = UniversityRepository(uniApi)
+    val uniViewModel = UniversityViewModel(uniRepo)*/
     var user by mutableStateOf<User?>(null)
         private set
 

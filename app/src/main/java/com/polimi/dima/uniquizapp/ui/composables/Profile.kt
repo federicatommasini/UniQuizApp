@@ -1,7 +1,9 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,12 +40,28 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.di.ApiModule
+import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.repository.UniversityRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
+import com.polimi.dima.uniquizapp.ui.viewModels.UniversityViewModel
+import kotlinx.coroutines.runBlocking
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun Profile(navController: NavController) {
+fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
+
+
+    val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
+    val uniRepo = UniversityRepository(uniApi)
+    val uniViewModel = UniversityViewModel(uniRepo)
+    val user = sharedViewModel.user
+    val university2 = runBlocking { uniViewModel.getUniById(user!!.universityId) }
+    Log.d("PRofile debug", university2.toString())
+
 
     var notification = rememberSaveable { mutableStateOf("") }
 
@@ -54,10 +72,10 @@ fun Profile(navController: NavController) {
 
     var isEditable by remember { mutableStateOf(false) }
 
-    var username by rememberSaveable { mutableStateOf("Username") }
+    var username by rememberSaveable { mutableStateOf("${user!!.username}") }
     var university by rememberSaveable { mutableStateOf("University") }
-    var password by rememberSaveable { mutableStateOf("Password") }
-    var email by rememberSaveable { mutableStateOf("Email") }
+    var password by rememberSaveable { mutableStateOf("${user!!.password}") }
+    var email by rememberSaveable { mutableStateOf("${user!!.email}") }
 
     //var imageUri by remember { mutableStateOf<Uri?>(null) }
     val passwordVisibility = remember { mutableStateOf(false) }
@@ -130,7 +148,7 @@ fun Profile(navController: NavController) {
                     )
                 }
             }
-            ProfileImage()
+            ProfileImage(user)
         }
         CustomSpacer()
         Row(
@@ -142,7 +160,7 @@ fun Profile(navController: NavController) {
         ) {
             Text(text = "Username", modifier = Modifier.width(100.dp))
             TextField(
-                value = username, //here we should pass the username of the user
+                value = username,
                 onValueChange = { username = it },
                 colors = customizedColors,
                 singleLine = true,
@@ -285,7 +303,7 @@ fun Profile(navController: NavController) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun ProfileImage() {
+fun ProfileImage(user: User?) {
 
     val imageUri = rememberSaveable { mutableStateOf("") }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
@@ -359,7 +377,7 @@ fun ProfileImage() {
             .padding(26.dp),
             horizontalArrangement = Arrangement.Center)
         {
-            Text(text = "Name", fontSize = 26.sp,
+            Text(text = "${user!!.username}", fontSize = 26.sp,
                 color = whiteBackground,
                 style = androidx.compose.ui.text.TextStyle(
                     fontWeight = FontWeight.Bold,

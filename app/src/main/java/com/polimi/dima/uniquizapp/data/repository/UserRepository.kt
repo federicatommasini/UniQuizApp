@@ -11,13 +11,8 @@ class UserRepository @Inject constructor(
     private val userApi: UserApi
 ){
 
-    /*suspend fun getUsers(): Response<List<User>> {
-        return RetrofitInstance.api.getUsers()
-    }*/
-
     suspend fun getUsers(): List<User> {
         return userApi.getUsers()
-        //return RetrofitInstance.api.getUsers()
     }
 
     suspend fun getUserById(userId: String): Response<User> {

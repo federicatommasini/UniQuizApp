@@ -47,7 +47,7 @@ class UserViewModel @Inject constructor(
                 _loginState.value = response.user
             else _loginState.value = null
         }
-        if(_loginState.value==null)
+        if(_loginState.value == null)
             return null
         else return _loginState.value
     }

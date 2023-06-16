@@ -5,23 +5,11 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarColors
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarDefaults.inputFieldColors
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,20 +20,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.data.di.ApiModule
-import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
-import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import com.polimi.dima.uniquizapp.ui.viewModels.SubjectViewModel
-import com.polimi.dima.uniquizapp.ui.viewModels.UserViewModel
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
 @Composable
 fun Home(navController: NavController, sharedViewModel: SharedViewModel){
-    //var user = navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
 
     val user = sharedViewModel.user
 
@@ -59,7 +42,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 .wrapContentSize(Alignment.Center)
                 .padding(padding)
         ) {
-            Text(text = "Welcome ${user?.firstName} to the UniQuiz app!",
+            Text(text = "Welcome ${user?.username} to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
                 modifier = Modifier
@@ -129,7 +112,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun Subjects(navController: NavController) {
+fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val subjectApi = ApiModule.provideSubjectApi(ApiModule.provideRetrofit())
     val subjectRepo = SubjectRepository(subjectApi)
@@ -167,7 +150,7 @@ fun Subjects(navController: NavController) {
 }
 
 @Composable
-fun Groups(navController: NavController){
+fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
     Scaffold(
         topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -192,7 +175,7 @@ fun Groups(navController: NavController){
 }
 
 @Composable
-fun Calendar(navController: NavController){
+fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
     Scaffold(
         topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }

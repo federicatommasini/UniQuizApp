@@ -45,8 +45,6 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
     val userViewModel = UserViewModel(userRepo)
     val rememberedUserViewModel = remember { userViewModel }
 
-    val state by rememberedUserViewModel.allUsersState.collectAsState()
-
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
@@ -125,11 +123,6 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                         val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
                         if (user != null){
                             message.value = ""
-                            Log.d("login","logged in!")
-                            /*navController.currentBackStackEntry?.savedStateHandle?.set(
-                                key = "user",
-                                value = user
-                            )*/
                             sharedViewModel.addUser(user)
                             navController.navigate(BottomNavItem.Home.screen_route){
                                 popUpTo(Screen.Profile.route){
@@ -152,7 +145,6 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     Text(text = "Login",
                         fontSize = 28.sp,
                         color = Color.White)
-
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(

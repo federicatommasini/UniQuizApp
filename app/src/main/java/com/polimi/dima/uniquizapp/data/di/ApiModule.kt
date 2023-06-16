@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.data.di
 
 import com.polimi.dima.uniquizapp.data.api.SubjectApi
+import com.polimi.dima.uniquizapp.data.api.UniversityApi
 import com.polimi.dima.uniquizapp.data.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -30,6 +31,12 @@ object ApiModule  {
         return builder
             .build()
             .create(UserApi::class.java)
+    }
+
+    fun provideUniversityApi(builder:Retrofit.Builder): UniversityApi {
+        return builder
+            .build()
+            .create(UniversityApi::class.java)
     }
 
     @Provides
