@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class UniversityViewModel @Inject constructor(
@@ -20,7 +21,7 @@ class UniversityViewModel @Inject constructor(
 
     fun getUniByName(name : String) : University? {
         viewModelScope.launch{
-            val response = uniRepo.getUniversityByName(name)
+            val response = runBlocking {  uniRepo.getUniversityByName(name)}
             _uniState.value = response
         }
         return if(_uniState.value == null){
@@ -30,7 +31,7 @@ class UniversityViewModel @Inject constructor(
 
     fun getUniById(id : String) : University? {
         viewModelScope.launch{
-            val response = uniRepo.getUniversityById(id)
+            val response = runBlocking { uniRepo.getUniversityById(id)}
             Log.d("uniModel", response.name)
             Log.d("unimodel2", response.toString())
             _uniState.value = response

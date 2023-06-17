@@ -3,7 +3,6 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,14 +39,11 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
-import com.polimi.dima.uniquizapp.data.di.ApiModule
 import com.polimi.dima.uniquizapp.data.model.User
-import com.polimi.dima.uniquizapp.data.repository.UniversityRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
-import com.polimi.dima.uniquizapp.ui.viewModels.UniversityViewModel
 import kotlinx.coroutines.runBlocking
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -55,13 +51,12 @@ import kotlinx.coroutines.runBlocking
 fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
 
-    val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
+    /*val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
     val uniRepo = UniversityRepository(uniApi)
-    val uniViewModel = UniversityViewModel(uniRepo)
+    val uniViewModel = UniversityViewModel(uniRepo)*/
+    val uniViewModel = sharedViewModel.uniViewModel
     val user = sharedViewModel.user
-    val university2 = runBlocking { uniViewModel.getUniById(user!!.universityId) }
-    Log.d("PRofile debug", university2.toString())
-
+    val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
     var notification = rememberSaveable { mutableStateOf("") }
 
@@ -73,7 +68,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     var isEditable by remember { mutableStateOf(false) }
 
     var username by rememberSaveable { mutableStateOf("${user!!.username}") }
-    var university by rememberSaveable { mutableStateOf("University") }
+    var university by rememberSaveable { mutableStateOf("${universityFromUser!!.name}") }
     var password by rememberSaveable { mutableStateOf("${user!!.password}") }
     var email by rememberSaveable { mutableStateOf("${user!!.email}") }
 
