@@ -37,6 +37,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.User
@@ -50,10 +51,6 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
-
-    /*val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
-    val uniRepo = UniversityRepository(uniApi)
-    val uniViewModel = UniversityViewModel(uniRepo)*/
     val uniViewModel = sharedViewModel.uniViewModel
     val user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
@@ -67,10 +64,10 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var isEditable by remember { mutableStateOf(false) }
 
-    var username by rememberSaveable { mutableStateOf("${user!!.username}") }
-    var university by rememberSaveable { mutableStateOf("${universityFromUser!!.name}") }
-    var password by rememberSaveable { mutableStateOf("${user!!.password}") }
-    var email by rememberSaveable { mutableStateOf("${user!!.email}") }
+    var username by rememberSaveable { mutableStateOf(user!!.username) }
+    var university by rememberSaveable { mutableStateOf(universityFromUser!!.name) }
+    var password by rememberSaveable { mutableStateOf(user!!.password) }
+    var email by rememberSaveable { mutableStateOf(user!!.email) }
 
     //var imageUri by remember { mutableStateOf<Uri?>(null) }
     val passwordVisibility = remember { mutableStateOf(false) }
@@ -109,8 +106,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     IconButton(
                         onClick = {
                             //navController.popBackStack()  //figure out why this was needed or not
-                            navController.navigate(Screen.Login.route){
-                                popUpTo(Screen.Login.route){
+                            navController.navigate(BottomNavItem.Home.screen_route){
+                                popUpTo(BottomNavItem.Home.screen_route) //i dont know if this is correct
+                                {
                                     inclusive = true
                                 }
                             }
@@ -280,6 +278,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Button(
                 onClick = {
                     isEditable = !isEditable
+                    //sharedViewModel.userViewModel.
                     //context.updateProfile()
                     /* TO DO*/
                 },
@@ -372,7 +371,7 @@ fun ProfileImage(user: User?) {
             .padding(26.dp),
             horizontalArrangement = Arrangement.Center)
         {
-            Text(text = "${user!!.username}", fontSize = 26.sp,
+            Text(text = user!!.username, fontSize = 26.sp,
                 color = whiteBackground,
                 style = androidx.compose.ui.text.TextStyle(
                     fontWeight = FontWeight.Bold,

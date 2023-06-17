@@ -26,10 +26,7 @@ import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
-import com.polimi.dima.uniquizapp.ui.viewModels.UserViewModel
-import com.polimi.dima.uniquizapp.data.di.ApiModule
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
-import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
@@ -40,10 +37,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
-    val userApi = ApiModule.provideUserApi(ApiModule.provideRetrofit())
-    val userRepo = UserRepository(userApi)
-    val userViewModel = UserViewModel(userRepo)
-    val rememberedUserViewModel = remember { userViewModel }
+    val rememberedUserViewModel = remember { sharedViewModel.userViewModel }
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }

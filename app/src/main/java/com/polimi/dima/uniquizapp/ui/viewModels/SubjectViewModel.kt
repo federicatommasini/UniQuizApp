@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.Subject
@@ -21,12 +22,12 @@ class SubjectViewModel @Inject constructor(
     private val _allSubjectsState = MutableStateFlow(emptyList<Subject>())
     val allSubjectsState: StateFlow<List<Subject>> = _allSubjectsState.asStateFlow()
 
-    init{
+    /*init{
         viewModelScope.launch {
             val subjects = subjectRepo.getSubjects()
             _allSubjectsState.value = subjects
         }
-    }
+    }*/
 
    fun getState() : List<Subject> {
        viewModelScope.launch{
@@ -37,4 +38,13 @@ class SubjectViewModel @Inject constructor(
        }
        return allSubjectsState.value
    }
+
+    fun getSubjectsByUser(userId : String) : List<Subject>{
+        viewModelScope.launch {
+            val response = runBlocking { subjectRepo.getSubjectsByUser(userId) }
+            _allSubjectsState.value = response
+            Log.d("Dentro view", response.toString())
+        }
+        return allSubjectsState.value
+    }
 }

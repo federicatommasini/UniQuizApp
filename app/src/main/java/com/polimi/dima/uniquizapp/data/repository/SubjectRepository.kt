@@ -11,4 +11,8 @@ class SubjectRepository@Inject constructor(
     suspend fun getSubjects(): List<Subject> {
         return subjectApi.getSubjects()
     }
+
+    suspend fun getSubjectsByUser(userId : String): List<Subject> {
+        return subjectApi.getSubjectsByUser(userId)
+    }
 }

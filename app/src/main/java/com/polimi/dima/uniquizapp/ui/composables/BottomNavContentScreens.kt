@@ -19,11 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavigationBar
-import com.polimi.dima.uniquizapp.data.di.ApiModule
-import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
-import com.polimi.dima.uniquizapp.ui.viewModels.SubjectViewModel
 import java.util.*
 
 
@@ -114,11 +111,8 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 @Composable
 fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 
-    val subjectApi = ApiModule.provideSubjectApi(ApiModule.provideRetrofit())
-    val subjectRepo = SubjectRepository(subjectApi)
-    val subjectViewModel = SubjectViewModel(subjectRepo)
-    subjectViewModel.getState()
-    val state by subjectViewModel.allSubjectsState.collectAsState()
+    sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
+    val state by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
 
     Scaffold(
         topBar = {AppBar(navController = navController)},
@@ -139,11 +133,18 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
-                //TODO these should be only your subjects not all of them
                 val subjectNames = mutableListOf<String>()
-                for(i in state)
-                    subjectNames.add(i.name)
-                LazyGrid(state = mutableStateOf(subjectNames), type = "subjects", navController)
+                if(state[0] != null) {
+                    for (i in state) {
+                        subjectNames.add(i.name)
+                        LazyGrid(
+                            state = mutableStateOf(subjectNames),
+                            type = "subjects",
+                            navController
+                        )
+
+                    }
+                }
             }
         }
     )

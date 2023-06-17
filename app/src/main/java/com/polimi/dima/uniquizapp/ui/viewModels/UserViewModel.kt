@@ -52,8 +52,11 @@ class UserViewModel @Inject constructor(
         else return _loginState.value
     }
 
-    fun getState() : List<User> {
-        return allUsersState.value
+    /* TO DO*/
+    fun updateProfile(user : User){
+        viewModelScope.launch {
+            //val response = runBlocking { userRepo.updateProfile(user) }
+        }
     }
 
 }
