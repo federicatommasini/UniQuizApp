@@ -68,7 +68,7 @@ fun SetupNavGraph(navController: NavHostController){
         composable(Screen.SubjectScreen.route, arguments = listOf(navArgument("subjectId"){
             type = NavType.StringType
         })) {
-            SubjectScreen(navController = navController,it.arguments?.getString("subjectId"))
+            SubjectScreen(navController = navController,it.arguments?.getString("subjectId"), sharedViewModel)
         }
 
     }

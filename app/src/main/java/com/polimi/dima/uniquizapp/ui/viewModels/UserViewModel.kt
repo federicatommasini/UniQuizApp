@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.ResponseValidity
+import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.net.UnknownServiceException
 import javax.inject.Inject
 
 
@@ -57,6 +59,14 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             //val response = runBlocking { userRepo.updateProfile(user) }
         }
+    }
+
+    fun addSubjectToUser(subject : Subject, userId : String) : User{
+        var user : User? = null
+        viewModelScope.launch{
+            user = runBlocking { userRepo.addSubject(subject, userId) }
+        }
+        return user!!
     }
 
 }

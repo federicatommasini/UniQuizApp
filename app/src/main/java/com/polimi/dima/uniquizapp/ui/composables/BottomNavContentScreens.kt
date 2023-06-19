@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -112,7 +113,9 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
-    val state by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
+    sharedViewModel.subjectViewModel.getState()
+    val allSubjectState by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
+    val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
     Scaffold(
         topBar = {AppBar(navController = navController)},
@@ -123,7 +126,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                CustomSearchBar(state,navController)
+                CustomSearchBar(allSubjectState,navController)
                 Spacer(modifier = Modifier.padding(15.dp))
                 Text(
                     text = "Your Subjects",
@@ -134,16 +137,16 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     fontSize = 20.sp
                 )
                 val subjectNames = mutableListOf<String>()
-                if(state[0] != null) {
-                    for (i in state) {
+                if(userSubjectState[0] != null) {
+                    for (i in userSubjectState) {
                         subjectNames.add(i.name)
-                        LazyGrid(
-                            state = mutableStateOf(subjectNames),
-                            type = "subjects",
-                            navController
-                        )
-
                     }
+                    Log.d("per grid",subjectNames.toString())
+                    LazyGrid(
+                        state = mutableStateOf(subjectNames),
+                        type = "subjects",
+                        navController
+                    )
                 }
             }
         }
