@@ -42,7 +42,7 @@ fun SetupNavGraph(navController: NavHostController){
             Login(navController = navController, sharedViewModel)
         }
         composable(route = Screen.SignUp.route) {
-            SignUp(navController = navController)
+            SignUp(navController = navController, sharedViewModel)
         }
         composable(route = Screen.Profile.route) {
             Profile(navController = navController, sharedViewModel)

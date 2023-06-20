@@ -1,5 +1,7 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,9 +35,13 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.focus.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,11 +49,15 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.model.University
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
+import com.polimi.dima.uniquizapp.ui.theme.grayBackground
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
+@SuppressLint("StateFlowValueCalledInComposition")
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun SignUp(navController: NavController) {
+fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val usernameValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -64,6 +74,25 @@ fun SignUp(navController: NavController) {
     val confirmPasswordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val universities = sharedViewModel.uniViewModel.getAllUni()
+    val items = mutableListOf<String>()
+    for(u in universities) {
+        items.add(u.name)
+    }
+    items.toList()
+
+
+    Log.d("sign depub", items.toString())
+    var isExpanded by remember{ mutableStateOf(false)}
+    var selectedItem by remember { mutableStateOf("") }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    val menuIcon = if(isExpanded){
+        Icons.Filled.KeyboardArrowUp
+    } else {
+        Icons.Filled.KeyboardArrowDown
+    }
+
 
     Column(
         modifier = Modifier
@@ -114,6 +143,83 @@ fun SignUp(navController: NavController) {
                         universityFocusRequester.requestFocus()
                     }))
                 CustomSpacer()
+
+                /*OutlinedTextField(
+                    value = selectedItem,
+                    onValueChange = {selectedItem = it},
+                    colors = TextFieldDefaults.textFieldColors(
+                        unfocusedIndicatorColor = Color.Transparent),
+                    label = { Text(text = "University") },
+                    placeholder = { Text(text = "University") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .background(grayBackground, RoundedCornerShape(20.dp))
+                        .focusRequester(universityFocusRequester),
+                    trailingIcon = { Icon(menuIcon, "", Modifier.clickable { isExpanded = !isExpanded })},
+                    keyboardActions = KeyboardActions(onNext = {
+                        passwordFocusRequester.requestFocus()
+                    })
+                )*/
+                
+                
+                /*OutlinedTextField(
+                    value = selectedItem,
+                    onValueChange = {selectedItem = it},
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    trailingIcon = { Icon(menuIcon, "", Modifier.clickable { isExpanded = !isExpanded })})
+                DropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false},
+                    modifier = Modifier
+                        .width(with(LocalDensity.current){textFieldSize.width.toDp()})
+                ) {
+                        items.forEach {
+                            DropdownMenuItem(onClick = {
+                                selectedItem = it
+                                isExpanded = false
+                            }) {
+                                TextField(value = it,
+                                onValueChange = { universityValue.value = it })
+                            }
+                        }
+                    }*/
+                
+                /*ExposedDropdownMenuBox(
+                    expanded = isExpanded,
+                    onExpandedChange = {isExpanded = !isExpanded })
+                {
+
+                    TextField(
+                        value = selectedItem,
+                        onValueChange = { selectedItem = it },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .background(grayBackground, RoundedCornerShape(20.dp)),
+                        label = "University",
+                        trailingIcon = menuIcon)
+                    ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false}) {
+                        items.forEach{ selectedText ->
+                        DropdownMenuItem(onClick = {
+                            selectedItem = selectedText
+                            isExpanded = false
+                        }) {
+                            Text(text = selectedText)
+                        }
+                    }
+                    }
+                }*/
+
+                DropDownTextField(items = items, selectedItem = selectedItem, onItemSelected = {selectedItem = it})
+                CustomSpacer()
+
+                
+                
                 CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,
                     universityFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {

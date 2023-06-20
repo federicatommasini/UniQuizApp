@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.University
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UniversityRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,10 @@ class UniversityViewModel @Inject constructor(
     private val _uniState = MutableStateFlow<University?>(null)
     val uniState: StateFlow<University?> = _uniState.asStateFlow()
 
+    private val _allUniState = MutableStateFlow(emptyList<University>())
+    val allUniState : StateFlow<List<University>> = _allUniState.asStateFlow()
+
+
     fun getUniByName(name : String) : University? {
         viewModelScope.launch{
             val response = runBlocking {  uniRepo.getUniversityByName(name)}
@@ -32,17 +37,23 @@ class UniversityViewModel @Inject constructor(
     fun getUniById(id : String) : University? {
         viewModelScope.launch{
             val response = runBlocking { uniRepo.getUniversityById(id)}
-            Log.d("uniModel", response.name)
-            Log.d("unimodel2", response.toString())
             _uniState.value = response
-            Log.d("unimodel3", _uniState.value.toString())
 
 
         }
         return if(_uniState.value == null){
-            Log.d("unimodel3", "dentro l'if")
             null
         } else return _uniState.value!!
+    }
+
+    fun getAllUni() : List<University>{
+        viewModelScope.launch {
+            val response = runBlocking { uniRepo.getAllUni() }
+            _allUniState.value = response
+
+            Log.d("dentro view", _allUniState.value.toString())
+        }
+        return _allUniState.value
     }
 
 }

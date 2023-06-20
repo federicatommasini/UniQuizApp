@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.data.repository
 
+import android.util.Log
 import com.polimi.dima.uniquizapp.data.api.UniversityApi
 import com.polimi.dima.uniquizapp.data.model.University
 
@@ -14,5 +15,11 @@ class UniversityRepository @Inject constructor(
 
     suspend fun getUniversityByName(universityName: String): University {
         return uniApi.getUniversityByName(universityName)
+    }
+
+    suspend fun getAllUni() : List<University> {
+        Log.d("repo", uniApi.getAllUni().toString())
+        return uniApi.getAllUni()
+
     }
 }

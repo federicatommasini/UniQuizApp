@@ -15,4 +15,7 @@ interface UniversityApi {
     suspend fun getUniversityByName(
         @Path("universityName") number : String
     ): University
+
+    @GET("/university/all")
+    suspend fun getAllUni(): List<University>
 }
