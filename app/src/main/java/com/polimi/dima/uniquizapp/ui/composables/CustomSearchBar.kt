@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -110,6 +111,9 @@ fun ItemListItem(ItemText: String, onItemClick: (String) -> Unit) {
             .fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.fillMaxWidth(0.1f))
-        Text(text = ItemText, fontSize = 18.sp, color = customizedBlue , modifier = Modifier.fillMaxWidth(0.9f))
+        Text(text = ItemText,
+            fontSize = 18.sp,
+            color = customizedBlue ,
+            modifier = Modifier.fillMaxWidth(0.9f).align(Alignment.CenterVertically))
     }
 }

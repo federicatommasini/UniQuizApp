@@ -144,7 +144,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     Log.d("per grid",subjectNames.toString())
                     LazyGrid(
                         state = mutableStateOf(subjectNames),
-                        type = "subjects",
+                        route = "subject_screen/",
                         navController
                     )
                 }

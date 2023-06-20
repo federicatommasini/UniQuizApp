@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.data.di
 
+import com.polimi.dima.uniquizapp.data.api.QuizApi
 import com.polimi.dima.uniquizapp.data.api.SubjectApi
 import com.polimi.dima.uniquizapp.data.api.UniversityApi
 import com.polimi.dima.uniquizapp.data.api.UserApi
@@ -32,11 +33,20 @@ object ApiModule  {
             .build()
             .create(UserApi::class.java)
     }
-
+    @Provides
+    @Singleton
     fun provideUniversityApi(builder:Retrofit.Builder): UniversityApi {
         return builder
             .build()
             .create(UniversityApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideQuizApi(builder:Retrofit.Builder): QuizApi {
+        return builder
+            .build()
+            .create(QuizApi::class.java)
     }
 
     @Provides

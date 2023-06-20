@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.polimi.dima.uniquizapp.Screen
@@ -24,10 +25,8 @@ import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LazyGrid(state: MutableState<List<String>>, type: String, navController: NavController) {
+fun LazyGrid(state: MutableState<List<String>>, route: String, navController: NavController) {
 
-    var route = "subject_screen/"
-    //if(type.equals("subjects"))
     LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(
             start = 12.dp,
@@ -48,7 +47,10 @@ fun LazyGrid(state: MutableState<List<String>>, type: String, navController: Nav
                         .width(100.dp)
                 ){
                     Box() {
-                        Text(text = item, textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
+                        Text(text = item,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }
