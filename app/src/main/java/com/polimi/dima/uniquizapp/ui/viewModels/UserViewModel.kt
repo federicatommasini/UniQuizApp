@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
+import com.polimi.dima.uniquizapp.data.model.RegistrationRequest
 import com.polimi.dima.uniquizapp.data.model.ResponseValidity
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.UserRepository
@@ -57,6 +58,16 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             //val response = runBlocking { userRepo.updateProfile(user) }
         }
+    }
+
+    fun register(user: RegistrationRequest) : User? {
+        viewModelScope.launch {
+            val response = runBlocking {
+                userRepo.register(user)
+            }
+            _loginState.value = response
+        }
+        return _loginState.value
     }
 
 }

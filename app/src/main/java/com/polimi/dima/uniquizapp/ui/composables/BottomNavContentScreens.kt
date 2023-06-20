@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -134,6 +135,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     fontSize = 20.sp
                 )
                 val subjectNames = mutableListOf<String>()
+                Log.d("testing", state.toString())
                 if(state[0] != null) {
                     for (i in state) {
                         subjectNames.add(i.name)
@@ -142,7 +144,6 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                             type = "subjects",
                             navController
                         )
-
                     }
                 }
             }

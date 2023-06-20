@@ -1,7 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,30 +34,29 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.focus.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
-import com.polimi.dima.uniquizapp.data.model.University
+import com.polimi.dima.uniquizapp.data.model.RegistrationRequest
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
+import kotlinx.coroutines.runBlocking
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 
+    val firstNameValue = remember { mutableStateOf("") }
+    val lastNameValue = remember { mutableStateOf("") }
     val usernameValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val emailValue = remember { mutableStateOf("") }
@@ -67,6 +65,8 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
 
+    val firstNameFocusRequester = remember { FocusRequester() }
+    val lastNameFocusRequester = remember { FocusRequester() }
     val usernameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
     val universityFocusRequester = remember { FocusRequester() }
@@ -77,22 +77,10 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val universities = sharedViewModel.uniViewModel.getAllUni()
     val items = mutableListOf<String>()
-    for(u in universities) {
-        items.add(u.name)
-    }
+    for(u in universities) { items.add(u.name) }
     items.toList()
 
-
-    Log.d("sign depub", items.toString())
-    var isExpanded by remember{ mutableStateOf(false)}
-    var selectedItem by remember { mutableStateOf("") }
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val menuIcon = if(isExpanded){
-        Icons.Filled.KeyboardArrowUp
-    } else {
-        Icons.Filled.KeyboardArrowDown
-    }
-
+    val rememberedUserViewModel = remember { sharedViewModel.userViewModel }
 
     Column(
         modifier = Modifier
@@ -131,6 +119,18 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
             )
             Spacer(modifier = Modifier.padding(15.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CustomTextField(field = firstNameValue, nameField = "First Name", Icons.Default.Person,
+                    firstNameFocusRequester,
+                    keyboardActions = KeyboardActions(onNext = {
+                        lastNameFocusRequester.requestFocus()
+                    }))
+                CustomSpacer()
+                CustomTextField(field = lastNameValue, nameField = "Last Name", Icons.Default.Person,
+                    lastNameFocusRequester,
+                    keyboardActions = KeyboardActions(onNext = {
+                        usernameFocusRequester.requestFocus()
+                    }))
+                CustomSpacer()
                 CustomTextField(field = usernameValue, nameField = "Username", customImageVector = Icons.Default.Person,
                     usernameFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
@@ -144,88 +144,15 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     }))
                 CustomSpacer()
 
-                /*OutlinedTextField(
-                    value = selectedItem,
-                    onValueChange = {selectedItem = it},
-                    colors = TextFieldDefaults.textFieldColors(
-                        unfocusedIndicatorColor = Color.Transparent),
-                    label = { Text(text = "University") },
-                    placeholder = { Text(text = "University") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .background(grayBackground, RoundedCornerShape(20.dp))
-                        .focusRequester(universityFocusRequester),
-                    trailingIcon = { Icon(menuIcon, "", Modifier.clickable { isExpanded = !isExpanded })},
-                    keyboardActions = KeyboardActions(onNext = {
-                        passwordFocusRequester.requestFocus()
-                    })
-                )*/
-                
-                
-                /*OutlinedTextField(
-                    value = selectedItem,
-                    onValueChange = {selectedItem = it},
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    trailingIcon = { Icon(menuIcon, "", Modifier.clickable { isExpanded = !isExpanded })})
-                DropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false},
-                    modifier = Modifier
-                        .width(with(LocalDensity.current){textFieldSize.width.toDp()})
-                ) {
-                        items.forEach {
-                            DropdownMenuItem(onClick = {
-                                selectedItem = it
-                                isExpanded = false
-                            }) {
-                                TextField(value = it,
-                                onValueChange = { universityValue.value = it })
-                            }
-                        }
-                    }*/
-                
-                /*ExposedDropdownMenuBox(
-                    expanded = isExpanded,
-                    onExpandedChange = {isExpanded = !isExpanded })
-                {
-
-                    TextField(
-                        value = selectedItem,
-                        onValueChange = { selectedItem = it },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .background(grayBackground, RoundedCornerShape(20.dp)),
-                        label = "University",
-                        trailingIcon = menuIcon)
-                    ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false}) {
-                        items.forEach{ selectedText ->
-                        DropdownMenuItem(onClick = {
-                            selectedItem = selectedText
-                            isExpanded = false
-                        }) {
-                            Text(text = selectedText)
-                        }
-                    }
-                    }
-                }*/
-
-                DropDownTextField(items = items, selectedItem = selectedItem, onItemSelected = {selectedItem = it})
+                DropDownTextField(items = items, selectedItem = universityValue.value, onItemSelected = {universityValue.value = it}, universityFocusRequester)
                 CustomSpacer()
-
                 
-                
-                CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,
+                /*CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,
                     universityFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         passwordFocusRequester.requestFocus()
                     }))
-                CustomSpacer()
+                CustomSpacer()*/
                 PasswordTextField(field = passwordValue, nameField = "Password", visibility = passwordVisibility,
                     keyboardActions = KeyboardActions(onNext = {
                         confirmPasswordFocusRequester.requestFocus()
@@ -241,7 +168,17 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     focusRequester = confirmPasswordFocusRequester)
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
-                    onClick = {   /*TODO*/  },
+                    onClick = {
+                        val request = RegistrationRequest(usernameValue.value, emailValue.value, firstNameValue.value, lastNameValue.value, passwordValue.value, universityValue.value)
+                        val user = runBlocking { rememberedUserViewModel.register(request) }
+                        if (user != null){
+                            sharedViewModel.addUser(user)
+                            navController.navigate(BottomNavItem.Home.screen_route){
+                                popUpTo(Screen.Profile.route){
+                                    inclusive = true
+                                }
+                            }
+                        } },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier

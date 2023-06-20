@@ -6,12 +6,12 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class User(
     val id: String,
-    val username: String,
-    val email: String,
-    val password: String,
+    var username: String,
+    var email: String,
+    var password: String,
     val firstName: String,
     val lastName: String,
-    val universityId: String,
+    var universityId: String,
     val subjectIds: List<String>,
     val exams: List<String>,
     val schedules: List<String>
