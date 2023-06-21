@@ -112,7 +112,6 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 @Composable
 fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 
-    sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     sharedViewModel.subjectViewModel.getState()
     val allSubjectState by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
@@ -136,18 +135,13 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
-                val subjectNames = mutableListOf<String>()
-                if(userSubjectState[0] != null) {
-                    for (i in userSubjectState) {
-                        subjectNames.add(i.name)
-                    }
-                    Log.d("per grid",subjectNames.toString())
+                /*if(userSubjectState[0] != null) {*/
                     LazyGrid(
-                        state = mutableStateOf(subjectNames),
                         route = "subject_screen/",
-                        navController
+                        navController,
+                        sharedViewModel
                     )
-                }
+                //}
             }
         }
     )

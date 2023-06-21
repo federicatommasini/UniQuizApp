@@ -12,6 +12,6 @@ interface SubjectApi {
     @GET("/{userId}/subjects")
     suspend fun getSubjectsByUser(@Path("userId") number : String) : List<Subject>
 
-    @GET("/subjectByName/{subjectName}")
-    suspend fun getSubjectByName(@Path("subjectName") name : String) : Subject
+    @GET("/subjectById/{subjectId}")
+    suspend fun getSubjectById(@Path("subjectId") id : String) : Subject
 }

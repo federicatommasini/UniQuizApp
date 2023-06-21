@@ -55,10 +55,10 @@ class SubjectViewModel @Inject constructor(
         return userSubjectsState.value
     }
 
-    fun getSubjectByName(subjectName : String) : Subject?{
+    fun getSubjectById(subjectId : String) : Subject?{
         var subject : Subject? = null
         viewModelScope.launch{
-            val response = runBlocking { subjectRepo.getSubjectByName(subjectName) }
+            val response = runBlocking { subjectRepo.getSubjectById(subjectId) }
             subject = response
         }
         return subject
