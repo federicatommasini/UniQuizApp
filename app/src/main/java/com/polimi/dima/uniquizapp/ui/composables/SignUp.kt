@@ -180,14 +180,15 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 
                         } else {
                             val request = RegistrationRequest(
-                                usernameValue.value,
-                                emailValue.value,
-                                firstNameValue.value,
-                                lastNameValue.value,
-                                passwordValue.value,
-                                universityValue.value
+                                username = usernameValue.value,
+                                email = emailValue.value,
+                                firstName = firstNameValue.value,
+                                lastName = lastNameValue.value,
+                                password = passwordValue.value,
+                                universityName = universityValue.value
                             )
                             val user = runBlocking { rememberedUserViewModel.register(request) }
+                            Log.d("just registered", user.toString())
                             if (user != null) {
                                 sharedViewModel.addUser(user)
                                 navController.navigate(BottomNavItem.Home.screen_route) {

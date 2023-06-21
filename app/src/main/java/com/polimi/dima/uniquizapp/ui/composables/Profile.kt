@@ -39,7 +39,6 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.R
-import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
@@ -64,6 +63,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var isEditable by remember { mutableStateOf(false) }
 
+
+    var firstName by rememberSaveable { mutableStateOf(user!!.firstName) }
+    var lastName by rememberSaveable { mutableStateOf(user!!.lastName) }
     var username by rememberSaveable { mutableStateOf(user!!.username) }
     var university by rememberSaveable { mutableStateOf(universityFromUser!!.name) }
     var password by rememberSaveable { mutableStateOf(user!!.password) }
@@ -124,6 +126,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                                 tint = Color.Black,
                                 modifier = Modifier
                                     .size(44.dp)
+                                    .align(Alignment.TopEnd) //doesnt seem to work
                                     .background(Color.Transparent, CircleShape)
                                     .padding(4.dp)
                             )
@@ -144,6 +147,53 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             ProfileImage(user)
         }
         CustomSpacer()
+        //ProfileTextField(field = username, nameField = "Username", colors = customizedColors, enabled = false)
+        //CustomSpacer()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "First Name", modifier = Modifier.width(100.dp))
+            TextField(
+                value = firstName,
+                onValueChange = { firstName = it },
+                colors = customizedColors,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                enabled = false
+            )
+        }
+        CustomSpacer()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Last Name", modifier = Modifier.width(100.dp))
+            TextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                colors = customizedColors,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                enabled = false
+            )
+        }
+        CustomSpacer()
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -159,11 +209,10 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 shape = RoundedCornerShape(20.dp),
-
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = isEditable
+                enabled = false
             )
         }
         CustomSpacer()
@@ -187,7 +236,30 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     .fillMaxWidth(0.9f)
                     .background(grayBackground, RoundedCornerShape(20.dp))
                     .border(0.dp, Color.Transparent, RoundedCornerShape(20.dp)), //does not work
-                enabled = isEditable
+                enabled = false
+            )
+        }
+        CustomSpacer()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            Text(text = "Email", modifier = Modifier.width(100.dp))
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                colors = customizedColors,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .background(grayBackground, RoundedCornerShape(20.dp)),
+                enabled = false
             )
         }
         CustomSpacer()
@@ -244,28 +316,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             )
         }
         CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            Text(text = "Email", modifier = Modifier.width(100.dp))
-            TextField(
-                value = email,
-                onValueChange = { email = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = false
-            )
-        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
@@ -278,9 +329,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Button(
                 onClick = {
                     isEditable = !isEditable
-                    //sharedViewModel.userViewModel.
-                    //context.updateProfile()
-                    /* TO DO*/
+
+                    runBlocking { sharedViewModel.userViewModel.updateProfile(password, user!!.id)}
+
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
@@ -411,6 +462,32 @@ fun FullImage(
                 tint = Color.Black
             )
         }
+    }
+}
+
+@Composable
+fun ProfileTextField(field: MutableState<String>, nameField: String, colors: TextFieldColors, enabled: Boolean){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    )
+    {
+        Text(text = nameField, modifier = Modifier.width(100.dp))
+        TextField(
+            value = field.value,
+            onValueChange = { field.value = it },
+            colors = colors,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .background(grayBackground, RoundedCornerShape(20.dp)),
+            enabled = false
+        )
     }
 }
 

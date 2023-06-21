@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserApi {
@@ -25,4 +26,6 @@ interface UserApi {
     suspend fun login(@Body loginRequest : LoginRequest) : LoginResponse
     @POST("/registration")
     suspend fun register(@Body user: RegistrationRequest): User
+    @PUT("/updateProfile/{id}")
+    suspend fun update(@Body newPassword: String, @Path("id") number : String ) : User
 }

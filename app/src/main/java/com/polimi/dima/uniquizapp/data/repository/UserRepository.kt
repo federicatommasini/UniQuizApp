@@ -27,4 +27,8 @@ class UserRepository @Inject constructor(
     suspend fun register(user: RegistrationRequest) : User {
         return userApi.register(user)
     }
+
+    suspend fun updateProfile(newPassword: String, userId: String): User {
+        return userApi.update(newPassword, userId)
+    }
 }
