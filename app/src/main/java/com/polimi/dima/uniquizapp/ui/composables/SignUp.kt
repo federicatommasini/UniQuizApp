@@ -1,6 +1,7 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,6 +82,7 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
     items.toList()
 
     val rememberedUserViewModel = remember { sharedViewModel.userViewModel }
+    val message = remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -146,13 +148,6 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 
                 DropDownTextField(items = items, selectedItem = universityValue.value, onItemSelected = {universityValue.value = it}, universityFocusRequester)
                 CustomSpacer()
-                
-                /*CustomTextField(field = universityValue, nameField = "University", Icons.Default.School,
-                    universityFocusRequester,
-                    keyboardActions = KeyboardActions(onNext = {
-                        passwordFocusRequester.requestFocus()
-                    }))
-                CustomSpacer()*/
                 PasswordTextField(field = passwordValue, nameField = "Password", visibility = passwordVisibility,
                     keyboardActions = KeyboardActions(onNext = {
                         confirmPasswordFocusRequester.requestFocus()
@@ -166,19 +161,43 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                         //context.doLogin()
                     }),
                     focusRequester = confirmPasswordFocusRequester)
+                CustomSpacer()
+                Text(
+                    text = message.value,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(0.8f))
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
                     onClick = {
-                        val request = RegistrationRequest(usernameValue.value, emailValue.value, firstNameValue.value, lastNameValue.value, passwordValue.value, universityValue.value)
-                        val user = runBlocking { rememberedUserViewModel.register(request) }
-                        if (user != null){
-                            sharedViewModel.addUser(user)
-                            navController.navigate(BottomNavItem.Home.screen_route){
-                                popUpTo(Screen.Profile.route){
-                                    inclusive = true
+                        Log.d("confirm", passwordValue.value + " " + confirmPasswordValue.value)
+                        if(!checkingVoidField(firstNameValue, lastNameValue, usernameValue, passwordValue, confirmPasswordValue, emailValue, universityValue)){
+                            message.value = "Complete all fields"
+                        }
+                        else if (passwordValue.value != confirmPasswordValue.value) {
+                            message.value =
+                                "Password and Confirm Password are different, please retry"
+
+                        } else {
+                            val request = RegistrationRequest(
+                                usernameValue.value,
+                                emailValue.value,
+                                firstNameValue.value,
+                                lastNameValue.value,
+                                passwordValue.value,
+                                universityValue.value
+                            )
+                            val user = runBlocking { rememberedUserViewModel.register(request) }
+                            if (user != null) {
+                                sharedViewModel.addUser(user)
+                                navController.navigate(BottomNavItem.Home.screen_route) {
+                                    popUpTo(Screen.Profile.route) {
+                                        inclusive = true
+                                    }
                                 }
                             }
-                        } },
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
@@ -213,5 +232,37 @@ fun CustomSpacer(){
             .padding(5.dp)
             .background(whiteBackground)
     )
+}
+
+fun checkingVoidField(
+    firstNameValue : MutableState<String>,
+    lastNameValue : MutableState<String>,
+    usernameValue : MutableState<String>,
+    passwordValue : MutableState<String>,
+    emailValue : MutableState<String>,
+    confirmPasswordValue : MutableState<String>,
+    universityValue : MutableState<String>) : Boolean{
+    if(firstNameValue.value == ""){
+        return false
+    }
+    if(lastNameValue.value == ""){
+        return false
+    }
+    if(usernameValue.value == "") {
+        return false
+    }
+    if(passwordValue.value == ""){
+        return false
+    }
+    if(confirmPasswordValue.value == ""){
+        return false
+    }
+    if(emailValue.value == ""){
+        return false
+    }
+    if(universityValue.value == ""){
+        return false
+    }
+    return true
 }
 
