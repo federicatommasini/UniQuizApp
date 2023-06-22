@@ -63,7 +63,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var isEditable by remember { mutableStateOf(false) }
 
-
     var firstName by rememberSaveable { mutableStateOf(user!!.firstName) }
     var lastName by rememberSaveable { mutableStateOf(user!!.lastName) }
     var username by rememberSaveable { mutableStateOf(user!!.username) }
