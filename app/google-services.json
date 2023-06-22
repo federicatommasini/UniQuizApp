@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "71784389950",
+    "project_id": "uniquiz-8ec38",
+    "storage_bucket": "uniquiz-8ec38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71784389950:android:f264ee1667f01c6630206f",
+        "android_client_info": {
+          "package_name": "com.polimi.dima.uniquizapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "71784389950-cjv8m26m30rlokak16usoee180ockafo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsgEzRxdiEoP4Jmed86V5bsP9x7BK3RmU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "71784389950-cjv8m26m30rlokak16usoee180ockafo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

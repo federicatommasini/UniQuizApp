@@ -1,8 +1,11 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.util.Log
-import android.widget.CalendarView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
@@ -15,16 +18,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.polimi.dima.uniquizapp.BottomNavigationBar
+import com.polimi.dima.uniquizapp.MainActivity
+import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import java.util.*
-
 
 @Composable
 fun Home(navController: NavController, sharedViewModel: SharedViewModel){
@@ -179,6 +190,20 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 
 @Composable
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
+
+    val context = LocalContext.current
+    val startForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                if (result.data != null) {
+                    val task: Task<GoogleSignInAccount> =
+                        GoogleSignIn.getSignedInAccountFromIntent(intent)
+                    Log.d("login result", task.toString())
+                    //handleSignInResult(task)
+                }
+            }
+        }
     Scaffold(
         topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -193,12 +218,18 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 text = "Calendar Screen",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+                    .clickable {
+                        startForResult.launch(MainActivity.getGoogleLoginAuth(context)?.signInIntent)
+                    },
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )
         }
     }
 }
+
+
+
 
 
