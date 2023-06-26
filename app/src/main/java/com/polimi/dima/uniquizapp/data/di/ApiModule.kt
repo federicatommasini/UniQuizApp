@@ -56,8 +56,8 @@ object ApiModule  {
             .connectTimeout(50, TimeUnit.SECONDS)
             .readTimeout(50, TimeUnit.SECONDS).build()
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080")
-            //.baseUrl("http://192.168.101.167:8080") //fede
+            //.baseUrl("http://10.0.2.2:8080")
+            .baseUrl("http://192.168.71.167:8080") //fede
             //.baseUrl("http://192.168.43.82:8080") //giulia
             .client(client)
             .addConverterFactory(NullOnEmptyConverterFactory())

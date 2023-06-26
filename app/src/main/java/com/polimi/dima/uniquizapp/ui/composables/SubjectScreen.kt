@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import com.rizzi.bouquet.ResourceType
 import com.rizzi.bouquet.VerticalPDFReader
@@ -45,8 +44,8 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
     /*val pdfState = rememberVerticalPdfReaderState(
         resource = ResourceType.Remote("https://myreport.altervista.org/Lorem_Ipsum.pdf"),
         isZoomEnable = true
-    )*/
-
+    )
+*/
     Scaffold(
         topBar = {AppBar(navController = navController)}
     ){padding ->
@@ -57,7 +56,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                 .background(Color.White)
         ){
             Log.d("pre sbject bar", subjectId!!)
-            SubjectBar(subjectId = subjectId!!, sharedViewModel = sharedViewModel)
+            SubjectBar(subjectId = subjectId!!, sharedViewModel = sharedViewModel, navController= navController)
 
 
             Spacer(modifier = Modifier.padding(15.dp))
@@ -76,7 +75,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = Color.Gray)
-            )*/
+            )
 
             if(subjectQuizzes[0] != null) {
                 ArgumentsGrid(
@@ -84,7 +83,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                     route = "",
                     navController = navController
                 )
-            }
+            }*/
         }
     }
 }

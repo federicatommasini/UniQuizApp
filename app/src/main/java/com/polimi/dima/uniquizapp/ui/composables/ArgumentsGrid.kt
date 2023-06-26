@@ -15,6 +15,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.data.model.Quiz
+import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ArgumentsGrid(state: MutableState<List<Quiz>>, route: String, navController: NavController){
+fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: String, navController: NavController){
+
+    sharedViewModel.quizViewModel.getAll(subject!!.id)
+    val state by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
+
     LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 250.dp),
         contentPadding = PaddingValues(
             start = 12.dp,
@@ -38,7 +46,7 @@ fun ArgumentsGrid(state: MutableState<List<Quiz>>, route: String, navController:
         ),
         modifier = Modifier.background(Color.White),
         content = {
-            items(state.value){ item ->
+            items(state){ item ->
                 Card(
                     onClick = { /*navController.navigate(route = route + item.id)*/ },
                     shape = RoundedCornerShape(30),
