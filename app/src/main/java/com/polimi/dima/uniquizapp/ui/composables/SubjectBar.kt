@@ -178,7 +178,6 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                                     navController.navigate("pdf/" + item.getInt(null))}
                             )
                         }
-                        Log.d("fields",fields.get(0).name)
                         if(counter>0 && counter <= state.size){
                             Spacer(modifier = Modifier.padding(10.dp))
                             Divider(color = customLightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
@@ -194,8 +193,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
 @Composable
 fun Pdf(navController: NavController, id: Int?){
     val pdfState = rememberVerticalPdfReaderState(
-        resource = ResourceType.Asset(id!!),
-        //.Local(Uri.parse("assets/lesson_2_datawarehouse")),
+        resource = ResourceType.Remote("https://uvejzsepcmqpowatjgyy.supabase.co/storage/v1/object/public/pdf%20files/computing_infrastructures/02_Lesson_2_DataWareHouse.pdf?t=2023-06-26T15%3A52%3A52.639Z"),
         // .Remote("https://myreport.altervista.org/Lorem_Ipsum.pdf"),
         isZoomEnable = true
     )
