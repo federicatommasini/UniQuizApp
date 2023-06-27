@@ -1,5 +1,7 @@
 package com.polimi.dima.uniquizapp
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -28,6 +30,7 @@ import com.polimi.dima.uniquizapp.ui.composables.Subjects
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SetupNavGraph(navController: NavHostController){
 

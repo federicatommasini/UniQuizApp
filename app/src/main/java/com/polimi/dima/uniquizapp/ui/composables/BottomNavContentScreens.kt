@@ -2,16 +2,19 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,19 +26,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.polimi.dima.uniquizapp.BottomNavigationBar
-import com.polimi.dima.uniquizapp.MainActivity
-import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.MainActivity.Companion.getGoogleLoginAuth
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import java.util.*
+
 
 @Composable
 fun Home(navController: NavController, sharedViewModel: SharedViewModel){
@@ -188,22 +188,31 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
     }
 }
 
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
 
     val context = LocalContext.current
+
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            Log.d("data", result.data.toString())
+            Log.d("result1", result.toString())
+            Log.d("result2", result.data?.extras.toString())
+
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
                     Log.d("login result", task.toString())
-                    //handleSignInResult(task)
+                //handleSignInResult(task)
                 }
             }
         }
+
     Scaffold(
         topBar = {AppBar(navController = navController)},
         bottomBar = { BottomNavigationBar(navController = navController) }
@@ -218,9 +227,23 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 text = "Calendar Screen",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
                     .clickable {
-                        startForResult.launch(MainActivity.getGoogleLoginAuth(context)?.signInIntent)
+                        Log.d("ho clickato", "dioc")
+
+                        val googleSignInClient = getGoogleLoginAuth(context)
+                        val signInIntent = googleSignInClient.signInIntent
+                        Log.d(
+                            "intent",
+                            signInIntent.toString()
+                        )
+                        startForResult.launch(signInIntent)
+
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("content://com.android.calendar/time")
+
+                        context.startActivity(intent)
                     },
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
