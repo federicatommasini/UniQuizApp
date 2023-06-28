@@ -2,13 +2,9 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
@@ -16,8 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,14 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -200,14 +191,14 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
 
     val activity = LocalContext.current as MainActivity
-    val signinclass = GoogleSignInActivity()
-    signinclass.initialize(activity)
-    val signInIntent = signinclass.googleSignInClient.signInIntent
+    val signInGoogle = GoogleSignInActivity()
+    signInGoogle.initialize(activity)
+    val signInIntent = signInGoogle.googleSignInClient.signInIntent
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){
             result ->
         if(result.resultCode == Activity.RESULT_OK){
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            signinclass.handleResults(task)
+            signInGoogle.handleResults(task)
             Log.d("TASK_RESULT",task.result.toString())
             Log.d("TASK_TOKEN",task.result.idToken.toString())
             Log.d("TASK_EMAIL",task.result.email.toString())
@@ -233,6 +224,18 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                     .align(Alignment.CenterHorizontally)
                     .clickable {
                         launcher.launch(signInIntent)
+                    },
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+            Text(
+                text = "sign out",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
+                        signInGoogle.googleSignInClient.signOut()
                     },
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
