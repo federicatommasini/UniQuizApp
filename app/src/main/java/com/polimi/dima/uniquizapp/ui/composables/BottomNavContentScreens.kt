@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,9 +34,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.polimi.dima.uniquizapp.BottomNavigationBar
-import com.polimi.dima.uniquizapp.MainActivity.Companion.getGoogleLoginAuth
+import com.polimi.dima.uniquizapp.GoogleSignInActivity
+import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -194,24 +199,21 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 @Composable
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
 
-    val context = LocalContext.current
-
-    val startForResult =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            Log.d("data", result.data.toString())
-            Log.d("result1", result.toString())
-            Log.d("result2", result.data?.extras.toString())
-
-            if (result.resultCode == Activity.RESULT_OK) {
-                val intent = result.data
-                if (result.data != null) {
-                    val task: Task<GoogleSignInAccount> =
-                        GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    Log.d("login result", task.toString())
-                //handleSignInResult(task)
-                }
-            }
+    val activity = LocalContext.current as MainActivity
+    val signinclass = GoogleSignInActivity()
+    signinclass.initialize(activity)
+    val signInIntent = signinclass.googleSignInClient.signInIntent
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            signinclass.handleResults(task)
+            Log.d("TASK_RESULT",task.result.toString())
+            Log.d("TASK_TOKEN",task.result.idToken.toString())
+            Log.d("TASK_EMAIL",task.result.email.toString())
         }
+
+    }
 
     Scaffold(
         topBar = {AppBar(navController = navController)},
@@ -230,20 +232,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable {
-                        Log.d("ho clickato", "dioc")
-
-                        val googleSignInClient = getGoogleLoginAuth(context)
-                        val signInIntent = googleSignInClient.signInIntent
-                        Log.d(
-                            "intent",
-                            signInIntent.toString()
-                        )
-                        startForResult.launch(signInIntent)
-
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("content://com.android.calendar/time")
-
-                        context.startActivity(intent)
+                        launcher.launch(signInIntent)
                     },
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
