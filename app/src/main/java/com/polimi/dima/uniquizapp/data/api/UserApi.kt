@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.data.api
 
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.LoginResponse
+import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.RegistrationRequest
 import com.polimi.dima.uniquizapp.data.model.User
 import retrofit2.Response
@@ -28,4 +29,7 @@ interface UserApi {
     suspend fun register(@Body user: RegistrationRequest): User
     @PUT("/updateProfile/{id}")
     suspend fun update(@Body newPassword: String, @Path("id") number : String ) : User
+
+    @POST("/{userId}/addSubject")
+    suspend fun addSubject(@Body subject : Subject, @Path("userId") userId : String) : User
 }

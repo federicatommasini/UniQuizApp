@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.data.repository
 import com.polimi.dima.uniquizapp.data.api.UserApi
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.LoginResponse
+import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.RegistrationRequest
 import com.polimi.dima.uniquizapp.data.model.User
 import javax.inject.Inject
@@ -30,5 +31,9 @@ class UserRepository @Inject constructor(
 
     suspend fun updateProfile(newPassword: String, userId: String): User {
         return userApi.update(newPassword, userId)
+    }
+
+    suspend fun addSubject(subject : Subject, userId: String) : User {
+        return userApi.addSubject(subject, userId)
     }
 }

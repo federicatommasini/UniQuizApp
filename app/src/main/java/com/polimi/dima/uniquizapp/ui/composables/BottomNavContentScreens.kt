@@ -1,9 +1,9 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.app.Activity
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -120,8 +119,9 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 @Composable
 fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 
-    sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
-    val state by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
+    sharedViewModel.subjectViewModel.getState()
+    val allSubjectState by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
+    val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
     Scaffold(
         topBar = {AppBar(navController = navController)},
@@ -132,7 +132,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                CustomSearchBar(state,navController)
+                CustomSearchBar(allSubjectState,navController)
                 Spacer(modifier = Modifier.padding(15.dp))
                 Text(
                     text = "Your Subjects",
@@ -142,18 +142,13 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
-                val subjectNames = mutableListOf<String>()
-                Log.d("testing", state.toString())
-                if(state[0] != null) {
-                    for (i in state) {
-                        subjectNames.add(i.name)
-                        LazyGrid(
-                            state = mutableStateOf(subjectNames),
-                            type = "subjects",
-                            navController
-                        )
-                    }
-                }
+                /*if(userSubjectState[0] != null) {*/
+                    LazyGrid(
+                        route = "subject_screen/",
+                        navController,
+                        sharedViewModel
+                    )
+                //}
             }
         }
     )
@@ -243,8 +238,5 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
         }
     }
 }
-
-
-
 
 

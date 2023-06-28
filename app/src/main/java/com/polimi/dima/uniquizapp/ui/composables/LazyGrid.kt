@@ -16,18 +16,23 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LazyGrid(state: MutableState<List<String>>, type: String, navController: NavController) {
+fun LazyGrid(route: String, navController: NavController, sharedViewModel: SharedViewModel) {
 
-    var route = "subject_screen/"
-    //if(type.equals("subjects"))
+    sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
+    val subjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
+
     LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(
             start = 12.dp,
@@ -37,9 +42,9 @@ fun LazyGrid(state: MutableState<List<String>>, type: String, navController: Nav
         ),
         modifier = Modifier.background(Color.White),
         content = {
-            items(state.value){ item ->
+            items(subjectState){ item ->
                 Card(
-                    onClick = { navController.navigate(route = route + item) },
+                    onClick = { navController.navigate(route = route + item.id) },
                     shape = RoundedCornerShape(30),
                     backgroundColor = customLightGray,
                     modifier = Modifier
@@ -48,7 +53,10 @@ fun LazyGrid(state: MutableState<List<String>>, type: String, navController: Nav
                         .width(100.dp)
                 ){
                     Box() {
-                        Text(text = item, textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
+                        Text(text = item.name,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }

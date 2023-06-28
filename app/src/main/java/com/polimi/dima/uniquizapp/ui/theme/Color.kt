@@ -13,4 +13,5 @@ val grayBackground = Color(255,255, 254,0xFF)
 val customizedBlue = Color(14, 120, 134, 0xFF)
 val customLightGray = Color(0xFFEBECF0)
 val primaryColor = customizedBlue
+val secondaryColor = Color(0xFFE7C27D)
 

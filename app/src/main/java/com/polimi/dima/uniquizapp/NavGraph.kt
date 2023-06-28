@@ -25,6 +25,7 @@ import androidx.navigation.navArgument
 import com.polimi.dima.uniquizapp.ui.composables.Calendar
 import com.polimi.dima.uniquizapp.ui.composables.Groups
 import com.polimi.dima.uniquizapp.ui.composables.Home
+import com.polimi.dima.uniquizapp.ui.composables.Pdf
 import com.polimi.dima.uniquizapp.ui.composables.SubjectScreen
 import com.polimi.dima.uniquizapp.ui.composables.Subjects
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
@@ -71,9 +72,11 @@ fun SetupNavGraph(navController: NavHostController){
         composable(Screen.SubjectScreen.route, arguments = listOf(navArgument("subjectId"){
             type = NavType.StringType
         })) {
-            SubjectScreen(navController = navController,it.arguments?.getString("subjectId"))
+            SubjectScreen(navController = navController,it.arguments?.getString("subjectId"), sharedViewModel)
         }
-
+        composable(Screen.Pdf.route){
+            Pdf(navController = navController, sharedViewModel)
+        }
     }
 }
 

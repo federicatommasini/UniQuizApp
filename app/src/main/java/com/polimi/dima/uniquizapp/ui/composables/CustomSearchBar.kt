@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -76,25 +77,25 @@ fun CustomSearchBar(items : List<Subject>, navController: NavController){
 @Composable
 fun ItemList(text : String, items : List<Subject>, navController: NavController) {
     //val items by remember { mutableStateOf(listOf("Software Engineering", "Database", "DistributedSystems")) }
-    var filteredItems: List<String>
+    var filteredItems: List<Subject>
     LazyColumn(modifier = Modifier.fillMaxWidth(0.9f)) {
         val searchedText = text
         filteredItems = if (searchedText.isEmpty()) {
             listOf()
         } else {
-            val resultList = ArrayList<String>()
+            val resultList = ArrayList<Subject>()
             for (item in items) {
                 if (item.name.lowercase(Locale.getDefault()).startsWith(searchedText.lowercase(Locale.getDefault())) //.contains(searchedText.lowercase(Locale.getDefault()))
                 ) {
-                    resultList.add(item.name)
+                    resultList.add(item)
                 }
             }
             resultList
         }
         items(filteredItems) { filteredItem ->
             ItemListItem(
-                ItemText = filteredItem,
-                onItemClick = {navController.navigate(route = "subject_screen/" + filteredItem)                }
+                ItemText = filteredItem.name,
+                onItemClick = {navController.navigate(route = "subject_screen/" + filteredItem.id)                }
             )
         }
 
@@ -110,6 +111,9 @@ fun ItemListItem(ItemText: String, onItemClick: (String) -> Unit) {
             .fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.fillMaxWidth(0.1f))
-        Text(text = ItemText, fontSize = 18.sp, color = customizedBlue , modifier = Modifier.fillMaxWidth(0.9f))
+        Text(text = ItemText,
+            fontSize = 18.sp,
+            color = customizedBlue ,
+            modifier = Modifier.fillMaxWidth(0.9f).align(Alignment.CenterVertically))
     }
 }
