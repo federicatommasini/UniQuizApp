@@ -64,5 +64,14 @@ class SubjectViewModel @Inject constructor(
         return subject
     }
 
+    fun getDocumentUrls(subjectId : String) : List<String>?{
+        var urls : List<String>? = null
+        viewModelScope.launch {
+            val response = runBlocking { subjectRepo.getDocumentUrls(subjectId) }
+            urls = response
+        }
+        return urls
+    }
+
 
 }

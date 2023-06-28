@@ -24,6 +24,7 @@ class SharedViewModel : ViewModel() {
     private val subjectApi = ApiModule.provideSubjectApi(ApiModule.provideRetrofit())
     private val subjectRepo = SubjectRepository(subjectApi)
     val subjectViewModel = SubjectViewModel(subjectRepo)
+    var documentUrl by mutableStateOf<String?>(null)
 
     private val quizApi = ApiModule.provideQuizApi(ApiModule.provideRetrofit())
     private val quizRepo = QuizRepository(quizApi)
@@ -33,5 +34,9 @@ class SharedViewModel : ViewModel() {
 
     fun addUser(newUser : User){
         user = newUser
+    }
+
+    fun addUrl(newUrl: String){
+        documentUrl = newUrl
     }
 }

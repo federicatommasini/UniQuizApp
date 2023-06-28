@@ -1,11 +1,9 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
-import android.graphics.Bitmap
 import com.polimi.dima.uniquizapp.R.raw
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -37,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +55,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
     val subject = sharedViewModel.subjectViewModel.getSubjectById(subjectId!!)
+    val urls = sharedViewModel.subjectViewModel.getDocumentUrls(subjectId!!)
     var present : Boolean = false
     sharedViewModel.quizViewModel.getAll(subject!!.id)
     val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
@@ -88,7 +84,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
             for( s in userSubjectState)
                 if(s.equals(subject))
                     present = true;
-            /*OutlinedButton(onClick = { /*TODO*/ },
+            /*OutlinedButton(onClick = { },
                 modifier= Modifier.size(50.dp),  //avoid the oval shape
                 shape = CircleShape,
                 border= BorderStroke(1.dp, Color.Blue),
@@ -150,8 +146,6 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                 navController = navController
             )
         else {
-            val fields: Array<Field> =  raw::class.java.fields
-            val state = fields.toList()
             var counter = 0
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 250.dp),
@@ -162,39 +156,47 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                     bottom = 70.dp),
                 modifier = Modifier.background(Color.White),
                 content = {
-                    items(state){ item ->
-                        Row(){
-                            Image(painter = painterResource(id = R.drawable.pdf_icon),
-                                contentDescription = "pdf",
-                                contentScale = ContentScale.FillWidth,
-                                modifier = Modifier.fillMaxSize(0.2f)
-                            )
-                            Text(
-                                text = item.name,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold ,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.CenterVertically).clickable {
-                                    navController.navigate("pdf/" + item.getInt(null))}
-                            )
+                    if(urls != null)
+                        items(urls){ item ->
+                            Row(){
+                                Image(painter = painterResource(id = R.drawable.pdf_icon),
+                                    contentDescription = "pdf",
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier.fillMaxSize(0.2f)
+                                )
+                                val separated = item.split("/").toTypedArray()
+                                var text = separated[separated.size-1]
+                                text = text.split(".pdf").toTypedArray()[0]
+                                text = text.replace("%20", " ")
+                                Log.d("text", text)
+                                Text(
+                                    text = text,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold ,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.CenterVertically).clickable {
+                                        sharedViewModel.addUrl(item)
+                                        navController.navigate("pdf")
+                                    }
+                                )
+                            }
+                            if(counter>0 && counter <= urls.size){
+                                Spacer(modifier = Modifier.padding(10.dp))
+                                Divider(color = customLightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
+                                Spacer(modifier = Modifier.padding(10.dp))
+                            }
+                            counter +=1
                         }
-                        if(counter>0 && counter <= state.size){
-                            Spacer(modifier = Modifier.padding(10.dp))
-                            Divider(color = customLightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
-                            Spacer(modifier = Modifier.padding(10.dp))
-                        }
-                        counter +=1
-                    }
             })
 
     }}}
 
 
 @Composable
-fun Pdf(navController: NavController, id: Int?){
+fun Pdf(navController: NavController, sharedViewModel: SharedViewModel){
+    val url = sharedViewModel.documentUrl!!
     val pdfState = rememberVerticalPdfReaderState(
-        resource = ResourceType.Remote("https://uvejzsepcmqpowatjgyy.supabase.co/storage/v1/object/public/pdf%20files/computing_infrastructures/02_Lesson_2_DataWareHouse.pdf?t=2023-06-26T15%3A52%3A52.639Z"),
-        // .Remote("https://myreport.altervista.org/Lorem_Ipsum.pdf"),
+        resource = ResourceType.Remote(url),
         isZoomEnable = true
     )
     VerticalPDFReader(

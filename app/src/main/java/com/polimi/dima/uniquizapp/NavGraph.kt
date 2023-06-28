@@ -71,12 +71,9 @@ fun SetupNavGraph(navController: NavHostController){
         })) {
             SubjectScreen(navController = navController,it.arguments?.getString("subjectId"), sharedViewModel)
         }
-        composable(Screen.Pdf.route, arguments = listOf(navArgument("id"){
-            type = NavType.IntType
-        })) {
-            Pdf(navController = navController,it.arguments?.getInt("id"))
+        composable(Screen.Pdf.route){
+            Pdf(navController = navController, sharedViewModel)
         }
-
     }
 }
 

@@ -14,4 +14,7 @@ interface SubjectApi {
 
     @GET("/subjectById/{subjectId}")
     suspend fun getSubjectById(@Path("subjectId") id : String) : Subject
+
+    @GET("/documents/{subjectId}")
+    suspend fun getDocumentUrls(@Path("subjectId") id : String) : List<String>
 }
