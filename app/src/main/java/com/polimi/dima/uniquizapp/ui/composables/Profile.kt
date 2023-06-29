@@ -177,121 +177,15 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             ProfileImage(user)
         }
         CustomSpacer()
-        //ProfileTextField(field = username, nameField = "Username", colors = customizedColors, enabled = false)
-        //CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "First Name", modifier = Modifier.width(100.dp))
-            TextField(
-                value = firstName,
-                onValueChange = { firstName = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = false
-            )
-        }
+        ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
         CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Last Name", modifier = Modifier.width(100.dp))
-            TextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = false
-            )
-        }
+        ProfileTextField(field = lastName, nameField = "Last Name", colors = customizedColors)
         CustomSpacer()
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
-            TextField(
-                value = username,
-                onValueChange = { username = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = false
-            )
-        }
+        ProfileTextField(field = username, nameField = "Username", colors = customizedColors)
         CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            Text(text = "University", modifier = Modifier.width(100.dp))
-            TextField(
-                value = university,
-                onValueChange = { university = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp))
-                    .border(0.dp, Color.Transparent, RoundedCornerShape(20.dp)), //does not work
-                enabled = false
-            )
-        }
+        ProfileTextField(field = university, nameField = "University", colors = customizedColors)
         CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            Text(text = "Email", modifier = Modifier.width(100.dp))
-            TextField(
-                value = email,
-                onValueChange = { email = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                enabled = false
-            )
-        }
+        ProfileTextField(field = email, nameField = "Email", colors = customizedColors)
         CustomSpacer()
         Row(
             modifier = Modifier
@@ -493,7 +387,7 @@ fun FullImage(
 }
 
 @Composable
-fun ProfileTextField(field: MutableState<String>, nameField: String, colors: TextFieldColors, enabled: Boolean){
+fun ProfileTextField(field: String, nameField: String, colors: TextFieldColors){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -504,8 +398,8 @@ fun ProfileTextField(field: MutableState<String>, nameField: String, colors: Tex
     {
         Text(text = nameField, modifier = Modifier.width(100.dp))
         TextField(
-            value = field.value,
-            onValueChange = { field.value = it },
+            value = field,
+            onValueChange = {},
             colors = colors,
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
