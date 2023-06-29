@@ -14,6 +14,7 @@ data class User(
     var universityId: String,
     val subjectIds: List<String>,
     val exams: List<String>,
-    val schedules: List<String>
+    val schedules: List<String>,
+    val profilePicUrl: String
 ) : Parcelable {
 }

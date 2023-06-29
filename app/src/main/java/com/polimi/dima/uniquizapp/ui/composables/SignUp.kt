@@ -158,7 +158,6 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     keyboardActions = KeyboardActions(onDone = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        //context.doLogin()
                     }),
                     focusRequester = confirmPasswordFocusRequester)
                 CustomSpacer()

@@ -56,6 +56,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val uniViewModel = sharedViewModel.uniViewModel
     var user = sharedViewModel.user
+    Log.d("USER", user.toString())
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
     /*val notification = rememberSaveable { mutableStateOf("") }
@@ -282,14 +283,22 @@ fun ProfileImage(user: User?) {
             uri: Uri? -> uri?.let { imageUri.value = it.toString() }
     }
 
+    val profilePic : String = user!!.profilePicUrl
+    //Log.d("user", user.toString())
+
+    //Log.d("PIC", profilePic.toString())
+
     var showDialog by remember { mutableStateOf(false) }
 
+    val test = "https://uvejzsepcmqpowatjgyy.supabase.co/storage/v1/object/sign/profile%20images/IMG20221015184902.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwcm9maWxlIGltYWdlcy9JTUcyMDIyMTAxNTE4NDkwMi5qcGciLCJpYXQiOjE2ODgwNTAyNDAsImV4cCI6MTcxOTU4NjI0MH0.cng7K60K58OUYkbrNRrXHDZRuCv3bNT8hngMI3eYMHI&t=2023-06-29T14%3A50%3A40.824Z"
     val painter = rememberImagePainter(
         if(imageUri.value.isEmpty()){
-            R.drawable.ic_user
+            //R.drawable.ic_user
+            profilePic
         }
         else{
             imageUri.value
+            Log.d("IMAGE", imageUri.value)
         }
     )
 

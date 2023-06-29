@@ -56,7 +56,6 @@ class UserViewModel @Inject constructor(
     }
 
     fun updateProfile(newPassword: String, userId: String) : User? {
-        Log.d("View", newPassword.toString())
         viewModelScope.launch {
             var response = runBlocking { userRepo.updateProfile(newPassword, userId) }
             _loginState.value = response
