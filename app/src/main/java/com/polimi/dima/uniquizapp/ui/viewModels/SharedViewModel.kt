@@ -39,4 +39,8 @@ class SharedViewModel : ViewModel() {
     fun addUrl(newUrl: String){
         documentUrl = newUrl
     }
+
+    fun logout(){
+        user = null
+    }
 }

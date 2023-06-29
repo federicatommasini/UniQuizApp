@@ -37,6 +37,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
+
     val rememberedUserViewModel = remember { sharedViewModel.userViewModel }
 
     val emailValue = remember { mutableStateOf("") }
@@ -76,7 +77,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     color = customizedBlue,
                     style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
                 )
-                Image(painter = painterResource(id = R.drawable.exam), contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.logo), contentDescription = "")
             }
         }
         Column(
@@ -112,7 +113,8 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
                 Button(
                     onClick = {
-                        //Log.d("request", emailValue.value + " "+ passwordValue.value)
+                        sharedViewModel.logout()
+                        Log.d("request", emailValue.value + " "+ passwordValue.value)
                         val loginReq = LoginRequest(emailValue.value,passwordValue.value)
                         val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
                         if (user != null){

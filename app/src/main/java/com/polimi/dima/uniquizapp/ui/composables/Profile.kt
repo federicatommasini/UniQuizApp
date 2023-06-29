@@ -15,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,7 +39,10 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.polimi.dima.uniquizapp.BottomNavItem
+import com.polimi.dima.uniquizapp.GoogleSignInActivity
+import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
@@ -54,7 +58,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
-    var notification = rememberSaveable { mutableStateOf("") }
+    val notification = rememberSaveable { mutableStateOf("") }
 
     if (notification.value.isNotEmpty()) {
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
@@ -140,6 +144,41 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 2.sp
                         )
+                    )
+                    IconButton(
+                        onClick = {
+                            //add pop up "are you sure you wanna exit?"
+
+
+                            //navController.popBackStack() figure out why this was needed or not
+                            val activity = context as MainActivity
+                            val signInGoogle = GoogleSignInActivity()
+                            signInGoogle.initialize(activity)
+                            signInGoogle.googleSignInClient.signOut()
+
+                            navController.navigate(route = Screen.Login.route){
+                                popUpTo(route = Screen.Login.route) //i dont know if this is correct
+                                {
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(0.dp)
+                            .align(Alignment.TopEnd),
+                        content = {
+                            Icon(
+                                Icons.Default.Logout,
+                                contentDescription = "Logout Icon",
+                                tint = Color.Black,
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .align(Alignment.TopEnd)
+                                    .background(Color.Transparent, CircleShape)
+                                    .padding(4.dp)
+                            )
+                        }
                     )
                 }
             }
