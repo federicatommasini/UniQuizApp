@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.net.UnknownServiceException
 import javax.inject.Inject
 
 
@@ -55,11 +55,13 @@ class UserViewModel @Inject constructor(
         else return _loginState.value
     }
 
-    fun updateProfile(newPassword : String, userId : String) {
+    fun updateProfile(newPassword: String, userId: String) : User? {
+        Log.d("View", newPassword.toString())
         viewModelScope.launch {
             var response = runBlocking { userRepo.updateProfile(newPassword, userId) }
             _loginState.value = response
         }
+        return _loginState.value
     }
 
     fun register(user: RegistrationRequest) : User? {

@@ -3,7 +3,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -55,7 +55,7 @@ import kotlinx.coroutines.runBlocking
 fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val uniViewModel = sharedViewModel.uniViewModel
-    val user = sharedViewModel.user
+    var user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
     /*val notification = rememberSaveable { mutableStateOf("") }
@@ -198,7 +198,8 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Text(text = "Password", modifier = Modifier.width(100.dp))
             TextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { password = it
+                                Log.d("IT", it)},
                 colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -251,8 +252,13 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
         {
             Button(
                 onClick = {
+                    if(isEditable){
+                        //var passwordWrapper = StringWrapper(password)
+                        runBlocking { user = sharedViewModel.userViewModel.updateProfile(password, user!!.id) }
+                        user?.let { sharedViewModel.addUser(it) }
+                    }
                     isEditable = !isEditable
-                    runBlocking { sharedViewModel.userViewModel.updateProfile(password, user!!.id)}
+                    Log.d("PASS", password)
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
