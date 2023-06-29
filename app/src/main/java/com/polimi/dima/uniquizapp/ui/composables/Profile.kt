@@ -58,11 +58,17 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
-    val notification = rememberSaveable { mutableStateOf("") }
+    /*val notification = rememberSaveable { mutableStateOf("") }
 
     if (notification.value.isNotEmpty()) {
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
+    }*/
+
+    var showAlert by remember {mutableStateOf(false)}
+
+    if(showAlert){
+        alertDialogLogout(navController)
     }
 
     var isEditable by remember { mutableStateOf(false) }
@@ -79,7 +85,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
-     val customizedColors = TextFieldDefaults.textFieldColors(
+    val customizedColors = TextFieldDefaults.textFieldColors(
             unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent)
@@ -147,21 +153,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     )
                     IconButton(
                         onClick = {
-                            //add pop up "are you sure you wanna exit?"
-
-
-                            //navController.popBackStack() figure out why this was needed or not
-                            val activity = context as MainActivity
-                            val signInGoogle = GoogleSignInActivity()
-                            signInGoogle.initialize(activity)
-                            signInGoogle.googleSignInClient.signOut()
-
-                            navController.navigate(route = Screen.Login.route){
-                                popUpTo(route = Screen.Login.route) //i dont know if this is correct
-                                {
-                                    inclusive = true
-                                }
-                            }
+                            showAlert = true
                         },
                         modifier = Modifier
                             .size(40.dp)
@@ -354,7 +346,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             )
         }
         CustomSpacer()
-
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
@@ -367,9 +358,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Button(
                 onClick = {
                     isEditable = !isEditable
-
                     runBlocking { sharedViewModel.userViewModel.updateProfile(password, user!!.id)}
-
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
@@ -528,5 +517,50 @@ fun ProfileTextField(field: MutableState<String>, nameField: String, colors: Tex
         )
     }
 }
+
+@Composable
+fun alertDialogLogout(navController: NavController){
+
+    val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(true) }
+
+    if (openDialog.value){
+        AlertDialog(
+            onDismissRequest = { openDialog.value = false },
+            title = { Text(text = "AlertDialog", color = Color.Black)},
+            text = {Text(text = "Are you sure you want to log out?", color = Color.Black)},
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        val activity = context as MainActivity
+                        val signInGoogle = GoogleSignInActivity()
+                        signInGoogle.initialize(activity)
+                        signInGoogle.googleSignInClient.signOut()
+
+                        navController.navigate(route = Screen.Login.route){
+                            popUpTo(route = Screen.Login.route) //i dont know if this is correct
+                            {
+                                inclusive = true
+                            }
+                        }
+                    }) {
+                    Text(text = "Confirm", color = Color.Black)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }) {
+                    Text(text = "Cancel", color = Color.Black)
+                }
+            },
+            backgroundColor = grayBackground,
+            shape = RoundedCornerShape(20.dp)
+        )
+    }
+}
+
 
 
