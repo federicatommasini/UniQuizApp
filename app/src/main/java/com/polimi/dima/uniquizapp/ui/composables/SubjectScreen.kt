@@ -41,11 +41,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
 
     sharedViewModel.quizViewModel.getAll(subject!!.id)
     val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
-    /*val pdfState = rememberVerticalPdfReaderState(
-        resource = ResourceType.Remote("https://myreport.altervista.org/Lorem_Ipsum.pdf"),
-        isZoomEnable = true
-    )
-*/
+
     Scaffold(
         topBar = {AppBar(navController = navController)}
     ){padding ->
@@ -55,7 +51,6 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                 .padding(padding)
                 .background(Color.White)
         ){
-            Log.d("pre sbject bar", subjectId!!)
             SubjectBar(subjectId = subjectId!!, sharedViewModel = sharedViewModel, navController= navController)
 
 
@@ -69,21 +64,6 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                 textAlign = TextAlign.Center,
                 fontSize = 25.sp
             )
-
-            /*VerticalPDFReader(
-                state = pdfState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Gray)
-            )
-
-            if(subjectQuizzes[0] != null) {
-                ArgumentsGrid(
-                    state = mutableStateOf(subjectQuizzes),
-                    route = "",
-                    navController = navController
-                )
-            }*/
         }
     }
 }
