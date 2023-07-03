@@ -152,7 +152,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                 ArgumentsGrid(
                     subject = subject,
                     sharedViewModel = sharedViewModel,
-                    route = "",
+                    route = "quiz/",
                     navController = navController
                 )
                 FloatingActionButtons()

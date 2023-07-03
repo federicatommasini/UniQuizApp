@@ -31,4 +31,12 @@ class QuizViewModel @Inject constructor(
         }
         return allQuizzesState.value
     }
+    fun getQuizById(quizId : String) : Quiz?{
+        var quiz : Quiz? = null
+        viewModelScope.launch{
+            val response = runBlocking { quizRepo.getQuizById(quizId) }
+            quiz = response
+        }
+        return quiz
+    }
 }

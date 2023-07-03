@@ -72,7 +72,7 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
         content = {
             items(state){ item ->
                 Card(
-                    onClick = { /*navController.navigate(route = route + item.id)*/ },
+                    onClick = { navController.navigate(route = route + item.id + "/"+0) },
                     backgroundColor = Color.White,
                     border = BorderStroke(1.dp, customLightGray),
                     modifier = Modifier

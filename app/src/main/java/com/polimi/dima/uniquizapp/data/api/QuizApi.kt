@@ -9,4 +9,8 @@ interface QuizApi {
 
     @GET("/quizzes/{subjectId}")
     suspend fun getQuizzesBySubject(@Path("subjectId") id : String) : List<Quiz>
+
+    @GET("/quizById/{quizId}")
+    suspend fun getQuizById(@Path("quizId") id : String) : Quiz?
+
 }

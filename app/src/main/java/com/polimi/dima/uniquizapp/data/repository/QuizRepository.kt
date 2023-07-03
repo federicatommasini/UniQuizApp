@@ -10,4 +10,8 @@ class QuizRepository @Inject constructor(
     suspend fun getQuizzesBySubject(subjectId : String): List<Quiz> {
         return quizApi.getQuizzesBySubject(subjectId)
     }
+
+    suspend fun getQuizById(quizId : String): Quiz? {
+        return quizApi.getQuizById(quizId)
+    }
 }
