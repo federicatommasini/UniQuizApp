@@ -115,7 +115,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     onClick = {
                         sharedViewModel.logout()
                         Log.d("request", emailValue.value + " "+ passwordValue.value)
-                        val loginReq = LoginRequest(emailValue.value,passwordValue.value)
+                        val loginReq = LoginRequest(emailValue.value, passwordValue.value)
                         val user =  runBlocking {rememberedUserViewModel.login(loginReq)}
                         if (user != null){
                             message.value = ""

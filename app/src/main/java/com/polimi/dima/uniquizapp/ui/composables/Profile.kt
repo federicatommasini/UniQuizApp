@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,7 +9,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
@@ -58,10 +59,6 @@ import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
-import kotlinx.coroutines.runBlocking
-import java.io.File
-import android.Manifest
-import com.google.accompanist.permissions.isGranted
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.GoTrue
@@ -69,6 +66,8 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.File
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -77,18 +76,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val uniViewModel = sharedViewModel.uniViewModel
     var user = sharedViewModel.user
-    Log.d("USER", user.toString())
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
 
-    /*val notification = rememberSaveable { mutableStateOf("") }
-
-    if (notification.value.isNotEmpty()) {
-        Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
-        notification.value = ""
-    }*/
-
     var showAlert by remember {mutableStateOf(false)}
-
     if(showAlert){
         alertDialogLogout(navController)
     }
@@ -101,8 +91,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     var university by rememberSaveable { mutableStateOf(universityFromUser!!.name) }
     var password by rememberSaveable { mutableStateOf(user!!.password) }
     var email by rememberSaveable { mutableStateOf(user!!.email) }
-
-    //var imageUri by remember { mutableStateOf<Uri?>(null) }
     val passwordVisibility = remember { mutableStateOf(false) }
 
     val customizedColors = TextFieldDefaults.textFieldColors(
@@ -136,9 +124,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                 Box(modifier = Modifier.fillMaxWidth()){
                     IconButton(
                         onClick = {
-                            //navController.popBackStack()  //figure out why this was needed or not
+                            //navController.popBackStack()  //figure out if it is possible to come back to a different screen than home
                             navController.navigate(BottomNavItem.Home.screen_route){
-                                popUpTo(BottomNavItem.Home.screen_route) //i dont know if this is correct
+                                popUpTo(BottomNavItem.Home.screen_route)
                                 {
                                     inclusive = true
                                 }
@@ -245,9 +233,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                         }
                     } else {
                         IconButton(
-                            onClick = {
-                                passwordVisibility.value = true
-                            },
+                            onClick = { passwordVisibility.value = true  },
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.visibility_off),
@@ -272,18 +258,27 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Button(
                 onClick = {
                     if(isEditable){
-                        //var passwordWrapper = StringWrapper(password)
-                        runBlocking { user = sharedViewModel.userViewModel.updateProfile(password, user!!.id) }
+                        var updatedUser = User(
+                            user!!.id,
+                            user!!.username,
+                            user!!.email,
+                            password,
+                            user!!.firstName,
+                            user!!.lastName,
+                            user!!.universityId,
+                            user!!.subjectIds,
+                            user!!.exams,
+                            user!!.schedules,
+                            user!!.profilePicUrl)
+                        runBlocking { user = sharedViewModel.userViewModel.updateProfile(updatedUser, user!!.id) }
                         user?.let { sharedViewModel.addUser(it) }
                     }
                     isEditable = !isEditable
-                    Log.d("PASS", password)
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                 shape = RoundedCornerShape(20.dp),
                 content = {
                     Text(text = if (isEditable) "Save" else "Edit", color = whiteBackground)
-                    // Use the isEditable state variable to control the enabled/disabled state of the fields
                 }
             )
         }
@@ -296,7 +291,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-
     val permissionState = rememberPermissionState(
         permission = Manifest.permission.READ_EXTERNAL_STORAGE
     )
@@ -319,6 +313,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
     )
 
     var showDialog by remember { mutableStateOf(false) }
+    var onlyOnce by remember { mutableStateOf(true) }
 
     Column(modifier = Modifier
         .padding(5.dp)
@@ -357,8 +352,10 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
                         }
-                        uploadImage(filePath!!)
-                        //sharedViewModel.userViewModel.uploadProfileIcon(uploadImage(filePath!!), user.id)
+                        if(onlyOnce) {
+                            uploadImage(filePath!!, sharedViewModel)
+                            onlyOnce = false
+                        }
                     }
                 } else{
                     Image(
@@ -498,7 +495,6 @@ fun alertDialogLogout(navController: NavController){
                         val signInGoogle = GoogleSignInActivity()
                         signInGoogle.initialize(activity)
                         signInGoogle.googleSignInClient.signOut()
-
                         navController.navigate(route = Screen.Login.route){
                             popUpTo(route = Screen.Login.route) //i dont know if this is correct
                             {
@@ -525,7 +521,7 @@ fun alertDialogLogout(navController: NavController){
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun uploadImage(imagePath : String){
+fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
 
     val supabaseUrl = "https://uvejzsepcmqpowatjgyy.supabase.co"
     val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWp6c2VwY21xcG93YXRqZ3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODc3OTQ0NzAsImV4cCI6MjAwMzM3MDQ3MH0.rqvQIxzUQGLONY8OIALZeUuSLwv42XaK0VGTGbs3oYc"
@@ -533,16 +529,14 @@ fun uploadImage(imagePath : String){
 
     val file = File(imagePath)
     val byteArray = file.readBytes()
-    val url = ""
 
     val client = createSupabaseClient(supabaseUrl, supabaseKey) {
         install(Storage)
         install(GoTrue)
     }
-
     val lifecycleCoroutineScope = rememberCoroutineScope()
     lifecycleCoroutineScope.launch(Dispatchers.IO) {
-        uploadToSupabase(client, file.name, byteArray, bucketName)
+        uploadToSupabase(client, file.name, byteArray, bucketName, sharedViewModel)
     }
 }
 fun hasPermission(context: Context, permission: String): Boolean {
@@ -552,11 +546,31 @@ fun hasPermission(context: Context, permission: String): Boolean {
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String) {
+suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
     client.storage[bucketName].upload(fileName, byteArray, false)
     val url = client.storage[bucketName].publicUrl(fileName)
-    Log.d("URL", url)
+    runBlocking { saveItToDb(sharedViewModel, url) }
+}
 
+fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
+    var oldUser = sharedViewModel.user
+    var justUpdatedUser : User?
+    var userToUpdate = User(
+        oldUser!!.id,
+        oldUser!!.username,
+        oldUser!!.email,
+        oldUser!!.password,
+        oldUser!!.firstName,
+        oldUser!!.lastName,
+        oldUser!!.universityId,
+        oldUser!!.subjectIds,
+        oldUser!!.exams,
+        oldUser!!.schedules,
+        url!!)
+    runBlocking {
+        justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
+    }
+    justUpdatedUser?.let { sharedViewModel.addUser(it) }
 }
 
 

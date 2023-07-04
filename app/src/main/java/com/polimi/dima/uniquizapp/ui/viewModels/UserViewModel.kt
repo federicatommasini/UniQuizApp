@@ -54,9 +54,9 @@ class UserViewModel @Inject constructor(
         else return _loginState.value
     }
 
-    fun updateProfile(newPassword: String, userId: String) : User? {
+    fun updateProfile(user : User, userId: String) : User? {
         viewModelScope.launch {
-            var response = runBlocking { userRepo.updateProfile(newPassword, userId) }
+            var response = runBlocking { userRepo.updateProfile(user, userId) }
             _loginState.value = response
         }
         return _loginState.value
@@ -80,9 +80,9 @@ class UserViewModel @Inject constructor(
         return user!!
     }
 
-    fun uploadProfileIcon(iconUrl : String, userId: String) : User? {
+    fun uploadProfileIcon(user: User, userId: String) : User? {
         viewModelScope.launch {
-            var response = runBlocking { userRepo.uploadProfileIcon(iconUrl, userId) }
+            var response = runBlocking { userRepo.uploadProfileIcon(user, userId) }
             _loginState.value = response
         }
         return _loginState.value
