@@ -79,4 +79,12 @@ class UserViewModel @Inject constructor(
         }
         return user!!
     }
+
+    fun uploadProfileIcon(iconUrl : String, userId: String) : User? {
+        viewModelScope.launch {
+            var response = runBlocking { userRepo.uploadProfileIcon(iconUrl, userId) }
+            _loginState.value = response
+        }
+        return _loginState.value
+    }
 }

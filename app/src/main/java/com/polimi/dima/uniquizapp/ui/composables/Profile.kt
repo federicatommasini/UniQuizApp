@@ -3,7 +3,6 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -107,7 +106,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val passwordVisibility = remember { mutableStateOf(false) }
 
     val customizedColors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent)
 
@@ -195,7 +194,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     )
                 }
             }
-            ProfileImage(user)
+            ProfileImage(user, sharedViewModel)
         }
         CustomSpacer()
         ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
@@ -294,7 +293,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ProfileImage(user: User?) {
+fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -359,6 +358,7 @@ fun ProfileImage(user: User?) {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
                         }
                         uploadImage(filePath!!)
+                        //sharedViewModel.userViewModel.uploadProfileIcon(uploadImage(filePath!!), user.id)
                     }
                 } else{
                     Image(
@@ -527,43 +527,24 @@ fun alertDialogLogout(navController: NavController){
 @Composable
 fun uploadImage(imagePath : String){
 
-                //, fileName : String){
-
     val supabaseUrl = "https://uvejzsepcmqpowatjgyy.supabase.co"
     val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWp6c2VwY21xcG93YXRqZ3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODc3OTQ0NzAsImV4cCI6MjAwMzM3MDQ3MH0.rqvQIxzUQGLONY8OIALZeUuSLwv42XaK0VGTGbs3oYc"
     val bucketName = "profileImages" // Il nome del tuo bucket Supabase
 
     val file = File(imagePath)
+    val byteArray = file.readBytes()
+    val url = ""
 
     val client = createSupabaseClient(supabaseUrl, supabaseKey) {
         install(Storage)
         install(GoTrue)
     }
 
-    val byteArray = file.readBytes()
-
     val lifecycleCoroutineScope = rememberCoroutineScope()
     lifecycleCoroutineScope.launch(Dispatchers.IO) {
         uploadToSupabase(client, file.name, byteArray, bucketName)
     }
-
-
 }
-
-private fun getNameImage(contentURI: Uri, context: Context) : String? {
-    var thePath = "no-path-found"
-    val filePathColumn = arrayOf(MediaStore.Images.Media.DISPLAY_NAME)
-    val cursor: Cursor? = context.contentResolver.query(contentURI, filePathColumn, null, null, null)
-    if (cursor != null) {
-        if (cursor.moveToFirst()) {
-            val columnIndex = cursor?.getColumnIndex(filePathColumn[0])
-            thePath = columnIndex?.let { cursor.getString(it) }.toString()
-        }
-    }
-    cursor?.close()
-    return thePath
-}
-
 fun hasPermission(context: Context, permission: String): Boolean {
     return ContextCompat.checkSelfPermission(
         context,
@@ -571,11 +552,11 @@ fun hasPermission(context: Context, permission: String): Boolean {
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-
-suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String){
+suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String) {
     client.storage[bucketName].upload(fileName, byteArray, false)
     val url = client.storage[bucketName].publicUrl(fileName)
     Log.d("URL", url)
+
 }
 
 

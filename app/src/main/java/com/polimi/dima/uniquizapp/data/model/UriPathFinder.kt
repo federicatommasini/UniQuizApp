@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.util.Log
 
 class UriPathFinder {
 
@@ -69,7 +68,6 @@ class UriPathFinder {
             cursor =
                  context.contentResolver.query(uri!!, projection, selection, selectionArgs, null)
             if (cursor != null) {
-                Log.d("CURSORPOS", cursor.moveToFirst().toString())
             }
             if (cursor != null && cursor.moveToFirst()) {
                 val columnIndex: Int = cursor.getColumnIndexOrThrow(column)
