@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
@@ -80,5 +79,4 @@ class UserViewModel @Inject constructor(
         }
         return user!!
     }
-
 }

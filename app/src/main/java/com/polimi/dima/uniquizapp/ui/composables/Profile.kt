@@ -1,8 +1,14 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,20 +42,35 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.model.UriPathFinder
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.runBlocking
+import java.io.File
+import android.Manifest
+import com.google.accompanist.permissions.isGranted
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.gotrue.GoTrue
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -83,8 +105,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 
     //var imageUri by remember { mutableStateOf<Uri?>(null) }
     val passwordVisibility = remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     val customizedColors = TextFieldDefaults.textFieldColors(
             unfocusedIndicatorColor = Color.Transparent,
@@ -199,8 +219,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
             Text(text = "Password", modifier = Modifier.width(100.dp))
             TextField(
                 value = password,
-                onValueChange = { password = it
-                                Log.d("IT", it)},
+                onValueChange = { password = it },
                 colors = customizedColors,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -272,35 +291,35 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     }
 }
 
-
-
-@OptIn(ExperimentalCoilApi::class)
+@SuppressLint("SuspiciousIndentation")
+@OptIn(ExperimentalCoilApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileImage(user: User?) {
 
-    val imageUri = rememberSaveable { mutableStateOf("") }
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
-            uri: Uri? -> uri?.let { imageUri.value = it.toString() }
-    }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    val permissionState = rememberPermissionState(
+        permission = Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { imageUri = it })
+
+    SideEffect { permissionState.launchPermissionRequest() }
+
+    val context = LocalContext.current
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    val uriPathFinder = UriPathFinder()
     val profilePic : String = user!!.profilePicUrl
-    //Log.d("user", user.toString())
+    var filePath : String? = ""
 
-    //Log.d("PIC", profilePic.toString())
+    val painter = rememberImagePainter(
+        if( profilePic != "" ){ profilePic }
+        else if( imageUri == null ){ R.drawable.ic_user }
+        else{ imageUri }
+    )
 
     var showDialog by remember { mutableStateOf(false) }
-
-    val test = "https://uvejzsepcmqpowatjgyy.supabase.co/storage/v1/object/sign/profile%20images/IMG20221015184902.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwcm9maWxlIGltYWdlcy9JTUcyMDIyMTAxNTE4NDkwMi5qcGciLCJpYXQiOjE2ODgwNTAyNDAsImV4cCI6MTcxOTU4NjI0MH0.cng7K60K58OUYkbrNRrXHDZRuCv3bNT8hngMI3eYMHI&t=2023-06-29T14%3A50%3A40.824Z"
-    val painter = rememberImagePainter(
-        if(imageUri.value.isEmpty()){
-            //R.drawable.ic_user
-            profilePic
-        }
-        else{
-            imageUri.value
-            Log.d("IMAGE", imageUri.value)
-        }
-    )
 
     Column(modifier = Modifier
         .padding(5.dp)
@@ -310,19 +329,46 @@ fun ProfileImage(user: User?) {
         Spacer(modifier = Modifier.padding(30.dp))
         Box(modifier = Modifier
             .size(140.dp, 140.dp)){
-            Card(shape = CircleShape,
+            Card(
+                shape = CircleShape,
                 modifier = Modifier
                     .padding(0.dp)
                     .size(140.dp)
                     .align(Alignment.Center),
-            ) {
-                Image(
-                    painter = painter, contentDescription = null,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .clickable { showDialog = true },
-                    contentScale = ContentScale.Crop
-                )
+            ) {if(imageUri != null){
+                    if (Build.VERSION.SDK_INT < 28) {
+                        bitmap.value = MediaStore.Images
+                            .Media.getBitmap(context.contentResolver, imageUri)
+                    }
+                    else {
+                        val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
+                        bitmap.value = ImageDecoder.decodeBitmap(source)
+                    }
+                    if(bitmap.value != null){
+                        Image(
+                            bitmap = bitmap.value!!.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .clickable {
+                                    showDialog = true
+                                },
+                            contentScale = ContentScale.Crop
+                        )
+                        runBlocking {
+                            filePath = uriPathFinder.getPath(context, imageUri!!)
+                        }
+                        uploadImage(filePath!!)
+                    }
+                } else{
+                    Image(
+                        painter = painter, contentDescription = null,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clickable { showDialog = true },
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 if(showDialog) {
                     Dialog(onDismissRequest = { showDialog = false },
                         content = {
@@ -335,7 +381,13 @@ fun ProfileImage(user: User?) {
                 }
             }
             IconButton(
-                onClick = { launcher.launch("image/*") },
+                onClick = {
+                    if (permissionState.status.isGranted) {
+                        filePickerLauncher.launch("*/*")
+                    }
+                    else{
+                        permissionState.launchPermissionRequest()
+                    }},
                 modifier = Modifier
                     .size(40.dp)
                     .padding(0.dp)
@@ -436,7 +488,7 @@ fun alertDialogLogout(navController: NavController){
     if (openDialog.value){
         AlertDialog(
             onDismissRequest = { openDialog.value = false },
-            title = { Text(text = "AlertDialog", color = Color.Black)},
+            title = { Text(text = "Logout", color = Color.Black)},
             text = {Text(text = "Are you sure you want to log out?", color = Color.Black)},
             confirmButton = {
                 TextButton(
@@ -471,5 +523,59 @@ fun alertDialogLogout(navController: NavController){
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
+@Composable
+fun uploadImage(imagePath : String){
+
+                //, fileName : String){
+
+    val supabaseUrl = "https://uvejzsepcmqpowatjgyy.supabase.co"
+    val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWp6c2VwY21xcG93YXRqZ3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODc3OTQ0NzAsImV4cCI6MjAwMzM3MDQ3MH0.rqvQIxzUQGLONY8OIALZeUuSLwv42XaK0VGTGbs3oYc"
+    val bucketName = "profileImages" // Il nome del tuo bucket Supabase
+
+    val file = File(imagePath)
+
+    val client = createSupabaseClient(supabaseUrl, supabaseKey) {
+        install(Storage)
+        install(GoTrue)
+    }
+
+    val byteArray = file.readBytes()
+
+    val lifecycleCoroutineScope = rememberCoroutineScope()
+    lifecycleCoroutineScope.launch(Dispatchers.IO) {
+        uploadToSupabase(client, file.name, byteArray, bucketName)
+    }
+
+
+}
+
+private fun getNameImage(contentURI: Uri, context: Context) : String? {
+    var thePath = "no-path-found"
+    val filePathColumn = arrayOf(MediaStore.Images.Media.DISPLAY_NAME)
+    val cursor: Cursor? = context.contentResolver.query(contentURI, filePathColumn, null, null, null)
+    if (cursor != null) {
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor?.getColumnIndex(filePathColumn[0])
+            thePath = columnIndex?.let { cursor.getString(it) }.toString()
+        }
+    }
+    cursor?.close()
+    return thePath
+}
+
+fun hasPermission(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+
+suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String){
+    client.storage[bucketName].upload(fileName, byteArray, false)
+    val url = client.storage[bucketName].publicUrl(fileName)
+    Log.d("URL", url)
+}
 
 
