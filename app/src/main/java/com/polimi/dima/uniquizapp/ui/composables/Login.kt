@@ -119,7 +119,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                             message.value = ""
                             sharedViewModel.addUser(user)
                             navController.navigate(BottomNavItem.Home.screen_route){
-                                popUpTo(Screen.Profile.route){
+                                popUpTo(Screen.Login.route){
                                     inclusive = true
                                 }
                             }

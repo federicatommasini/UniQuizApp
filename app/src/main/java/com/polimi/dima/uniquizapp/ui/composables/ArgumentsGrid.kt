@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
@@ -72,7 +73,11 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
         content = {
             items(state){ item ->
                 Card(
-                    onClick = { navController.navigate(route = route + item.id + "/"+0) },
+                    onClick = {
+                        navController.navigate(route = route + item.id + "/"+0){
+                            popUpTo(Screen.QuizScreen.route){
+                                inclusive = true
+                    }} },
                     backgroundColor = Color.White,
                     border = BorderStroke(1.dp, customLightGray),
                     modifier = Modifier
