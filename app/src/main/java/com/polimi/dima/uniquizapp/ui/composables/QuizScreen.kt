@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,9 +41,11 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?,  sharedViewModel: SharedViewModel){
 
     val quiz = sharedViewModel.quizViewModel.getQuizById(quizId!!)
+    sharedViewModel.addQuiz(quiz!!)
     val question = quiz!!.questions[questionId!!]
     var selected  = remember { mutableStateListOf<Boolean>(false,false,false,false) }
     var check = remember { mutableStateOf(false)}
+    var correct = remember { mutableStateOf(false)}
     Scaffold(
         topBar = {AppBar(navController = navController)},
     ){ padding ->
@@ -121,15 +124,22 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
             ) {
                 Button(
                     onClick = {
-                        if(!check.value)
+                        if(!check.value){
                             check.value = true
-                        else if(questionId!! < quiz.questions.size-1)
+                        }
+                        else if(questionId!! < quiz.questions.size-1){
+                            if(question.answers[selected.indexOf(true)].correct)
+                                sharedViewModel.addPoint()
                             navController.navigate(route = "quiz/" + quizId + "/"+ (questionId!!+1)){
                                 popUpTo(Screen.QuizScreen.route){
                                     inclusive = true
                                 }
                             }
+                        }
                         else navController.navigate(route = "endOfQuiz"){
+                            if(question.answers[selected.indexOf(true)].correct){
+                                sharedViewModel.addPoint()
+                            }
                             popUpTo(Screen.QuizScreen.route){
                                 inclusive = true
                             }

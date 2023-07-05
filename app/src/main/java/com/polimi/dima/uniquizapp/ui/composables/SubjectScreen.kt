@@ -38,6 +38,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
     val subject = sharedViewModel.subjectViewModel.getSubjectById(subjectId!!)
+    sharedViewModel.addSubject(subject!!)
 
     sharedViewModel.quizViewModel.getAll(subject!!.id)
     val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()

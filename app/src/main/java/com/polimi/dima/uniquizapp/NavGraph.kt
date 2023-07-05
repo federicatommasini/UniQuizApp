@@ -85,7 +85,7 @@ fun SetupNavGraph(navController: NavHostController){
             QuizScreen(navController = navController,it.arguments?.getString("quizId"), it.arguments?.getInt("questionId"), sharedViewModel)
         }
         composable(Screen.EndOfQuizScreen.route){
-            EndOfQuizScreen(navController = navController)
+            EndOfQuizScreen(navController = navController, sharedViewModel)
         }
     }
 }
