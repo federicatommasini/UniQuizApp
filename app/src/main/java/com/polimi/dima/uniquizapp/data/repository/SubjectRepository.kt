@@ -22,4 +22,8 @@ class SubjectRepository@Inject constructor(
     suspend fun getDocumentUrls(subjectId: String) : List<String>{
         return subjectApi.getDocumentUrls(subjectId)
     }
+
+    suspend fun updateRanking(subjectId: String, userId: String){
+        subjectApi.updateRanking(subjectId,userId)
+    }
 }

@@ -39,4 +39,10 @@ class QuizViewModel @Inject constructor(
         }
         return quiz
     }
+
+    fun addScore(quizId: String, userId: String, score: Int){
+        viewModelScope.launch{
+            val response = runBlocking {quizRepo.addScore(quizId,userId,score)}
+        }
+    }
 }

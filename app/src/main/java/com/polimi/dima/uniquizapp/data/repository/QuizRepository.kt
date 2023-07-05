@@ -14,4 +14,7 @@ class QuizRepository @Inject constructor(
     suspend fun getQuizById(quizId : String): Quiz? {
         return quizApi.getQuizById(quizId)
     }
+    suspend fun addScore(quizId : String, userId : String, score : Int){
+        quizApi.addScore(quizId,userId,score)
+    }
 }

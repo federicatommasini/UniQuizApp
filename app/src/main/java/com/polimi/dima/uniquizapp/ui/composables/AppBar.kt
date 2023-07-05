@@ -6,6 +6,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +23,7 @@ import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(navController: NavController){
+fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean){
     CenterAlignedTopAppBar(
     title = { Text("UniQuizApp",
         fontWeight = FontWeight.Bold,
@@ -30,14 +31,28 @@ fun AppBar(navController: NavController){
         color = Color.White,
         modifier = Modifier.wrapContentSize(Alignment.Center))},
     modifier = Modifier.background(customizedBlue),
+    navigationIcon = {
+        if(seeBackArrow)
+            IconButton(onClick = {
+                navController.navigate(navController.previousBackStackEntry?.destination!!.route!!)
+                //TODO capire come fare quando nell'url c'è un parametro
+            }) {
+                Icon(
+                    tint = Color.White,
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = ""
+                )
+            }
+        },
     actions = {
-        IconButton(onClick = { navController.navigate(Screen.Profile.route)}) {
-            Icon(
-                tint = Color.White,
-                imageVector = Icons.Default.Person,
-                contentDescription = ""
-            )
-        }
+        if(seeProfile)
+            IconButton(onClick = { navController.navigate(Screen.Profile.route)}) {
+                Icon(
+                    tint = Color.White,
+                    imageVector = Icons.Default.Person,
+                    contentDescription = ""
+                )
+            }
     },
     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = customizedBlue)
     )

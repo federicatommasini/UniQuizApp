@@ -73,5 +73,11 @@ class SubjectViewModel @Inject constructor(
         return urls
     }
 
+    fun updateRanking(subjectId: String, userId: String){
+        viewModelScope.launch {
+            val response = runBlocking { subjectRepo.updateRanking(subjectId,userId)}
+        }
+    }
+
 
 }

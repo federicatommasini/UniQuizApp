@@ -47,7 +47,7 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
     var check = remember { mutableStateOf(false)}
     var correct = remember { mutableStateOf(false)}
     Scaffold(
-        topBar = {AppBar(navController = navController)},
+        topBar = {AppBar(navController = navController,false, false)},
     ){ padding ->
         Column(
             modifier = Modifier
@@ -140,6 +140,8 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                             if(question.answers[selected.indexOf(true)].correct){
                                 sharedViewModel.addPoint()
                             }
+                            sharedViewModel.quizViewModel.addScore(quizId!!, sharedViewModel.user!!.id, sharedViewModel.points)
+                            sharedViewModel.subjectViewModel.updateRanking(sharedViewModel.subject!!.id,sharedViewModel.user!!.id)
                             popUpTo(Screen.QuizScreen.route){
                                 inclusive = true
                             }

@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp.data.api
 
 import com.polimi.dima.uniquizapp.data.model.Subject
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface SubjectApi {
@@ -17,4 +18,7 @@ interface SubjectApi {
 
     @GET("/documents/{subjectId}")
     suspend fun getDocumentUrls(@Path("subjectId") id : String) : List<String>
+
+    @PUT("/updateRanking/{subjectId}/{userId}")
+    suspend fun updateRanking(@Path("subjectId") subjectId : String, @Path("userId") userId : String)
 }
