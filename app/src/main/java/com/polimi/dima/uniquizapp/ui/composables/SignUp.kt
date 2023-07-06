@@ -125,28 +125,28 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     firstNameFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         lastNameFocusRequester.requestFocus()
-                    }))
+                    }), 0.8f)
                 CustomSpacer()
                 CustomTextField(field = lastNameValue, nameField = "Last Name", Icons.Default.Person,
                     lastNameFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         usernameFocusRequester.requestFocus()
-                    }))
+                    }),0.8f)
                 CustomSpacer()
                 CustomTextField(field = usernameValue, nameField = "Username", customImageVector = Icons.Default.Person,
                     usernameFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         emailFocusRequester.requestFocus()
-                    }))
+                    }),0.8f)
                 CustomSpacer()
                 CustomTextField(field = emailValue, nameField = "Email Address", Icons.Default.Email,
                     emailFocusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         universityFocusRequester.requestFocus()
-                    }))
+                    }),0.8f)
                 CustomSpacer()
 
-                DropDownTextField(items = items, selectedItem = universityValue.value, onItemSelected = {universityValue.value = it}, universityFocusRequester)
+                DropDownTextField(text = "University", items = items, selectedItem = universityValue.value, onItemSelected = {universityValue.value = it}, universityFocusRequester,0.8f)
                 CustomSpacer()
                 PasswordTextField(field = passwordValue, nameField = "Password", visibility = passwordVisibility,
                     keyboardActions = KeyboardActions(onNext = {

@@ -9,4 +9,6 @@ sealed class Screen(val route: String){
     object QuizScreen: Screen(route = "quiz/{quizId}/{questionId}")
 
     object EndOfQuizScreen : Screen(route = "endOfQuiz")
+
+    object AddQuestionScreen : Screen(route = "addQuestionScreen")
 }

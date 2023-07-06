@@ -30,10 +30,12 @@ import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DropDownTextField(
+    text: String,
     items: List<String>,
     selectedItem: String,
     onItemSelected: (String) -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    fraction: Float
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldValue by remember { mutableStateOf(selectedItem) }
@@ -50,14 +52,14 @@ fun DropDownTextField(
             onValueChange = {
                 textFieldValue = it
             },
-            label = { Text(text = "University") },
-            placeholder = {Text(text = "University")},
+            label = { Text(text = text) },
+            placeholder = {Text(text = text)},
             readOnly = true,
             colors = TextFieldDefaults.textFieldColors(
                 unfocusedIndicatorColor = Color.Transparent),
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(fraction)
                 .focusRequester(focusRequester)
                 .background(grayBackground, RoundedCornerShape(20.dp))
                 .clickable(onClick = { expanded = true }),
