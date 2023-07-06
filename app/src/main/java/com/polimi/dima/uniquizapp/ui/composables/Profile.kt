@@ -53,6 +53,9 @@ import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.Constants.BUCKET_NAME
+import com.polimi.dima.uniquizapp.data.Constants.SUPABASE_KEY
+import com.polimi.dima.uniquizapp.data.Constants.SUPABASE_URL
 import com.polimi.dima.uniquizapp.data.model.UriPathFinder
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
@@ -523,9 +526,9 @@ fun alertDialogLogout(navController: NavController){
 @Composable
 fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
 
-    val supabaseUrl = "https://uvejzsepcmqpowatjgyy.supabase.co"
-    val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWp6c2VwY21xcG93YXRqZ3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODc3OTQ0NzAsImV4cCI6MjAwMzM3MDQ3MH0.rqvQIxzUQGLONY8OIALZeUuSLwv42XaK0VGTGbs3oYc"
-    val bucketName = "profileImages" // Il nome del tuo bucket Supabase
+    val supabaseUrl = SUPABASE_URL
+    val supabaseKey = SUPABASE_KEY
+    val bucketName = BUCKET_NAME // Il nome del tuo bucket Supabase
 
     val file = File(imagePath)
     val byteArray = file.readBytes()

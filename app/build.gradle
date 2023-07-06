@@ -122,4 +122,14 @@ dependencies {
     implementation "io.ktor:ktor-client-core:2.3.2"
     implementation "io.ktor:ktor-client-cio:2.3.2"
 
+    //fino a qui va
+
+    //implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    implementation('com.google.api-client:google-api-client-android:1.23.0')
+
+    //so that we can easily control permissions
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
 }

@@ -1,19 +1,22 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.app.Activity
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +27,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.api.client.extensions.android.json.AndroidJsonFactory
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.services.calendar.Calendar
+import com.google.api.services.calendar.CalendarScopes
+import com.google.api.services.calendar.model.CalendarList
+import com.google.api.services.calendar.model.CalendarListEntry
+import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.Events
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -181,24 +197,85 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 
 
 
+@SuppressLint("Range")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
 
+    val context = LocalContext.current
     val activity = LocalContext.current as MainActivity
     val signInGoogle = GoogleSignInActivity()
     signInGoogle.initialize(activity)
     val signInIntent = signInGoogle.googleSignInClient.signInIntent
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if(result.resultCode == Activity.RESULT_OK){
+    var googleAccount : GoogleSignInAccount? = null
+    val showButton = remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             signInGoogle.handleResults(task)
-            Log.d("TASK_RESULT",task.result.toString())
-            Log.d("TASK_TOKEN",task.result.idToken.toString())
-            Log.d("TASK_EMAIL",task.result.email.toString())
-        }
+            googleAccount = signInGoogle.googleAccount
 
+            Log.d("TASK_TOKEN", task.result.idToken.toString())
+            Log.d("TASK_EMAIL", task.result.email.toString())
+
+            if (googleAccount != null) {
+                showButton.value = true
+                val googleAccountCredential = GoogleAccountCredential.usingOAuth2(
+                    context,
+                    listOf(CalendarScopes.CALENDAR,
+                        CalendarScopes.CALENDAR_READONLY,
+                        CalendarScopes.CALENDAR_EVENTS_READONLY,
+                        CalendarScopes.CALENDAR_EVENTS,
+                        CalendarScopes.CALENDAR_SETTINGS_READONLY))
+                googleAccountCredential.selectedAccount = googleAccount!!.account
+
+                val service: Calendar = Calendar.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(),
+                    AndroidJsonFactory.getDefaultInstance(),
+                    googleAccountCredential)
+                    .setApplicationName("UniQuiz").build()
+
+                val coroutineScope = CoroutineScope(Dispatchers.IO)
+                coroutineScope.launch {
+                    Log.d("BOH DENTRO", "ok")
+
+                    var pageToken: String? = null
+
+                    do {
+                        Log.d("dentro do", "uh uh")
+                        val calendarList: CalendarList = service.calendarList().list().setShowHidden(true).setShowDeleted(true).setPageToken(pageToken).execute()
+
+                        Log.d("list", calendarList.toString())
+                        val items: List<CalendarListEntry> = calendarList.getItems()
+
+                        Log.d("items", items.toString())
+
+                        for (calendarListEntry in items) {
+                            Log.d("CALENDDAR", calendarListEntry.summary)
+
+                            println(calendarListEntry.summary)
+                        }
+                        pageToken = calendarList.getNextPageToken()
+                        if(pageToken != null) { Log.d("tok", pageToken.toString()) } else {
+                            println("ELSE")
+                        }
+                    } while (pageToken != null)
+                    var pageToken2: String? = null
+                    do {
+                        val events: Events =
+                            service.events().list("primary").setPageToken(pageToken2).execute()
+                        val items: List<Event> = events.items
+                        Log.d("EVENT ITEMS", items.toString())
+                        for (event in items) {
+                            Log.d("EVENTO", event.summary.toString())
+                        }
+                        pageToken2 = events.nextPageToken
+                    } while (pageToken2 != null)
+
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -212,7 +289,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 .padding(padding)
         ) {
             Text(
-                text = "Calendar Screen",
+                text = "Log in Google Calendar",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 modifier = Modifier
@@ -223,20 +300,19 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )
-            Text(
-                text = "sign out",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable {
-                        signInGoogle.googleSignInClient.signOut()
-                    },
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
+            if(showButton.value){
+                Button(
+                    onClick = { signInGoogle.updateUI(googleAccount!!)},
+                    colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(58.dp)
+                        .padding(start = 60.dp, end = 60.dp))
+                {
+                    Text(text = "Access your Google Calendar", fontSize = 28.sp, color = Color.White)
+                }
+            }
         }
     }
 }
-
-
