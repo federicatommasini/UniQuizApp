@@ -54,7 +54,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
     val user = sharedViewModel.user
 
     Scaffold(
-        topBar = {AppBar(navController = navController)},
+        topBar = {AppBar(navController = navController,true,false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {padding ->
         Column(
@@ -140,7 +140,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
     Scaffold(
-        topBar = {AppBar(navController = navController)},
+        topBar = {AppBar(navController = navController,true,false)},
         bottomBar = { BottomNavigationBar(navController = navController) },
         content = { padding ->
             Column(
@@ -173,7 +173,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
 @Composable
 fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
     Scaffold(
-        topBar = {AppBar(navController = navController)},
+        topBar = {AppBar(navController = navController,true,false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { padding ->
         Column(
@@ -279,7 +279,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
     }
 
     Scaffold(
-        topBar = {AppBar(navController = navController)},
+        topBar = {AppBar(navController = navController,true,false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {padding ->
         Column(

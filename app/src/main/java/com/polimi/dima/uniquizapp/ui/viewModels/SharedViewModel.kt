@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.polimi.dima.uniquizapp.data.di.ApiModule
+import com.polimi.dima.uniquizapp.data.model.Quiz
+import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.QuizRepository
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
@@ -29,15 +31,35 @@ class SharedViewModel : ViewModel() {
     private val quizApi = ApiModule.provideQuizApi(ApiModule.provideRetrofit())
     private val quizRepo = QuizRepository(quizApi)
     val quizViewModel = QuizViewModel(quizRepo)
+
     var user by mutableStateOf<User?>(null)
         private set
+
+    var points by mutableStateOf(0)
+    var quiz by mutableStateOf<Quiz?>(null)
+    var subject by mutableStateOf<Subject?>(null)
 
     fun addUser(newUser : User){
         user = newUser
     }
+    fun addQuiz(newQuiz : Quiz){
+        quiz = newQuiz
+    }
+    fun addSubject(newsub : Subject){
+        subject = newsub
+    }
 
     fun addUrl(newUrl: String){
         documentUrl = newUrl
+    }
+
+    fun addPoint(){
+        points +=1
+    }
+
+
+    fun resetPoints(){
+        points = 0
     }
 
     fun logout(){
