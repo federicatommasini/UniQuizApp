@@ -22,6 +22,7 @@ import com.polimi.dima.uniquizapp.ui.composables.Profile
 import com.polimi.dima.uniquizapp.ui.composables.SignUp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.polimi.dima.uniquizapp.ui.composables.AddQuestionScreen
 import com.polimi.dima.uniquizapp.ui.composables.Calendar
 import com.polimi.dima.uniquizapp.ui.composables.EndOfQuizScreen
 import com.polimi.dima.uniquizapp.ui.composables.Groups
@@ -86,6 +87,9 @@ fun SetupNavGraph(navController: NavHostController){
         }
         composable(Screen.EndOfQuizScreen.route){
             EndOfQuizScreen(navController = navController, sharedViewModel)
+        }
+        composable(Screen.AddQuestionScreen.route){
+            AddQuestionScreen(navController = navController, sharedViewModel)
         }
     }
 }

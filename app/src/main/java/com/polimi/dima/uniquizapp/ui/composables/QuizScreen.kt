@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -117,11 +117,17 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                 }
             }
             Box(
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
+                Text(
+                    "Question " + (questionId!!+1) + "/" + quiz!!.questions.size,
+                    color = customizedBlue,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
+
                 Button(
                     onClick = {
                         if(!check.value){
@@ -149,7 +155,7 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                       },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue, contentColor = Color.White),
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.CenterEnd).sizeIn(minWidth = 70.dp)
                 ) {
                     if(!check.value)
                         Text("Check", color = Color.White)

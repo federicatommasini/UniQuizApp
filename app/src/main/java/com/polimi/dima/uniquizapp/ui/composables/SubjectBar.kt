@@ -55,7 +55,7 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import com.rizzi.bouquet.ResourceType
 import com.rizzi.bouquet.VerticalPDFReader
 import com.rizzi.bouquet.rememberVerticalPdfReaderState
-import java.lang.reflect.Field
+
 
 
 @Composable
@@ -67,7 +67,6 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
     val urls = sharedViewModel.subjectViewModel.getDocumentUrls(subjectId!!)
     var present : Boolean = false
     sharedViewModel.quizViewModel.getAll(subject!!.id)
-    val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -92,14 +91,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
             )
             for( s in userSubjectState)
                 if(s.equals(subject))
-                    present = true;
-            /*OutlinedButton(onClick = { },
-                modifier= Modifier.size(50.dp),  //avoid the oval shape
-                shape = CircleShape,
-                border= BorderStroke(1.dp, Color.Blue),
-                contentPadding = PaddingValues(0.dp),  //avoid the little icon
-                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = customLightGray)
-            ) {}*/
+                    present = true
             if(!present){
                Button(
                     colors = ButtonDefaults.buttonColors(backgroundColor = customLightGray),
@@ -155,7 +147,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                     route = "quiz/",
                     navController = navController
                 )
-                FloatingActionButtons()
+                FloatingActionButtons(navController)
             }
 
         }

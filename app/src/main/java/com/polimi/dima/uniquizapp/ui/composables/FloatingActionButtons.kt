@@ -35,11 +35,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 
 @Composable
-fun FloatingActionButtons(){
+fun FloatingActionButtons(navController: NavController){
 
     var selected by remember { mutableStateOf(false) }
     var selected2 by remember { mutableStateOf(false) }
@@ -87,7 +89,12 @@ fun FloatingActionButtons(){
                 Spacer(modifier = Modifier.weight(0.8f))
             }
             ExtendedFloatingActionButton(
-                onClick = { },
+                onClick = {
+                    navController.navigate(route = "addQuestionScreen"){
+                    popUpTo(Screen.AddQuestionScreen.route){
+                        inclusive = true
+                    }}
+                },
                 backgroundColor = customizedBlue,
                 contentColor = Color.White,
                 modifier = Modifier.padding(vertical = 8.dp),
@@ -95,15 +102,6 @@ fun FloatingActionButtons(){
                 text = { Text("Add a quiz",  modifier = Modifier.align(Alignment.Start)) }
 
             )
-            /*FloatingActionButton(
-                onClick = { /*TODO*/ },
-                backgroundColor = customizedBlue,
-                contentColor = Color.White,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Text(text = "Add a quiz!")
-                //Icon(Icons.Filled.Edit, "")
-            }*/
         }
 
         Row(

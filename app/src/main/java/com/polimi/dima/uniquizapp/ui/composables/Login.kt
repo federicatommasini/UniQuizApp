@@ -96,7 +96,8 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     focusRequester,
                     keyboardActions = KeyboardActions(onNext = {
                         passwordFocusRequester.requestFocus()
-                    })
+                    }),
+                    fraction = 0.8f
                 )
                 CustomSpacer()
                 PasswordTextField(field = passwordValue,

@@ -23,9 +23,11 @@ import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 @Composable
 fun CustomTextField(field: MutableState<String>,
                     nameField: String,
-                    customImageVector: ImageVector,
+                    customImageVector: ImageVector?,
                     focusRequester: FocusRequester,//? = null,
-                    keyboardActions: KeyboardActions){
+                    keyboardActions: KeyboardActions,
+                    fraction : Float
+){
     TextField(
         value = field.value,
         onValueChange = { field.value = it },
@@ -37,10 +39,12 @@ fun CustomTextField(field: MutableState<String>,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .fillMaxWidth(0.8f)
+            .fillMaxWidth(fraction)
             .background(grayBackground, RoundedCornerShape(20.dp))
             .focusRequester(focusRequester ?: FocusRequester()),
-        trailingIcon = { Icon(imageVector = customImageVector, contentDescription = null) },
+        trailingIcon = {
+            if(customImageVector!=null)
+                Icon(imageVector = customImageVector!!, contentDescription = null) },
         keyboardActions = keyboardActions
     )
 }
