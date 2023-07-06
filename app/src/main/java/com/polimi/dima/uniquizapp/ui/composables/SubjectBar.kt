@@ -55,7 +55,7 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import com.rizzi.bouquet.ResourceType
 import com.rizzi.bouquet.VerticalPDFReader
 import com.rizzi.bouquet.rememberVerticalPdfReaderState
-import java.lang.reflect.Field
+
 
 
 @Composable
