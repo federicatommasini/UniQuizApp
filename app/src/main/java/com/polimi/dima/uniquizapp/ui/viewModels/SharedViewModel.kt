@@ -61,4 +61,8 @@ class SharedViewModel : ViewModel() {
     fun resetPoints(){
         points = 0
     }
+
+    fun logout(){
+        user = null
+    }
 }

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.net.UnknownServiceException
 import javax.inject.Inject
 
 
@@ -55,11 +54,12 @@ class UserViewModel @Inject constructor(
         else return _loginState.value
     }
 
-    fun updateProfile(newPassword : String, userId : String) {
+    fun updateProfile(user : User, userId: String) : User? {
         viewModelScope.launch {
-            var response = runBlocking { userRepo.updateProfile(newPassword, userId) }
+            var response = runBlocking { userRepo.updateProfile(user, userId) }
             _loginState.value = response
         }
+        return _loginState.value
     }
 
     fun register(user: RegistrationRequest) : User? {
@@ -80,4 +80,11 @@ class UserViewModel @Inject constructor(
         return user!!
     }
 
+    fun uploadProfileIcon(user: User, userId: String) : User? {
+        viewModelScope.launch {
+            var response = runBlocking { userRepo.uploadProfileIcon(user, userId) }
+            _loginState.value = response
+        }
+        return _loginState.value
+    }
 }

@@ -108,7 +108,7 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     color = customizedBlue,
                     style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
                 )
-                Image(painter = painterResource(id = R.drawable.exam), contentDescription = "")
+                Image(painter = painterResource(id = R.drawable.logo), contentDescription = "")
             }
         }
         Column(
@@ -158,7 +158,6 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                     keyboardActions = KeyboardActions(onDone = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        //context.doLogin()
                     }),
                     focusRequester = confirmPasswordFocusRequester)
                 CustomSpacer()

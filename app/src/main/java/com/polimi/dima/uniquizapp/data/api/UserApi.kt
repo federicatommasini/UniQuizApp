@@ -28,8 +28,10 @@ interface UserApi {
     @POST("/registration")
     suspend fun register(@Body user: RegistrationRequest): User
     @PUT("/updateProfile/{id}")
-    suspend fun update(@Body newPassword: String, @Path("id") number : String ) : User
+    suspend fun update(@Body user: User, @Path("id") number: String ) : User
 
     @POST("/{userId}/addSubject")
     suspend fun addSubject(@Body subject : Subject, @Path("userId") userId : String) : User
+    @PUT("/{userId}/pic")
+    suspend fun uploadProfileIcon(@Body user : User, @Path("userId") number: String) : User
 }

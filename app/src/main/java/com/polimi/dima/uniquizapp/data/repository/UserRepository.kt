@@ -29,11 +29,15 @@ class UserRepository @Inject constructor(
         return userApi.register(user)
     }
 
-    suspend fun updateProfile(newPassword: String, userId: String): User {
-        return userApi.update(newPassword, userId)
+    suspend fun updateProfile(user : User, userId: String): User {
+        return userApi.update(user, userId)
     }
 
     suspend fun addSubject(subject : Subject, userId: String) : User {
         return userApi.addSubject(subject, userId)
+    }
+
+    suspend fun uploadProfileIcon(user : User, userId: String) : User {
+        return userApi.uploadProfileIcon(user, userId)
     }
 }
