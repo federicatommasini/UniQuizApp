@@ -8,6 +8,7 @@ import com.polimi.dima.uniquizapp.data.di.ApiModule
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.repository.ExamRepository
 import com.polimi.dima.uniquizapp.data.repository.QuizRepository
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
 import com.polimi.dima.uniquizapp.data.repository.UniversityRepository
@@ -31,6 +32,10 @@ class SharedViewModel : ViewModel() {
     private val quizApi = ApiModule.provideQuizApi(ApiModule.provideRetrofit())
     private val quizRepo = QuizRepository(quizApi)
     val quizViewModel = QuizViewModel(quizRepo)
+
+    private val examApi = ApiModule.provideExamApi(ApiModule.provideRetrofit())
+    private val examRepo = ExamRepository(examApi)
+    val examViewModel = ExamViewModel(examRepo)
 
     var user by mutableStateOf<User?>(null)
         private set

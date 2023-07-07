@@ -1,14 +1,13 @@
 package com.polimi.dima.uniquizapp.data.model
 
 import android.os.Parcelable
+import com.google.api.client.util.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 @Parcelize
-data class Exam(
-    val id: String,
+data class ExamRequest (
     val subjectId: String,
     @Serializable
-    val date: Date
-    ) : Parcelable
+    val date : DateTime
+): Parcelable

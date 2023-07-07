@@ -39,16 +39,12 @@ class GoogleSignInActivity() {
 
     fun handleResults(task: Task<GoogleSignInAccount>){
        if(task.isSuccessful){
-           Log.d("handleResults", "task successful")
            val account : GoogleSignInAccount? = task.result
            if (account != null) {
-               Log.d("handleResults", "account not null")
                googleAccount = account
                //updateUI(account)
            }
        }else{
-           Log.d("handleResults", "task not successful")
-
        }
    }
 

@@ -528,7 +528,7 @@ fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
 
     val supabaseUrl = SUPABASE_URL
     val supabaseKey = SUPABASE_KEY
-    val bucketName = BUCKET_NAME // Il nome del tuo bucket Supabase
+    val bucketName = BUCKET_NAME
 
     val file = File(imagePath)
     val byteArray = file.readBytes()

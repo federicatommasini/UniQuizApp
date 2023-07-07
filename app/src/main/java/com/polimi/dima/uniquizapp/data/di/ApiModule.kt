@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.data.di
 
+import com.polimi.dima.uniquizapp.data.api.ExamApi
 import com.polimi.dima.uniquizapp.data.api.QuizApi
 import com.polimi.dima.uniquizapp.data.api.SubjectApi
 import com.polimi.dima.uniquizapp.data.api.UniversityApi
@@ -51,13 +52,21 @@ object ApiModule  {
 
     @Provides
     @Singleton
+    fun provideExamApi(builder:Retrofit.Builder): ExamApi {
+        return builder
+            .build()
+            .create(ExamApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideRetrofit(): Retrofit.Builder{
         val client = OkHttpClient.Builder()
             .connectTimeout(50, TimeUnit.SECONDS)
             .readTimeout(50, TimeUnit.SECONDS).build()
         return Retrofit.Builder()
-            //.baseUrl("http://10.0.2.2:8080")
-            .baseUrl("http://192.168.221.167:8080") //fede
+            .baseUrl("http://10.0.2.2:8080")
+            //.baseUrl("http://192.168.221.167:8080") //fede
             //.baseUrl("http://192.168.43.82:8080") //giulia
             .client(client)
             .addConverterFactory(NullOnEmptyConverterFactory())

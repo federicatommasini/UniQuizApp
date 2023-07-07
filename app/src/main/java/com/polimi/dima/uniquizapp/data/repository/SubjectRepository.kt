@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.data.repository
 
+import android.util.Log
 import com.polimi.dima.uniquizapp.data.api.SubjectApi
 import com.polimi.dima.uniquizapp.data.model.Subject
 import javax.inject.Inject

@@ -40,11 +40,14 @@ import com.google.api.services.calendar.model.Events
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
+import com.polimi.dima.uniquizapp.data.model.ExamRequest
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -200,94 +203,146 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 @SuppressLint("Range")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
+fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
+
+    val user = sharedViewModel.user
+    println("user $user")
+
+    sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
+    val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
+    println("sub ${userSubjectState.toString()}")
+
 
     val context = LocalContext.current
     val activity = LocalContext.current as MainActivity
     val signInGoogle = GoogleSignInActivity()
     signInGoogle.initialize(activity)
     val signInIntent = signInGoogle.googleSignInClient.signInIntent
-    var googleAccount : GoogleSignInAccount? = null
+    var googleAccount: GoogleSignInAccount? = null
     val showButton = remember { mutableStateOf(false) }
+    val infoText = remember { mutableStateOf(true) }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            signInGoogle.handleResults(task)
-            googleAccount = signInGoogle.googleAccount
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                signInGoogle.handleResults(task)
+                googleAccount = signInGoogle.googleAccount
 
-            Log.d("TASK_TOKEN", task.result.idToken.toString())
-            Log.d("TASK_EMAIL", task.result.email.toString())
+                Log.d("TASK_TOKEN", task.result.idToken.toString())
+                Log.d("TASK_EMAIL", task.result.email.toString())
 
-            if (googleAccount != null) {
-                showButton.value = true
-                val googleAccountCredential = GoogleAccountCredential.usingOAuth2(
-                    context,
-                    listOf(CalendarScopes.CALENDAR,
-                        CalendarScopes.CALENDAR_READONLY,
-                        CalendarScopes.CALENDAR_EVENTS_READONLY,
-                        CalendarScopes.CALENDAR_EVENTS,
-                        CalendarScopes.CALENDAR_SETTINGS_READONLY))
-                googleAccountCredential.selectedAccount = googleAccount!!.account
+                if (googleAccount != null) {
+                    showButton.value = true
+                    val googleAccountCredential = GoogleAccountCredential.usingOAuth2(
+                        context,
+                        listOf(
+                            CalendarScopes.CALENDAR,
+                            CalendarScopes.CALENDAR_READONLY,
+                            CalendarScopes.CALENDAR_EVENTS_READONLY,
+                            CalendarScopes.CALENDAR_EVENTS,
+                            CalendarScopes.CALENDAR_SETTINGS_READONLY
+                        )
+                    )
+                    googleAccountCredential.selectedAccount = googleAccount!!.account
 
-                val service: Calendar = Calendar.Builder(
-                    GoogleNetHttpTransport.newTrustedTransport(),
-                    AndroidJsonFactory.getDefaultInstance(),
-                    googleAccountCredential)
-                    .setApplicationName("UniQuiz").build()
+                    val service: Calendar = Calendar.Builder(
+                        GoogleNetHttpTransport.newTrustedTransport(),
+                        AndroidJsonFactory.getDefaultInstance(),
+                        googleAccountCredential
+                    )
+                        .setApplicationName("UniQuiz").build()
 
-                val coroutineScope = CoroutineScope(Dispatchers.IO)
-                coroutineScope.launch {
-                    Log.d("BOH DENTRO", "ok")
+                    val coroutineScope = CoroutineScope(Dispatchers.IO)
+                    coroutineScope.launch {
+                        var pageToken: String? = null
+                        var calExamsId: String? = null
 
-                    var pageToken: String? = null
+                        do {
+                            val calendarList: CalendarList =
+                                service.calendarList().list().setShowHidden(true)
+                                    .setShowDeleted(true).setPageToken(pageToken).execute()
+                            val items: List<CalendarListEntry> = calendarList.items
+                            for (calendar in items) {
+                                if (calendar.summary == "Exams") {
+                                    calExamsId = calendar.id
+                                    println(calExamsId)
+                                }
+                            }
+                            pageToken = calendarList.getNextPageToken()
+                        } while (pageToken != null)
 
-                    do {
-                        Log.d("dentro do", "uh uh")
-                        val calendarList: CalendarList = service.calendarList().list().setShowHidden(true).setShowDeleted(true).setPageToken(pageToken).execute()
 
-                        Log.d("list", calendarList.toString())
-                        val items: List<CalendarListEntry> = calendarList.getItems()
+                        if (calExamsId != null) {
+                            var pageTokenEvents: String? = null
+                            do {
+                                val eventsList: Events =
+                                    service.events().list(calExamsId).setPageToken(pageTokenEvents)
+                                        .execute()
+                                val eventItems: List<Event> = eventsList.items
+                                for (event in eventItems) {
+                                    println("event $event")
+                                    val subjectNameInCalendar = event.summary
+                                    println(user!!.id)
 
-                        Log.d("items", items.toString())
+                                    for (subject in userSubjectState) {
+                                        Log.d("MATERIA", subject!!.toString())
+                                        if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
+                                            Log.d("SIoigjoei", "ho la materia")
+                                            val day = event.start.date
+                                            println("DATA $day")
+                                            //if in the calendar there is an exam of a subject i added on uniquiz, i create the exam on backend
+                                            val examRequest = ExamRequest(
+                                                subject.id,
+                                                day
+                                            )
+                                            Log.d("EXAM", examRequest.toString())
+                                            Log.d("USERID", user!!.id)
 
-                        for (calendarListEntry in items) {
-                            Log.d("CALENDDAR", calendarListEntry.summary)
+                                            var userToUpdate: User?
+                                            runBlocking {
+                                                userToUpdate =
+                                                sharedViewModel.examViewModel.addExam(
+                                                    user.id, examRequest)
+                                                Log.d("REGISTERED", userToUpdate.toString())}
+                                            userToUpdate?.let { sharedViewModel.addUser(it) }
 
-                            println(calendarListEntry.summary)
+                                            }
+                                    }
+                                }
+                                pageTokenEvents = eventsList.nextPageToken
+                            } while (pageTokenEvents != null)
                         }
-                        pageToken = calendarList.getNextPageToken()
-                        if(pageToken != null) { Log.d("tok", pageToken.toString()) } else {
-                            println("ELSE")
-                        }
-                    } while (pageToken != null)
-                    var pageToken2: String? = null
-                    do {
-                        val events: Events =
-                            service.events().list("primary").setPageToken(pageToken2).execute()
-                        val items: List<Event> = events.items
-                        Log.d("EVENT ITEMS", items.toString())
-                        for (event in items) {
-                            Log.d("EVENTO", event.summary.toString())
-                        }
-                        pageToken2 = events.nextPageToken
-                    } while (pageToken2 != null)
 
+
+                    }
                 }
             }
         }
-    }
 
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false)},
+        topBar = { AppBar(navController = navController, true, false) },
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {padding ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
                 .padding(padding)
         ) {
+            if (infoText.value) {
+                Text(
+                    text = "UniQuiz is synced with your Google Calendar named \"Exams\", create the Calendar and schedule your exams!",
+                    color = customizedBlue,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .align(Alignment.CenterHorizontally)
+                        .border(1.dp, color = customizedBlue, shape = RoundedCornerShape(20.dp))
+                        .background(grayBackground),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            }
             Text(
                 text = "Log in Google Calendar",
                 fontWeight = FontWeight.Bold,
@@ -300,17 +355,22 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel){
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp
             )
-            if(showButton.value){
+            if (showButton.value) {
                 Button(
-                    onClick = { signInGoogle.updateUI(googleAccount!!)},
+                    onClick = { signInGoogle.updateUI(googleAccount!!) },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .height(58.dp)
-                        .padding(start = 60.dp, end = 60.dp))
+                        .padding(start = 60.dp, end = 60.dp)
+                )
                 {
-                    Text(text = "Access your Google Calendar", fontSize = 28.sp, color = Color.White)
+                    Text(
+                        text = "Access your Google Calendar",
+                        fontSize = 28.sp,
+                        color = Color.White
+                    )
                 }
             }
         }
