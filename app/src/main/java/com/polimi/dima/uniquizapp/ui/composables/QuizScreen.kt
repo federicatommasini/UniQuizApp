@@ -47,7 +47,7 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
     var check = remember { mutableStateOf(false)}
     var correct = remember { mutableStateOf(false)}
     Scaffold(
-        topBar = {AppBar(navController = navController,false, false)},
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel)},
     ){ padding ->
         Column(
             modifier = Modifier
@@ -130,28 +130,30 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
 
                 Button(
                     onClick = {
-                        if(!check.value){
-                            check.value = true
-                        }
-                        else if(questionId!! < quiz.questions.size-1){
-                            if(question.answers[selected.indexOf(true)].correct)
-                                sharedViewModel.addPoint()
-                            navController.navigate(route = "quiz/" + quizId + "/"+ (questionId!!+1)){
+                        if(selected.contains(true)){
+                            if(!check.value){
+                                check.value = true
+                            }
+                            else if(questionId!! < quiz.questions.size-1){
+                                if(question.answers[selected.indexOf(true)].correct)
+                                    sharedViewModel.addPoint()
+                                navController.navigate(route = "quiz/" + quizId + "/"+ (questionId!!+1)){
+                                    popUpTo(Screen.QuizScreen.route){
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                            else navController.navigate(route = "endOfQuiz"){
+                                if(question.answers[selected.indexOf(true)].correct){
+                                    sharedViewModel.addPoint()
+                                }
+                                sharedViewModel.quizViewModel.addScore(quizId!!, sharedViewModel.user!!.id, sharedViewModel.points)
+                                sharedViewModel.subjectViewModel.updateRanking(sharedViewModel.subject!!.id,sharedViewModel.user!!.id)
                                 popUpTo(Screen.QuizScreen.route){
                                     inclusive = true
                                 }
                             }
-                        }
-                        else navController.navigate(route = "endOfQuiz"){
-                            if(question.answers[selected.indexOf(true)].correct){
-                                sharedViewModel.addPoint()
-                            }
-                            sharedViewModel.quizViewModel.addScore(quizId!!, sharedViewModel.user!!.id, sharedViewModel.points)
-                            sharedViewModel.subjectViewModel.updateRanking(sharedViewModel.subject!!.id,sharedViewModel.user!!.id)
-                            popUpTo(Screen.QuizScreen.route){
-                                inclusive = true
-                            }
-                        }
+                          }
                       },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue, contentColor = Color.White),
                     shape = RoundedCornerShape(20.dp),

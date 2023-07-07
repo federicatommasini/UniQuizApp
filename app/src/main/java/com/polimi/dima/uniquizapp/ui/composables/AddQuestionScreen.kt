@@ -66,7 +66,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     items.toList()
 
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true)}
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel)}
     ){padding ->
         Column(
             modifier = Modifier
@@ -235,6 +235,10 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                     ) {
                         Text("Add question", fontWeight = FontWeight.Bold)
                     }
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Text(
+                        text = message.value,
+                        color = Color.Red)
                 }
 
 

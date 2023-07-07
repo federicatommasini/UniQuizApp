@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Icon
@@ -20,10 +21,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
+import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean){
+fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean, sharedViewModel: SharedViewModel){
     CenterAlignedTopAppBar(
     title = { Text("UniQuizApp",
         fontWeight = FontWeight.Bold,
@@ -34,8 +36,14 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
     navigationIcon = {
         if(seeBackArrow)
             IconButton(onClick = {
-                navController.navigate(navController.previousBackStackEntry?.destination!!.route!!)
-                //TODO capire come fare quando nell'url c'è un parametro
+                var route = navController.previousBackStackEntry?.destination!!.route!!
+                if( route == Screen.SubjectScreen.route)
+                    route = route.replace("{subjectId}", sharedViewModel.subject!!.id)
+                navController.navigate(route){
+                    popUpTo(route){
+                        inclusive = true
+                    }
+                }
             }) {
                 Icon(
                     tint = Color.White,
@@ -57,32 +65,3 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = customizedBlue)
     )
 }
-/*
-@Composable
-fun AppBar(){
-    TopAppBar {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Spacer(modifier = Modifier.fillMaxWidth(0.33f))
-            Text(
-                text = "UniQuizApp",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.fillMaxWidth(0.33f)
-                    .weight(0.33f)
-                    .align(Alignment.CenterVertically),
-                textAlign = TextAlign.Center
-            )
-            Row(
-                ) {
-                IconButton(modifier = Modifier.padding(end = 0.dp), onClick = {
-
-                }) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "profile icon")
-                }
-            }
-        }
-    }
-}*/
-
