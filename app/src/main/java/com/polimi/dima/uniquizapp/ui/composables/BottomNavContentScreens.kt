@@ -207,7 +207,7 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 @Composable
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
-    val user = sharedViewModel.user
+    var user = sharedViewModel.user
     println("user $user")
 
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
@@ -288,15 +288,12 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                     println(user!!.id)
 
                                     for (subject in userSubjectState) {
-                                        Log.d("MATERIA", subject!!.toString())
                                         if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
-                                            Log.d("SIoigjoei", "ho la materia")
                                             val day = event.start.date.toString()
                                             val pattern = "yyyy-MM-dd"
                                             val formatter = SimpleDateFormat(pattern, Locale.ENGLISH)
-                                            println("DATA " + day)
                                             val date: Date = formatter.parse(day)
-                                            println("DATA " + date)
+                                            println("DATA $date")
                                             //if in the calendar there is an exam of a subject i added on uniquiz, i create the exam on backend
                                             val examRequest = ExamRequest(
                                                 subject.id,
@@ -304,16 +301,17 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                             )
                                             Log.d("EXAM", examRequest.toString())
                                             Log.d("USERID", user!!.id)
+                                    try{
+                                        runBlocking { user = sharedViewModel.examViewModel.addExam(user!!.id, examRequest) }
+                                        Log.d("REGISTERED", user.toString())
+                                        user?.let { sharedViewModel.addUser(it) }
+                                    }catch (e : Exception){
+                                        println(e.toString())
+                                    }
 
-                                            val userToUpdate =
-                                            runBlocking {
-                                                sharedViewModel.examViewModel.addExam(
-                                                    user.id, examRequest)
-                                                }
-                                            Log.d("REGISTERED", userToUpdate.toString())
-                                            userToUpdate?.let { sharedViewModel.addUser(it) }
 
-                                            }
+
+                                        }
                                     }
                                 }
                                 pageTokenEvents = eventsList.nextPageToken

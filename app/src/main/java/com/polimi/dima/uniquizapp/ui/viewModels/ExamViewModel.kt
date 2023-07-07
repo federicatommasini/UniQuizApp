@@ -21,19 +21,19 @@ class ExamViewModel @Inject constructor(
     private val _userState = MutableStateFlow<User?>(null)
     val userState: StateFlow<User?> = _userState.asStateFlow()
 
-    fun addExam(userId : String, examRequest : ExamRequest) : User {
+    fun addExam(userId : String, examRequest : ExamRequest) : User? {
         var user : User? = null
         viewModelScope.launch{
-            var response = runBlocking {
-                println("DENTRO VIEW")
+            val response = runBlocking {
                 examRepo.addExam(userId, examRequest)
             }
-            println("response" + response.toString())
+            println("response $response")
             user = response
             _userState.value = response
+            println("user " + _userState.value.toString())
         }
+        //return _userState.value!!
         return user!!
-        //return _userState.value
     }
 
 }

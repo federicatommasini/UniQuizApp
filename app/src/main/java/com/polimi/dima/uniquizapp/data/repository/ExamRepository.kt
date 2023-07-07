@@ -11,7 +11,6 @@ class ExamRepository @Inject constructor(
 ) {
 
     suspend fun addExam(userId : String, exam : ExamRequest) : User {
-        println("REPO")
         return examApi.addExam(exam, userId)
     }
 }
