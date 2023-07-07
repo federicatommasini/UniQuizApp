@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.extensions.android.json.AndroidJsonFactory
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.CalendarList
@@ -48,6 +49,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -289,8 +291,12 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                         Log.d("MATERIA", subject!!.toString())
                                         if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
                                             Log.d("SIoigjoei", "ho la materia")
-                                            val day = event.start.date
-                                            println("DATA $day")
+                                            val day = event.start.date.toString()
+                                            val pattern = "yyyy-MM-dd"
+                                            val formatter = SimpleDateFormat(pattern, Locale.ENGLISH)
+                                            println("DATA " + day)
+                                            val date: Date = formatter.parse(day)
+                                            println("DATA " + date)
                                             //if in the calendar there is an exam of a subject i added on uniquiz, i create the exam on backend
                                             val examRequest = ExamRequest(
                                                 subject.id,
@@ -299,12 +305,12 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                             Log.d("EXAM", examRequest.toString())
                                             Log.d("USERID", user!!.id)
 
-                                            var userToUpdate: User?
+                                            val userToUpdate =
                                             runBlocking {
-                                                userToUpdate =
                                                 sharedViewModel.examViewModel.addExam(
                                                     user.id, examRequest)
-                                                Log.d("REGISTERED", userToUpdate.toString())}
+                                                }
+                                            Log.d("REGISTERED", userToUpdate.toString())
                                             userToUpdate?.let { sharedViewModel.addUser(it) }
 
                                             }
