@@ -39,7 +39,7 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
 
 
     Scaffold(
-        topBar = {AppBar(navController = navController,false,true,sharedViewModel)},
+        topBar = {AppBar(navController = navController,false,true,sharedViewModel, false)},
     ){ padding ->
         Column(
             modifier = Modifier

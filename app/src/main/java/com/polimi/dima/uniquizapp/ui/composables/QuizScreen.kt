@@ -47,7 +47,7 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
     var check = remember { mutableStateOf(false)}
     var correct = remember { mutableStateOf(false)}
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true,sharedViewModel)},
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false)},
     ){ padding ->
         Column(
             modifier = Modifier
