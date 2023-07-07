@@ -301,15 +301,11 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                             )
                                             Log.d("EXAM", examRequest.toString())
                                             Log.d("USERID", user!!.id)
-                                    try{
-                                        runBlocking { user = sharedViewModel.examViewModel.addExam(user!!.id, examRequest) }
-                                        Log.d("REGISTERED", user.toString())
-                                        user?.let { sharedViewModel.addUser(it) }
-                                    }catch (e : Exception){
-                                        println(e.toString())
-                                    }
 
-
+                                        val newUser = runBlocking { sharedViewModel.examViewModel.addExam(user!!.id, examRequest) }
+                                        Log.d("REGISTERED", newUser.toString())
+                                        sharedViewModel.addUser(newUser)
+                                        //newUser?.let { sharedViewModel.addUser(it) }
 
                                         }
                                     }
