@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -116,19 +118,28 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
                                     Text(text = "You have to add ${subject.name} to your subjects using the button above, then you will be able to  start exercising using quizzes!")
                                 },
                                 confirmButton = {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Button(
-                                            onClick = {
-                                                isPopupVisible.value = false
-                                            }
+                                    Box(contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center,
+                                            modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            Text(text = "Okay")
+                                            Button(
+                                                onClick = {
+                                                    isPopupVisible.value = false
+                                                },
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                shape = CircleShape
+                                            ) {
+                                                Text(text = "Okay")
+                                            }
                                         }
                                     }
                                 },
                                 properties = DialogProperties(usePlatformDefaultWidth = true),
                                 modifier = Modifier.background(Color.White, RoundedCornerShape(20.dp))
-                            )
+                                )
                         }
                     }
                 }
