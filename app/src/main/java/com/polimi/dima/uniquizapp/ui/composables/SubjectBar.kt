@@ -141,12 +141,13 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
         }
         if(selectedItem == 0){
             Box() {
-                ArgumentsGrid(
-                    subject = subject,
-                    sharedViewModel = sharedViewModel,
-                    route = "quiz/",
-                    navController = navController
-                )
+                if(null!=subject.quizIds)
+                    ArgumentsGrid(
+                        subject = subject,
+                        sharedViewModel = sharedViewModel,
+                        route = "quiz/",
+                        navController = navController
+                    )
                 FloatingActionButtons(navController)
             }
 
@@ -162,7 +163,7 @@ fun SubjectBar(subjectId: String?, sharedViewModel: SharedViewModel, navControll
                     bottom = 70.dp),
                 modifier = Modifier.background(Color.White),
                 content = {
-                    if(urls != null)
+                    if(null!= urls && !urls!!.isEmpty())
                         items(urls){ item ->
                             Row(){
                                 Image(painter = painterResource(id = R.drawable.pdf_icon),

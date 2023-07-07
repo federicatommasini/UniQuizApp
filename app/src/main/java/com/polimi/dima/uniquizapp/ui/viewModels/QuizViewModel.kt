@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.repository.QuizRepository
@@ -44,5 +45,14 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch{
             val response = runBlocking {quizRepo.addScore(quizId,userId,score)}
         }
+    }
+
+    fun addQuestion(request: NewQuestionRequest) : Subject?{
+        var subject: Subject? = null
+        viewModelScope.launch{
+            val response = runBlocking{quizRepo.addQuestion(request)}
+            subject = response
+        }
+        return subject
     }
 }

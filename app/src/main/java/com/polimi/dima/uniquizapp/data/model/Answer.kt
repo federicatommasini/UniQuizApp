@@ -1,5 +1,5 @@
 package com.polimi.dima.uniquizapp.data.model
 
 data class Answer(
-    val id : String, val text : String, val correct : Boolean
+     val text : String, val correct : Boolean
 )

@@ -170,7 +170,7 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                 Button(
                     onClick = {
                         Log.d("confirm", passwordValue.value + " " + confirmPasswordValue.value)
-                        if(!checkingVoidField(firstNameValue, lastNameValue, usernameValue, passwordValue, confirmPasswordValue, emailValue, universityValue)){
+                        if(!checkingVoidField(listOf(firstNameValue, lastNameValue, usernameValue, passwordValue, confirmPasswordValue, emailValue, universityValue))){
                             message.value = "Complete all fields"
                         }
                         else if (passwordValue.value != confirmPasswordValue.value) {
@@ -235,33 +235,11 @@ fun CustomSpacer(){
 }
 
 fun checkingVoidField(
-    firstNameValue : MutableState<String>,
-    lastNameValue : MutableState<String>,
-    usernameValue : MutableState<String>,
-    passwordValue : MutableState<String>,
-    emailValue : MutableState<String>,
-    confirmPasswordValue : MutableState<String>,
-    universityValue : MutableState<String>) : Boolean{
-    if(firstNameValue.value == ""){
-        return false
-    }
-    if(lastNameValue.value == ""){
-        return false
-    }
-    if(usernameValue.value == "") {
-        return false
-    }
-    if(passwordValue.value == ""){
-        return false
-    }
-    if(confirmPasswordValue.value == ""){
-        return false
-    }
-    if(emailValue.value == ""){
-        return false
-    }
-    if(universityValue.value == ""){
-        return false
+    list: List<MutableState<String>>) : Boolean{
+    for(el in list){
+        if(el.value== ""){
+            return false
+        }
     }
     return true
 }

@@ -31,8 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.polimi.dima.uniquizapp.Screen
+import com.polimi.dima.uniquizapp.data.model.Answer
+import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
+import com.polimi.dima.uniquizapp.data.model.Question
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewModel){
@@ -45,8 +50,11 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     val questionTextFocusRequester = remember { FocusRequester() }
     val answers = remember { mutableListOf(mutableStateOf(""),mutableStateOf(""),mutableStateOf(""),mutableStateOf("")) }
     val answersFocusRequester = remember { mutableListOf(FocusRequester(),FocusRequester(),FocusRequester(),FocusRequester()) }
-    val quizzes = sharedViewModel.quizViewModel.getAll(sharedViewModel.subject!!.id)
+    val message = remember { mutableStateOf("") }
+    val subjectId = sharedViewModel.subject!!.id
+    val quizzes = sharedViewModel.quizViewModel.getAll(subjectId)
     val items = mutableListOf<String>()
+    val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
     for(q in quizzes) { items.add(q.name) }
     items.add("New Quiz")
     items.toList()
@@ -108,7 +116,6 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
 
                     Text("Insert the possible answers and check the correct one: ", color = customizedBlue,modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                    val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
                     for(i in 0..3){
 
                         Spacer(modifier = Modifier.size(10.dp))
@@ -146,7 +153,36 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                     .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                        if((quizValue.value=="New Quiz" &&  !checkingVoidField(listOf(quizValue, newQuizName, questionText, answers[0], answers[1], answers[2], answers[3])))
+                            || (quizValue.value!=="New Quiz" && !checkingVoidField(listOf(quizValue, questionText, answers[0], answers[1], answers[2], answers[3]))))
+                            message.value = "Complete all fields to add"
+                        else if(quizValue.value=="New Quiz" && items.contains(newQuizName.value))
+                            message.value = "A quiz with this name already exists"
+                        else {
+                            var list: MutableList<Answer> = mutableListOf()
+                            for( (index,a) in answers.withIndex())
+                                list.add(Answer( answers[index].value, checkedState[index].value))
+                            val question = Question(questionText.value,list)
+                            var quizId : String? = null
+                            for(q in quizzes){
+                                if(q.name==quizValue.value){
+                                    quizId=q.id
+                                    break
+                                }
+                            }
+                            val request = NewQuestionRequest(subjectId,quizId,newQuizName.value,question)
+                            val subject = runBlocking{sharedViewModel.quizViewModel.addQuestion(request)}
+                            if (subject != null) {
+                                sharedViewModel.addSubject(subject)
+                                navController.navigate(Screen.AddQuestionScreen.route) {
+                                    popUpTo(Screen.AddQuestionScreen.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
+                    },
                         colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue, contentColor = Color.White),
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.align(Alignment.Center)
