@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
