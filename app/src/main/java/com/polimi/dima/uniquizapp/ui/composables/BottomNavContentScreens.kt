@@ -9,8 +9,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -180,17 +184,65 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
-                .padding(padding)
+                .padding(30.dp)
         ) {
+            Column(modifier = Modifier.border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)).weight(1f)){
+            Column(modifier = Modifier.weight(0.15f)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Your Friends",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.padding(5.dp).weight(0.6f),
+                        color = customizedBlue
+                    )
+                    Spacer(modifier=Modifier.weight(0.1f))
+                    IconButton(
+                        onClick = {}, modifier = Modifier.background(
+                            customizedBlue,
+                            CircleShape
+                        ).size(15.dp).weight(0.2f)
+                    )
+                    {
+                        Icon(
+                            tint = Color.White,
+                            imageVector = Icons.Default.Add,
+                            contentDescription = ""
+                        )
+                    }
+                    Spacer(modifier=Modifier.weight(0.1f))
 
-            Text(
-                text = "groups screen",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
+                }
+            }
+                Column(modifier = Modifier.weight(0.85f)) {
+                     FriendsList(sharedViewModel, navController)
+                }
+
+            }
+            Spacer(modifier = Modifier.size(10.dp))
+            Column(modifier = Modifier.border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)).weight(1f)){
+                Column(modifier = Modifier.weight(0.2f)) {
+                    Row(
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(
+                            text = "Your Rankings",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.padding(5.dp),
+                            color = customizedBlue
+                        )
+                    }
+                }
+                Column(modifier = Modifier.weight(0.8f)) {
+
+                }
+
+            }
         }
     }
 }

@@ -236,6 +236,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @Composable
 fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
 
+
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val permissionState = rememberPermissionState(
         permission = Manifest.permission.READ_EXTERNAL_STORAGE

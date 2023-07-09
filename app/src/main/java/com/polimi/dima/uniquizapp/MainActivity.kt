@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.polimi.dima.uniquizapp.ui.composables.Calendar
+import com.polimi.dima.uniquizapp.ui.composables.Groups
 import com.polimi.dima.uniquizapp.ui.theme.UniQuizAppTheme
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
             UniQuizAppTheme {
                 navController = rememberNavController()
                 SetupNavGraph(navController = navController)
+                DefaultPreview()
             }
         }
     }
@@ -46,6 +48,6 @@ fun DefaultPreview() {
 
         navController = rememberNavController()
         SetupNavGraph(navController = navController)
-        Calendar(navController, sharedViewModel)
+        Groups(navController, sharedViewModel)
     }
 }
