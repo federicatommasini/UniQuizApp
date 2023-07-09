@@ -14,7 +14,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,10 +28,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,15 +50,11 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.CalendarList
 import com.google.api.services.calendar.model.CalendarListEntry
-import com.google.api.services.calendar.model.Event
-import com.google.api.services.calendar.model.Events
 import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
-import com.polimi.dima.uniquizapp.data.model.ExamRequest
-import com.polimi.dima.uniquizapp.data.model.Subject
-import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.model.Exam
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +62,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
 
@@ -225,16 +224,15 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var user = sharedViewModel.user
-    println("user $user")
+    //println("user $user")
     var googleAccount = sharedViewModel.googleAccount
-    println("google account $googleAccount")
+    //println("google account $googleAccount")
     var calendarService = sharedViewModel.calendarService
-    println("service $calendarService")
+    //println("service $calendarService")
     var calExamsId = sharedViewModel.calendarId
-    println("calid $calExamsId")
+    //println("calid $calExamsId")
     val notNow = remember { mutableStateOf(false) }
-    println("not now ${notNow.value}")
-
+    //println("not now ${notNow.value}")
 
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
@@ -254,15 +252,11 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 signInGoogle.handleResults(task)
                 sharedViewModel.addGoogleAccount(signInGoogle.googleAccount!!)
-
                 //Log.d("TASK_TOKEN", task.result.idToken.toString())
                 //Log.d("TASK_EMAIL", task.result.email.toString())
-                println("1")
             }
         }
     if (googleAccount != null && (calendarService == null)){//} || calExamsId == null)) {
-        println("2")
-        //showButton.value = true
         val googleAccountCredential = GoogleAccountCredential.usingOAuth2(
             context,
             listOf(
@@ -270,8 +264,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 CalendarScopes.CALENDAR_READONLY,
                 CalendarScopes.CALENDAR_EVENTS_READONLY,
                 CalendarScopes.CALENDAR_EVENTS,
-                CalendarScopes.CALENDAR_SETTINGS_READONLY
-            )
+                CalendarScopes.CALENDAR_SETTINGS_READONLY)
         )
         googleAccountCredential.selectedAccount = googleAccount!!.account
         val service: Calendar = Calendar.Builder(
@@ -279,14 +272,12 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
             AndroidJsonFactory.getDefaultInstance(),
             googleAccountCredential
         ).setApplicationName("UniQuiz").build()
-        println("3")
         sharedViewModel.addCalendarService(service)
-        println("CREATED service $service")
-        println("saved service ${sharedViewModel.calendarService}")
+        //println("CREATED service $service")
+        //println("saved service ${sharedViewModel.calendarService}")
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
-            println("4")
             var pageToken: String? = null
             do {
                 val calendarList: CalendarList =
@@ -296,14 +287,9 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 var size = items.size
                 for (calendar in items) {
                     size--
-                    println("for ")
                     if (calendar.summary == "Exams") {
-                        println("5")
                         sharedViewModel.addCalendarId(calendar.id)
                         calExamsId = sharedViewModel.calendarId
-                        Log.d("ASSIGN", calExamsId.toString())
-                        //calExamsId = calendar.id
-                        //getExams(sharedViewModel, user!!, service, calendar.id, userSubjectState)
                         break
                     }
                     if (size == 0) {
@@ -388,59 +374,64 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                 end = 0.dp,
                                 bottom = 0.dp
                             ),
-                            modifier = Modifier.background(Color.White),
+                            modifier = Modifier.background(Color.White).fillMaxSize(),
                             content = {
-                                items(user!!.exams) { item ->
-                                    val name =
-                                        runBlocking {
-                                            sharedViewModel.subjectViewModel.getSubjectById(
-                                                item!!.subjectId
-                                            )!!.name
-                                        }
-                                    val date = getStringDate(item.date)
-                                    Card(
-                                        onClick = { /* TO DO */ },
-                                        backgroundColor = Color.White,
-                                        border = BorderStroke(1.dp, customLightGray),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(100.dp)
-                                    ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
+                                items(onlyFutureExams(user!!.exams)) { item ->
+                                    Log.d("NOW", LocalDate.now().toString())
+                                    val dateNow = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
+                                    Log.d("DATE", dateNow.toString() )
+                                    Log.d("CONDITION", item.date.before(dateNow).toString())
+                                    if(!item.date.before(dateNow)){
+                                        val name = runBlocking {
+                                                sharedViewModel.subjectViewModel.getSubjectById(
+                                                    item!!.subjectId
+                                                )!!.name }
+                                        val date = getStringDate(item.date)
+                                        Card(
+                                            onClick = { /* TO DO */ },
+                                            backgroundColor = Color.White,
+                                            border = BorderStroke(1.dp, customLightGray),
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(horizontal = 8.dp)
+                                                .height(100.dp)
                                         ) {
-                                            Box(
+                                            Row(
+                                                verticalAlignment = CenterVertically,
                                                 modifier = Modifier
-                                                    .weight(1f)
-                                                    .padding(end = 8.dp)
-                                                    .align(Alignment.CenterVertically),
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 8.dp)
                                             ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .padding(end = 8.dp)
+                                                        .align(CenterVertically),
+                                                ) {
+                                                    Text(
+                                                        text = date,
+                                                        lineHeight = 25.sp,
+                                                        fontSize = 30.sp,
+                                                        color = customizedBlue,
+                                                        fontWeight = FontWeight.Normal,
+                                                        fontFamily = FontFamily.Monospace,
+                                                        textAlign = TextAlign.Center,
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .padding(2.dp)
+                                                            .wrapContentHeight()
+                                                    )
+                                                }
                                                 Text(
-                                                    text = date,
+                                                    text = name,
                                                     lineHeight = 25.sp,
-                                                    fontSize = 30.sp,
-                                                    color = customizedBlue,
-                                                    fontWeight = FontWeight.Normal,
+                                                    fontSize = 20.sp,
+                                                    fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center,
                                                     modifier = Modifier
-                                                        .fillMaxSize()
+                                                        .weight(2f)
                                                         .padding(2.dp)
-                                                        .wrapContentHeight()
                                                 )
                                             }
-                                            Text(
-                                                text = name,
-                                                lineHeight = 25.sp,
-                                                fontSize = 20.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                textAlign = TextAlign.Center,
-                                                modifier = Modifier
-                                                    .weight(2f)
-                                                    .padding(2.dp)
-                                            )
                                         }
                                     }
                                 }
@@ -448,34 +439,38 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     }
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                 //   .border(2.dp, Color.Red, RectangleShape)
                     .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(20.dp)
+                        .align(CenterVertically)
+                       // .border(2.dp, Color.Green, RectangleShape)
                 ) {
                     if (googleAccount == null) {
                         googleLoginButton(
-                            "Log in Google Calendar",
-                            "Logging in...",
-                            launcher,
-                            signInIntent,
-                            null
+                            text = "Log in Google Calendar",
+                            loadingText = "Logging in...",
+                            launcher = launcher,
+                            signInIntent  = signInIntent,
+                            calendarService = null,
+                            sharedViewModel = sharedViewModel
                         )
                     } else if (calExamsId == null && notNow.value) {
                         println("creare")
                         googleLoginButton(
-                            text = "Create the Exam calendar",
+                            text = "Create the Exam Calendar",
                             loadingText = "Creating...",
                             launcher = null,
                             signInIntent = null,
-                            calendarService = calendarService!!
+                            calendarService = calendarService!!,
+                            sharedViewModel = sharedViewModel
                         )
                     }
                 }
@@ -484,8 +479,9 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         onClick = { signInGoogle.updateUI(googleAccount!!) },
                         backgroundColor = Color.White,
                         modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .size(40.dp)
+                            .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
+                            .align(Alignment.CenterVertically)
+                            .size(60.dp)
                     ) {
                         Image(
                             painter = painterResource(R.drawable.google_calendar_new_logo_icon_159141),
@@ -496,60 +492,24 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
             }
         }
     }
-
 }
 
 fun getStringDate(date : Date) : String {
-    val dateFormatter = SimpleDateFormat("dd/MM", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("dd MMM", Locale.getDefault())
     return dateFormatter.format(date)
 }
 
-fun createCalendarExams(calendarService : Calendar){
+private fun createCalendarExams(calendarService : Calendar, sharedViewModel: SharedViewModel){
+    var calendarId : String? = null
     val coroutineScope = CoroutineScope(Dispatchers.IO)
     coroutineScope.launch {
         var calendar = com.google.api.services.calendar.model.Calendar()
         calendar.summary = "Exams"
         calendar.timeZone = "Europe/Rome"
-
-        println(calendar.toString())
         val createdCalendar: com.google.api.services.calendar.model.Calendar? =
             calendarService.calendars().insert(calendar).execute()
-        System.out.println(createdCalendar!!.getId())
+        sharedViewModel.addCalendarId(createdCalendar!!.id)
     }
-
-}
-@SuppressLint("CoroutineCreationDuringComposition")
-fun getExams(sharedViewModel : SharedViewModel, user : User, calendarService: Calendar, calId : String, userSubjects: List<Subject>){
-
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
-    coroutineScope.launch {
-        var pageTokenEvents: String? = null
-        do {
-            val eventsList: Events =
-                calendarService.events().list(calId)
-                    .setPageToken(pageTokenEvents)
-                    .execute()
-            val eventItems: List<Event> = eventsList.items
-            for (event in eventItems) {
-                val subjectNameInCalendar = event.summary
-                for (subject in userSubjects) {
-                    if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
-                        val day = event.start.date.toString()
-                        //if in the calendar there is an exam of a subject I added on uniquiz, I send the request to the backend
-                        val examRequest = ExamRequest(subject.id, day)
-                        Log.d("EXAM", examRequest.toString())
-                        Log.d("USERID", user!!.id)
-                        val newUser = runBlocking {
-                            sharedViewModel.examViewModel.addExam(user!!.id, examRequest)
-                        }
-                        sharedViewModel.addUser(newUser)
-                    }
-                }
-            }
-            pageTokenEvents = eventsList.nextPageToken
-        } while (pageTokenEvents != null)
-    }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -559,31 +519,36 @@ fun googleLoginButton(
     loadingText: String,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>?,
     signInIntent: Intent?,
-    calendarService: Calendar?
+    calendarService: Calendar?,
+    sharedViewModel: SharedViewModel
 ){
+    var fraction : Float
+    if(launcher != null){ fraction = 0.8F }
+    else{ fraction = 0.95F }
     var clicked by remember { mutableStateOf(false) }
+
     Surface(
         onClick = {
             clicked = !clicked
             if(launcher == null && signInIntent == null && calendarService != null){
-                println("dentro l'if del click")
-                createCalendarExams(calendarService = calendarService)
+                createCalendarExams(calendarService = calendarService, sharedViewModel)!!
+                clicked = !clicked
             }
             else{
-            launcher!!.launch(signInIntent)
+                launcher!!.launch(signInIntent)
             }},
-        shape = RoundedCornerShape(40.dp),
+        shape = RoundedCornerShape(30.dp),
         border = BorderStroke(1.dp, color = Color.LightGray),
         color = MaterialTheme.colors.surface,
         modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .padding(20.dp)
+            .fillMaxWidth(fraction)
+            .padding(start = 12.dp, end = 8.dp, top = 8.dp, bottom = 12.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
                 .animateContentSize(
                     animationSpec = tween(
                         durationMillis = 300,
@@ -595,7 +560,7 @@ fun googleLoginButton(
                 painter = painterResource(id = R.drawable.google_logo),
                 contentDescription = "Google Button",
                 tint = Color.Unspecified,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(30.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
@@ -627,11 +592,23 @@ fun deleteCalendar(calendarService : Calendar) {
             val items: List<CalendarListEntry> = calendarList.items
             for (calendar in items) {
                 if (calendar.summary == "Exams") {
-                    calendarService.calendars().delete(calendar.id).execute();
+                    calendarService.calendars().delete(calendar.id).execute()
                 }
             }
             pageToken = calendarList.nextPageToken
         } while (pageToken != null)
     }
 
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun onlyFutureExams(allExams : List<Exam>) : List<Exam>{
+    val dateNow = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
+    var onlyFutureExams = mutableListOf<Exam>()
+    for(exam in allExams){
+        if(!exam.date.before(dateNow)){
+            onlyFutureExams.add(exam)
+        }
+    }
+    return onlyFutureExams
 }
