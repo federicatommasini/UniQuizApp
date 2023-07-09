@@ -14,5 +14,5 @@ data class Exam(
     val subjectId: String,
     @Serializable(with = DateSerializer::class)
     //@JsonAdapter(DateSerializer::class)
-    val date: Date
-    ) : Parcelable
+    val date: Date,
+) : Parcelable

@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,9 +29,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -55,6 +58,7 @@ import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.data.model.Exam
+import com.polimi.dima.uniquizapp.data.model.UserExam
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -224,7 +228,7 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var user = sharedViewModel.user
-    //println("user $user")
+    println("user $user")
     var googleAccount = sharedViewModel.googleAccount
     //println("google account $googleAccount")
     var calendarService = sharedViewModel.calendarService
@@ -374,68 +378,123 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                 end = 0.dp,
                                 bottom = 0.dp
                             ),
-                            modifier = Modifier.background(Color.White).fillMaxSize(),
-                            content = {
-                                items(onlyFutureExams(user!!.exams)) { item ->
-                                    Log.d("NOW", LocalDate.now().toString())
-                                    val dateNow = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
-                                    Log.d("DATE", dateNow.toString() )
-                                    Log.d("CONDITION", item.date.before(dateNow).toString())
-                                    if(!item.date.before(dateNow)){
-                                        val name = runBlocking {
-                                                sharedViewModel.subjectViewModel.getSubjectById(
-                                                    item!!.subjectId
-                                                )!!.name }
-                                        val date = getStringDate(item.date)
-                                        Card(
-                                            onClick = { /* TO DO */ },
-                                            backgroundColor = Color.White,
-                                            border = BorderStroke(1.dp, customLightGray),
+                            modifier = Modifier.background(Color.White).fillMaxSize()
+                        ) {
+                            items(onlyFutureExams(user!!.exams)) { item ->
+                                val name = runBlocking {
+                                    sharedViewModel.subjectViewModel.getSubjectById(
+                                        item!!.exam.subjectId
+                                    )!!.name
+                                }
+                                val date = getStringDate(item.exam.date)
+                                Card(
+                                    onClick = { /* TO DO */ },
+                                    backgroundColor = Color.White,
+                                    border = BorderStroke(1.dp, customLightGray),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp)
+                                        .wrapContentHeight()
+                                ) {
+                                    Row(
+                                        verticalAlignment = CenterVertically,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight()
+                                        //.padding(horizontal = 8.dp)
+                                    ) {
+                                        Box(contentAlignment = Center,
                                             modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(100.dp)
+                                                .weight(0.3f)
+                                                .padding(start = 10.dp, end = 8.dp)
+                                                .align(CenterVertically),
                                         ) {
-                                            Row(
-                                                verticalAlignment = CenterVertically,
+                                            Text(
+                                                text = date,
+                                                fontSize = 28.sp,
+                                                color = customizedBlue,
+                                                fontWeight = FontWeight.Normal,
+                                                fontFamily = FontFamily.Monospace,
+                                                textAlign = TextAlign.Center,
                                                 modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 8.dp)
+                                                    .fillMaxSize()
+                                                    .padding(2.dp)
+                                                    .wrapContentHeight()
+                                            )
+                                        }
+                                        Column(
+                                            modifier = Modifier.weight(0.7f).wrapContentHeight()
+                                        ) {
+
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.weight(1f).wrapContentHeight().padding(start = 10.dp)
                                             ) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .weight(1f)
-                                                        .padding(end = 8.dp)
-                                                        .align(CenterVertically),
-                                                ) {
-                                                    Text(
-                                                        text = date,
-                                                        lineHeight = 25.sp,
-                                                        fontSize = 30.sp,
-                                                        color = customizedBlue,
-                                                        fontWeight = FontWeight.Normal,
-                                                        fontFamily = FontFamily.Monospace,
-                                                        textAlign = TextAlign.Center,
-                                                        modifier = Modifier
-                                                            .fillMaxSize()
-                                                            .padding(2.dp)
-                                                            .wrapContentHeight()
-                                                    )
-                                                }
                                                 Text(
                                                     text = name,
-                                                    lineHeight = 25.sp,
-                                                    fontSize = 20.sp,
+                                                    //lineHeight = 23.sp,
+                                                    fontSize = if (item.notes == null) 26.sp else 22.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center,
                                                     modifier = Modifier
-                                                        .weight(2f)
-                                                        .padding(2.dp)
+                                                        // .weight(1f)
+                                                        .padding(
+                                                            start = 0.dp,
+                                                            top = 5.dp,
+                                                            end = 8.dp,
+                                                            bottom = 0.dp
+                                                        )
+                                                        //   .border(1.dp, Color.Blue, RectangleShape)
+                                                        .align(Alignment.CenterVertically)
                                                 )
+                                            }
+                                            if (item.notes != null) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        // .weight(1f)
+                                                        .padding(
+                                                            start = 0.dp,
+                                                            top = 2.dp,
+                                                            end = 8.dp,
+                                                            bottom = 5.dp
+                                                        )
+                                                        // .border(1.dp, Color.Yellow, RectangleShape)
+                                                        .wrapContentHeight()
+                                                ) {
+                                                    Text(
+                                                        text = "Notes:",
+                                                        lineHeight = 15.sp,
+                                                        fontSize = 13.sp,
+                                                        fontFamily = FontFamily.Monospace,
+                                                        fontWeight = FontWeight.Normal,
+                                                        textAlign = TextAlign.Left,
+                                                        color = Color.Gray,
+                                                        modifier = Modifier
+
+                                                        //    .border(1.dp, Color.Green, RectangleShape)
+                                                    )
+                                                    Text(
+                                                        text = item.notes,
+                                                        //text = "Un testo lungo vediamo cosa viene fuori non si può mai sapere gli scherzi che ti fa kotlin",
+                                                        lineHeight = 14.sp,
+                                                        fontSize = 12.sp,
+                                                        fontFamily = FontFamily.Monospace,
+                                                        fontWeight = FontWeight.Normal,
+                                                        textAlign = TextAlign.Left,
+                                                        color = Color.Gray,
+                                                        modifier = Modifier
+                                                            .padding(start = 5.dp)
+                                                            //   .border(1.dp, Color.Red, RectangleShape)
+                                                            .wrapContentHeight()
+                                                    )
+                                                }
+
                                             }
                                         }
                                     }
                                 }
-                            })
+                            }
+                        }
                     }
                 }
             }
@@ -602,12 +661,13 @@ fun deleteCalendar(calendarService : Calendar) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun onlyFutureExams(allExams : List<Exam>) : List<Exam>{
+private fun onlyFutureExams(allExams : List<UserExam>) : List<UserExam>{
     val dateNow = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
-    var onlyFutureExams = mutableListOf<Exam>()
-    for(exam in allExams){
-        if(!exam.date.before(dateNow)){
-            onlyFutureExams.add(exam)
+    var onlyFutureExams = mutableListOf<UserExam>()
+    println("Exams $allExams")
+    for(userExam in allExams){
+        if(!userExam.exam.date.before(dateNow)){
+            onlyFutureExams.add(userExam)
         }
     }
     return onlyFutureExams
