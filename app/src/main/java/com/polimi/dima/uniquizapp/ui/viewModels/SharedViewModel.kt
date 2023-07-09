@@ -74,9 +74,14 @@ class SharedViewModel : ViewModel() {
                         val subjectNameInCalendar = event.summary
                         for (subject in subjectViewModel.userSubjectsState.value) {
                             if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
-                                val day = event.start.dateTime.toString()
+                                val startDate = event.start
+                                val day = if (startDate.dateTime != null) {
+                                    startDate.dateTime.toString()
+                                } else {
+                                    startDate.date.toString()
+                                }
                                 //if in the calendar there is an exam of a subject I added on uniquiz, I send the request to the backend
-                                val examRequest = ExamRequest(subject.id, day, event.description)
+                                val examRequest = ExamRequest(subject.id, day!!, event.description)
                                 Log.d("EXAM", examRequest.toString())
                                 Log.d("USERID", user!!.id)
                                 val newUser = runBlocking {

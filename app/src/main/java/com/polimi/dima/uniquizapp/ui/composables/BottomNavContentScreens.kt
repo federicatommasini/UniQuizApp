@@ -475,7 +475,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                     )
                                                     Text(
                                                         text = item.notes,
-                                                        //text = "Un testo lungo vediamo cosa viene fuori non si può mai sapere gli scherzi che ti fa kotlin",
                                                         lineHeight = 14.sp,
                                                         fontSize = 12.sp,
                                                         fontFamily = FontFamily.Monospace,
@@ -664,7 +663,6 @@ fun deleteCalendar(calendarService : Calendar) {
 private fun onlyFutureExams(allExams : List<UserExam>) : List<UserExam>{
     val dateNow = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())
     var onlyFutureExams = mutableListOf<UserExam>()
-    println("Exams $allExams")
     for(userExam in allExams){
         if(!userExam.exam.date.before(dateNow)){
             onlyFutureExams.add(userExam)
