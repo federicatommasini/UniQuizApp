@@ -81,6 +81,10 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val uniViewModel = sharedViewModel.uniViewModel
     var user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
+    var showCamera : Boolean = true
+    if(user!!.profilePicUrl != null){
+        showCamera = false
+    }
 
     var showAlert by remember {mutableStateOf(false)}
     if(showAlert){
@@ -118,7 +122,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     .padding(0.dp)
                     .background(customizedBlue)
             )
-            { ProfileImage(user, sharedViewModel, true)
+            { ProfileImage(user, sharedViewModel, showCamera)
             }
             CustomSpacer()
             ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
@@ -239,7 +243,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @Composable
 fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Boolean) {
 
-
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val permissionState = rememberPermissionState(
         permission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -250,7 +253,6 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
 
     val clicked = remember { mutableStateOf(false) }
 
-    //SideEffect { permissionState.launchPermissionRequest() }
     LaunchedEffect(permissionState.status) {
         if (permissionState.status == PermissionStatus.Granted && clicked.value) {
             filePickerLauncher.launch("*/*")
