@@ -64,17 +64,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.clickable
 import androidx.compose.material.Card
-
-
 
 
 @Composable
@@ -85,75 +80,112 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
     Scaffold(
         topBar = {AppBar(navController = navController,true,false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
-    ) {padding ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
                 .padding(padding)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "Welcome ${user?.username} to the UniQuiz app!",
+            Text(
+                text = "Welcome ${user?.username} to the UniQuiz app!",
                 fontWeight = FontWeight.Bold,
                 color = customizedBlue,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(30.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 30.sp)
-            Text(text = "With this app you can schedule your study for your university exams, learning using simple and fun quizzes!",
-                    fontWeight = FontWeight.Bold,
-                color = customizedBlue,
+                fontSize = 30.sp
+            )
+            Text(
+                text = "With this app you can schedule your study for your university exams, learning using simple and fun quizzes!",
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(30.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 20.sp)
+                fontSize = 16.sp
+            )
             /*Image(painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
                    modifier = Modifier.size(300.dp).align(Alignment.CenterHorizontally).padding(10.dp,0.dp)
             )*/
-            Column(
+
+            /*Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            ){
-
-               /* Box(
-
+                    .fillMaxWidth()
+                    .padding(20.dp)
+                    .wrapContentWidth(Alignment.CenterHorizontally),
+                border = BorderStroke(1.dp, customizedBlue),
+                shape = RoundedCornerShape(30.dp),
+                elevation = 4.dp
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(painter = painterResource(id = R.drawable.books),
-                        contentDescription = "books",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.clickable { //navController.navigate(route = BottomNavItem.Subjects.screen_route)
-                        }
-                            .fillMaxWidth()
-                            .padding(30.dp, 10.dp)
-                            .border(
-                                BorderStroke(2.dp, customizedBlue),
-                                RoundedCornerShape(500.dp)
-                            )
-                            .clip(RoundedCornerShape(500.dp))
-                    )
-                    Text(text = "Your Subjects",
-                        fontWeight = FontWeight.Bold,
+                    Text(
+                        text = "Your Ranking",
+                        fontSize = 26.sp,
                         color = customizedBlue,
-                        modifier = Modifier.align(Alignment.CenterStart).padding(50.dp),
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        fontSize = 20.sp)
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "17",
+                        fontSize = 26.sp,
+                        color = customizedBlue,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
-                Image(painter = painterResource(id = R.drawable.groups),
-                    contentDescription = "groups",
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier.clickable { //navController.navigate(route = BottomNavItem.Subjects.screen_route)
-                         }
-                        .fillMaxWidth()
-                        .padding(30.dp,10.dp)
-                        .border(
-                            BorderStroke(2.dp, customizedBlue),
-                            RoundedCornerShape(500.dp)
-                        )
-                        .clip(RoundedCornerShape(500.dp))
-                )*/
+            }*/
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Your Activities",
+                    fontSize = 26.sp,
+                    color = customizedBlue,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp))
+            {
+                val rowWithBarPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 5.dp)
+                val middleRowPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 10.dp)
+                val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
+                ActivityRow(paddingValues = rowWithBarPadding, header = "Quizzes Completed", text = "3 out of 4", fractionCompleted = 0.75f, true)
+                ActivityRow(
+                    paddingValues = rowWithBarPadding,
+                    header = "Subjects Completed",
+                    text = "1 out of 2",
+                    fractionCompleted = 0.5f,
+                    progressBar = true
+                )
+                ActivityRow(
+                    paddingValues = middleRowPadding,
+                    header = "Questions Added",
+                    text = "5",
+                    fractionCompleted = null,
+                    progressBar = false
+                )
+                ActivityRow(
+                    paddingValues = lastRowPadding,
+                    header = "Questions Reported",
+                    text = "1",
+                    fractionCompleted = null,
+                    progressBar = false
+                )
             }
         }
     }
@@ -516,7 +548,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         backgroundColor = Color.White,
                         modifier = Modifier
                             .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                           // .align(Alignment.End)
+                            // .align(Alignment.End)
                             .align(Alignment.BottomEnd)
                             .size(40.dp)
                     ) {
