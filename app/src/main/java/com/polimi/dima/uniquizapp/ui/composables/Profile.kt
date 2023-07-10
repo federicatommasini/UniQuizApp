@@ -209,7 +209,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                                 user!!.subjectIds,
                                 user!!.exams,
                                 user!!.schedules,
-                                user!!.profilePicUrl
+                                user!!.profilePicUrl,
+                                user!!.questionsAdded,
+                                user!!.questionsReported
                             )
                             runBlocking {
                                 user = sharedViewModel.userViewModel.updateProfile(
@@ -481,7 +483,9 @@ fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
         oldUser!!.subjectIds,
         oldUser!!.exams,
         oldUser!!.schedules,
-        url!!)
+        url!!,
+        oldUser!!.questionsAdded,
+        oldUser!!.questionsReported)
     runBlocking {
         justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
     }

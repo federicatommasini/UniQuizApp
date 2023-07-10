@@ -380,7 +380,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
 
     Scaffold(
-        topBar = { AppBar(navController = navController, true, false) },
+        topBar = { AppBar(navController = navController, true, false, sharedViewModel, false) },
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { padding ->
         Column(
