@@ -70,6 +70,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Card
+import androidx.compose.ui.graphics.RectangleShape
+import com.polimi.dima.uniquizapp.data.model.Subject
 
 
 @Composable
@@ -104,7 +106,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 color = Color.Gray,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(30.dp),
+                    .padding(vertical = 0.dp, horizontal = 20.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp
             )
@@ -113,26 +115,23 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                    modifier = Modifier.size(300.dp).align(Alignment.CenterHorizontally).padding(10.dp,0.dp)
             )*/
 
-            /*Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .wrapContentWidth(Alignment.CenterHorizontally),
-                border = BorderStroke(1.dp, customizedBlue),
-                shape = RoundedCornerShape(30.dp),
-                elevation = 4.dp
-            ) {
-                Column(
+            Spacer(modifier = Modifier.padding(10.dp))
+            Column(
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .border(2.dp, customizedBlue, RoundedCornerShape(40.dp))
+                        .align(Alignment.CenterHorizontally)
                 ) {
+                    //Spacer(modifier = Modifier.padding(10.dp))
                     Text(
-                        text = "Your Ranking",
+                        text = "Your Score:",
                         fontSize = 26.sp,
                         color = customizedBlue,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)
+                             //.border(1.dp, Color.Red, RectangleShape)
                     )
                     Text(
                         text = "17",
@@ -140,11 +139,11 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                         color = customizedBlue,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)//.border(1.dp, Color.Green, RectangleShape)
                     )
+                    //Spacer(modifier = Modifier.padding(10.dp))
                 }
-            }*/
-
+            Spacer(modifier = Modifier.padding(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -161,10 +160,20 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 
             Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp))
             {
+                val listSubjects = sharedViewModel.subjectViewModel.getSubjectsByUser(user!!.id)
+                val totSubjectsUser = listSubjects.size
+                val totQuizUser = totQuizUser(user!!.id, listSubjects)
+                val completedQuizUser = completedQuizUser(user!!.id)
+                val completedSubjectsUser = completedSubjectsUser(user!!.id)
                 val rowWithBarPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 5.dp)
                 val middleRowPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 10.dp)
                 val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
-                ActivityRow(paddingValues = rowWithBarPadding, header = "Quizzes Completed", text = "3 out of 4", fractionCompleted = 0.75f, true)
+                ActivityRow(
+                    paddingValues = rowWithBarPadding,
+                    header = "Quizzes Completed",
+                    text = "3 out of 4",
+                    fractionCompleted = 0.75f,
+                    progressBar = true)
                 ActivityRow(
                     paddingValues = rowWithBarPadding,
                     header = "Subjects Completed",
@@ -175,20 +184,35 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 ActivityRow(
                     paddingValues = middleRowPadding,
                     header = "Questions Added",
-                    text = "5",
+                    text = user!!.questionsAdded.toString(),
                     fractionCompleted = null,
                     progressBar = false
                 )
                 ActivityRow(
                     paddingValues = lastRowPadding,
                     header = "Questions Reported",
-                    text = "1",
+                    text = user!!.questionsReported.toString(),
                     fractionCompleted = null,
                     progressBar = false
                 )
             }
         }
     }
+}
+
+fun completedSubjectsUser(id: String): Int {
+    return 1;
+}
+
+fun completedQuizUser(id: String) {
+
+}
+
+fun totQuizUser(id: String, subjects : List<Subject>): Int {
+    for(subject in subjects){
+
+    }
+    return 1;
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
