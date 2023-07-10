@@ -71,6 +71,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.clickable
+import androidx.compose.material.Card
+
 
 
 
@@ -394,6 +397,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                 val date = getStringDate(item.exam.date)
                                 Card(
                                     onClick = { /* TO DO */ },
+                                    enabled = false,
                                     backgroundColor = Color.White,
                                     border = BorderStroke(1.dp, customLightGray),
                                     modifier = Modifier
