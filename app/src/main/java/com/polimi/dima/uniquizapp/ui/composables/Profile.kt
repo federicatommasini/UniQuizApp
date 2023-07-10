@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.polimi.dima.uniquizapp.BottomNavItem
@@ -301,7 +302,14 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
         contract = ActivityResultContracts.GetContent(),
         onResult = { imageUri = it })
 
-    SideEffect { permissionState.launchPermissionRequest() }
+    val clicked = remember { mutableStateOf(false) }
+
+    //SideEffect { permissionState.launchPermissionRequest() }
+    LaunchedEffect(permissionState.status) {
+        if (permissionState.status == PermissionStatus.Granted && clicked.value) {
+            filePickerLauncher.launch("*/*")
+        }
+    }
 
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -382,6 +390,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
             }
             IconButton(
                 onClick = {
+                    clicked.value = true
                     if (permissionState.status.isGranted) {
                         filePickerLauncher.launch("*/*")
                     }

@@ -504,51 +504,51 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     }
                 }
             }
-            if(!notNow.value){
-
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    //   .border(2.dp, Color.Red, RectangleShape)
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
+            if(calExamsId == null){
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .align(CenterVertically)
-                       // .border(2.dp, Color.Green, RectangleShape)
+                        .fillMaxWidth()
+                        //   .border(2.dp, Color.Red, RectangleShape)
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (googleAccount == null) {
-                        googleLoginButton(
-                            text = "Log in Google Calendar",
-                            loadingText = "Logging in...",
-                            launcher = launcher,
-                            signInIntent  = signInIntent,
-                            calendarService = null,
-                            sharedViewModel = sharedViewModel
-                        )
-                    } else if (calExamsId == null && notNow.value) {
-                        println("creare")
-                        googleLoginButton(
-                            text = "Create the Exam Calendar",
-                            loadingText = "Creating...",
-                            launcher = null,
-                            signInIntent = null,
-                            calendarService = calendarService!!,
-                            sharedViewModel = sharedViewModel
-                        )
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(CenterVertically)
+                        // .border(2.dp, Color.Green, RectangleShape)
+                    ) {
+                        if (googleAccount == null) {
+                            googleLoginButton(
+                                text = "Log in Google Calendar",
+                                loadingText = "Logging in...",
+                                launcher = launcher,
+                                signInIntent = signInIntent,
+                                calendarService = null,
+                                sharedViewModel = sharedViewModel
+                            )
+                        } else if (calExamsId == null && notNow.value) {
+                            println("creare")
+                            googleLoginButton(
+                                text = "Create the Exam Calendar",
+                                loadingText = "Creating...",
+                                launcher = null,
+                                signInIntent = null,
+                                calendarService = calendarService!!,
+                                sharedViewModel = sharedViewModel
+                            )
+                        }
                     }
                 }
-                if (googleAccount != null) { //&& calendarService != null?
+            }
+            if (googleAccount != null) { //&& calendarService != null?
                     FloatingActionButton(
                         onClick = { signInGoogle.updateUI(googleAccount!!) },
                         backgroundColor = Color.White,
                         modifier = Modifier
                             .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                            .align(Alignment.CenterVertically)
+                            .align(Alignment.End)
                             .size(60.dp)
                     ) {
                         Image(
@@ -557,7 +557,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         )
                     }
                 }
-            }
+
         }
     }
 
