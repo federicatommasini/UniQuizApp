@@ -8,5 +8,4 @@ data class Subject (
     val ranking:  Map<String, Integer>,
     val base_url: String,
     val pdf_links:  List<String>
-
 )

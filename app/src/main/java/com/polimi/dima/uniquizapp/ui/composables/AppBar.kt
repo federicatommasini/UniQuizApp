@@ -61,9 +61,10 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
         if(seeBackArrow)
             IconButton(onClick = {
                 var route = navController.previousBackStackEntry?.destination!!.route!!
+                var finalRoute =route
                 if( route == Screen.SubjectScreen.route)
-                    route = route.replace("{subjectId}", sharedViewModel.subject!!.id)
-                navController.navigate(route){
+                    finalRoute = route.replace("{subjectId}", sharedViewModel.subject!!.id)
+                navController.navigate(finalRoute){
                     popUpTo(route){
                         inclusive = true
                     }
