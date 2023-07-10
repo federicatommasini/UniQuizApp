@@ -209,7 +209,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                             var list: MutableList<Answer> = mutableListOf()
                             for( (index,a) in answers.withIndex())
                                 list.add(Answer( answers[index].value, checkedState[index].value))
-                            val question = Question(questionText.value,list)
+                            val question = Question(questionText.value,list, listOf())
                             var quizId : String? = null
                             for(q in quizzes){
                                 if(q.name==quizValue.value){

@@ -49,17 +49,16 @@ fun Slider(subjects : List<Subject>, pagerState: PagerState, sharedViewModel: Sh
         HorizontalPager(
             pageCount = subjects.size,
             state = pagerState,
-            key = {subjects[it].id},
-            pageSize = PageSize.Fill
+            key = {subjects[it].id}
         ) {
             index ->
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
-                    .fillMaxHeight().border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp))
-                    .wrapContentSize(Alignment.Center)
+                    .border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp))
+                    .wrapContentHeight(Alignment.CenterVertically)
             ) {
-                    Column(modifier = Modifier.weight(0.1f)) {
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -73,10 +72,10 @@ fun Slider(subjects : List<Subject>, pagerState: PagerState, sharedViewModel: Sh
                                 color = customizedBlue
                             )
                         }
-                    }
-                    Column(modifier = Modifier.weight(0.9f)) {
+
+
                         Ranking(subjects[index],sharedViewModel, navController)
-                    }
+
 
             }
         }

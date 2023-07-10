@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -23,10 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
+import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import org.apache.commons.logging.Log
 
@@ -35,7 +43,6 @@ import org.apache.commons.logging.Log
 fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: NavController){
 
     var user = sharedViewModel.user
-    val state by sharedViewModel.userViewModel.allUsersState.collectAsState()
     val map = subject.ranking.toSortedMap()
     val stateMap by remember {mutableStateOf(subject.ranking.toSortedMap())}
     var count =0
@@ -56,6 +63,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                     onClick = { },
                     backgroundColor = Color.White,
                     border = BorderStroke(1.dp, customLightGray),
+                    enabled = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(80.dp)
@@ -73,7 +81,15 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text = map.get(item).toString(), modifier = Modifier.weight(0.1f))
                         Spacer(modifier = Modifier.weight(0.05f))
-                        Text(text = map.get(item).toString(), modifier = Modifier.weight(0.1f))
+                        Text(text = count.toString() + "\u00B0", fontSize = 28.sp,
+                            color = customizedBlue,
+                            fontWeight = FontWeight.Normal,
+                            fontFamily = FontFamily.Monospace,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .wrapContentHeight())
+                        Spacer(modifier = Modifier.weight(0.05f))
                     }
                 }
             }

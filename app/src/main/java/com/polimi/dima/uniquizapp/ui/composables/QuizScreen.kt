@@ -14,8 +14,14 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -68,6 +74,11 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(10.dp)
                 )
+                IconButton(onClick = {}, modifier = Modifier.align(Alignment.BottomEnd)){
+                    Icon(tint = Color.White,
+                        imageVector = Icons.Default.Report,
+                        contentDescription = "",)
+                }
             }
 
             for((index,answer) in question.answers.withIndex()) {

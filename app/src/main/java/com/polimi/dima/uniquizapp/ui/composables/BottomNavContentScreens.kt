@@ -270,24 +270,34 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
         bottomBar = { BottomNavigationBar(navController = navController) },
         modifier = Modifier.fillMaxHeight(1f)
     ) { padding ->
+        ScreenTitle("Ranking")
         Column(
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            ScreenTitle("Ranking")
-            Column(modifier = Modifier.fillMaxHeight(0.9f).padding(20.dp)){
-                Slider(subjects, pagerState, sharedViewModel, navController)
-            }
+
+            Slider(subjects, pagerState, sharedViewModel, navController)
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f)) {
+                modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier=Modifier.size(20.dp))
                 DotsIndicator(
                     totalDots = subjects.size,
                     selectedIndex = pagerState.currentPage,
                     selectedColor = customizedBlue,
                     unSelectedColor = customGray
+                )
+            }
+            if(subjects.isEmpty()){
+                Text("Add some subjects to get started! You will be able to confront your results with the other users.",
+                    fontWeight = FontWeight.Bold,
+                    color = customizedBlue,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(30.dp).border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
                 )
             }
         }
