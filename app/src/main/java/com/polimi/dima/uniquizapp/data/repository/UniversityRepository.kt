@@ -18,7 +18,6 @@ class UniversityRepository @Inject constructor(
     }
 
     suspend fun getAllUni() : List<University> {
-        Log.d("repo", uniApi.getAllUni().toString())
         return uniApi.getAllUni()
 
     }

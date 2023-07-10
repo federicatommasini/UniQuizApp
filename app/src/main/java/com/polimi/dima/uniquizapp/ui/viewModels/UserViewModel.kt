@@ -72,7 +72,7 @@ class UserViewModel @Inject constructor(
         return _loginState.value
     }
 
-    fun addSubjectToUser(subject : Subject, userId : String) : User{
+    fun addSubjectToUser(subject : Subject, userId : String) : User {
         var user : User? = null
         viewModelScope.launch{
             user = runBlocking { userRepo.addSubject(subject, userId) }

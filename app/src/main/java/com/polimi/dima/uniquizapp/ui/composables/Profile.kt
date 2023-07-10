@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.polimi.dima.uniquizapp.BottomNavItem
@@ -208,7 +209,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                                 user!!.subjectIds,
                                 user!!.exams,
                                 user!!.schedules,
-                                user!!.profilePicUrl
+                                user!!.profilePicUrl,
+                                user!!.questionsAdded,
+                                user!!.questionsReported
                             )
                             runBlocking {
                                 user = sharedViewModel.userViewModel.updateProfile(
@@ -245,7 +248,14 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
         contract = ActivityResultContracts.GetContent(),
         onResult = { imageUri = it })
 
+    val clicked = remember { mutableStateOf(false) }
+
     //SideEffect { permissionState.launchPermissionRequest() }
+    LaunchedEffect(permissionState.status) {
+        if (permissionState.status == PermissionStatus.Granted && clicked.value) {
+            filePickerLauncher.launch("*/*")
+        }
+    }
 
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -269,23 +279,23 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
     {
         Spacer(modifier = Modifier.padding(0.dp))
         Box(modifier = Modifier
-            .size(140.dp, 140.dp)){
+            .size(140.dp, 140.dp)) {
             Card(
                 shape = CircleShape,
                 modifier = Modifier
                     .padding(0.dp)
                     .size(140.dp)
                     .align(Alignment.Center),
-            ) {if(imageUri != null){
+            ) {
+                if (imageUri != null) {
                     if (Build.VERSION.SDK_INT < 28) {
                         bitmap.value = MediaStore.Images
                             .Media.getBitmap(context.contentResolver, imageUri)
-                    }
-                    else {
+                    } else {
                         val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
                         bitmap.value = ImageDecoder.decodeBitmap(source)
                     }
-                    if(bitmap.value != null){
+                    if (bitmap.value != null) {
                         Image(
                             bitmap = bitmap.value!!.asImageBitmap(),
                             contentDescription = null,
@@ -299,12 +309,12 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
                         }
-                        if(onlyOnce) {
+                        if (onlyOnce) {
                             uploadImage(filePath!!, sharedViewModel)
                             onlyOnce = false
                         }
                     }
-                } else{
+                } else {
                     Image(
                         painter = painter, contentDescription = null,
                         modifier = Modifier
@@ -313,7 +323,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                         contentScale = ContentScale.Crop
                     )
                 }
-                if(showDialog) {
+                if (showDialog) {
                     Dialog(onDismissRequest = { showDialog = false },
                         content = {
                             FullImage(
@@ -324,31 +334,32 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                     )
                 }
             }
-            if(showCamera){
-                IconButton(
-                    onClick = {
-                        if (permissionState.status.isGranted) {
-                            filePickerLauncher.launch("*/*")
-                        }
-                        else{
-                            permissionState.launchPermissionRequest()
-                        }},
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(0.dp)
-                        .align(Alignment.BottomEnd),
-                    content = {
-                        Icon(
-                            Icons.Default.PhotoCamera,
-                            contentDescription = "Edit Icon",
-                            tint = Color.Black,
-                            modifier = Modifier
-                                .size(44.dp)
-                                .background(Color.White, CircleShape)
-                                .padding(4.dp)
-                        )
+            if (showCamera) {
+            IconButton(
+                onClick = {
+                    clicked.value = true
+                    if (permissionState.status.isGranted) {
+                        filePickerLauncher.launch("*/*")
                     }
-                )
+                    else{
+                        permissionState.launchPermissionRequest()
+                    }},
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(0.dp)
+                    .align(Alignment.BottomEnd),
+                content = {
+                    Icon(
+                        Icons.Default.PhotoCamera,
+                        contentDescription = "Edit Icon",
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(44.dp)
+                            .background(Color.White, CircleShape)
+                            .padding(4.dp)
+                    )
+                }
+            )
             }
         }
         Row(modifier = Modifier
@@ -431,7 +442,7 @@ fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
 
     val supabaseUrl = SUPABASE_URL
     val supabaseKey = SUPABASE_KEY
-    val bucketName = BUCKET_NAME // Il nome del tuo bucket Supabase
+    val bucketName = BUCKET_NAME
 
     val file = File(imagePath)
     val byteArray = file.readBytes()
@@ -472,7 +483,9 @@ fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
         oldUser!!.subjectIds,
         oldUser!!.exams,
         oldUser!!.schedules,
-        url!!)
+        url!!,
+        oldUser!!.questionsAdded,
+        oldUser!!.questionsReported)
     runBlocking {
         justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
     }

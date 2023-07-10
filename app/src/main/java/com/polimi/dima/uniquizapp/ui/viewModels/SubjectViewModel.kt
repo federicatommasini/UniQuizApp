@@ -50,7 +50,6 @@ class SubjectViewModel @Inject constructor(
         viewModelScope.launch {
             val response = runBlocking { subjectRepo.getSubjectsByUser(userId) }
             _userSubjectsState.value = response
-            Log.d("Dentro view", response.toString())
         }
         return userSubjectsState.value
     }
@@ -78,6 +77,5 @@ class SubjectViewModel @Inject constructor(
             val response = runBlocking { subjectRepo.updateRanking(subjectId,userId)}
         }
     }
-
 
 }
