@@ -20,7 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
+//import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,6 +69,9 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+
 
 
 @Composable
@@ -440,8 +443,8 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                 Text(
                                                     text = name,
                                                     //lineHeight = 23.sp,
-                                                    fontSize = if (item.notes == null) 26.sp else 22.sp,
-                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = if (item.notes == null) 26.sp else 24.sp,
+                                                    fontWeight = FontWeight.Normal,
                                                     textAlign = TextAlign.Center,
                                                     modifier = Modifier
                                                         // .weight(1f)
@@ -503,7 +506,24 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         }
                     }
                 }
+                if (googleAccount != null) { //&& calendarService != null?
+                    FloatingActionButton(
+                        onClick = { signInGoogle.updateUI(googleAccount!!) },
+                        backgroundColor = Color.White,
+                        modifier = Modifier
+                            .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
+                           // .align(Alignment.End)
+                            .align(Alignment.BottomEnd)
+                            .size(40.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.google_calendar_new_logo_icon_159141),
+                            contentDescription = "Google Calendar"
+                        )
+                    }
+                }
             }
+
             if(calExamsId == null){
                 Row(
                     modifier = Modifier
@@ -519,44 +539,44 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                             .align(CenterVertically)
                         // .border(2.dp, Color.Green, RectangleShape)
                     ) {
-                        if (googleAccount == null) {
-                            googleLoginButton(
-                                text = "Log in Google Calendar",
-                                loadingText = "Logging in...",
-                                launcher = launcher,
-                                signInIntent = signInIntent,
-                                calendarService = null,
-                                sharedViewModel = sharedViewModel
-                            )
-                        } else if (calExamsId == null && notNow.value) {
-                            println("creare")
-                            googleLoginButton(
-                                text = "Create the Exam Calendar",
-                                loadingText = "Creating...",
-                                launcher = null,
-                                signInIntent = null,
-                                calendarService = calendarService!!,
-                                sharedViewModel = sharedViewModel
-                            )
-                        }
-                    }
-                }
-            }
-            if (googleAccount != null) { //&& calendarService != null?
-                    FloatingActionButton(
-                        onClick = { signInGoogle.updateUI(googleAccount!!) },
-                        backgroundColor = Color.White,
-                        modifier = Modifier
-                            .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                            .align(Alignment.End)
-                            .size(60.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.google_calendar_new_logo_icon_159141),
-                            contentDescription = "Google Calendar"
+                    if (googleAccount == null) {
+                        googleLoginButton(
+                            text = "Log in Google Calendar",
+                            loadingText = "Logging in...",
+                            launcher = launcher,
+                            signInIntent = signInIntent,
+                            calendarService = null,
+                            sharedViewModel = sharedViewModel
+                        )
+                    } else if (calExamsId == null && notNow.value) {
+                        println("creare")
+                        googleLoginButton(
+                            text = "Create the Exam Calendar",
+                            loadingText = "Creating...",
+                            launcher = null,
+                            signInIntent = null,
+                            calendarService = calendarService!!,
+                            sharedViewModel = sharedViewModel
                         )
                     }
                 }
+                }
+            }
+            /*if (googleAccount != null) { //&& calendarService != null?
+                FloatingActionButton(
+                    onClick = { signInGoogle.updateUI(googleAccount!!) },
+                    backgroundColor = Color.White,
+                    modifier = Modifier
+                        .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
+                        .align(Alignment.End)
+                        .size(60.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.google_calendar_new_logo_icon_159141),
+                        contentDescription = "Google Calendar"
+                    )
+                }
+            }*/
 
         }
     }
