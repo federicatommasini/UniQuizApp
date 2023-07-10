@@ -40,4 +40,8 @@ class UserRepository @Inject constructor(
     suspend fun uploadProfileIcon(user : User, userId: String) : User {
         return userApi.uploadProfileIcon(user, userId)
     }
+
+    suspend fun getPoints(userId: String) : Int{
+        return userApi.getPoints(userId)
+    }
 }

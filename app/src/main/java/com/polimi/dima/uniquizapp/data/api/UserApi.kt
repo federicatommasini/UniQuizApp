@@ -33,4 +33,7 @@ interface UserApi {
     suspend fun addSubject(@Body subject : Subject, @Path("userId") userId : String) : User
     @PUT("/{userId}/pic")
     suspend fun uploadProfileIcon(@Body user : User, @Path("userId") number: String) : User
+
+    @GET("/{userId}/points")
+    suspend fun getPoints(@Path("userId") userId: String): Int
 }

@@ -16,9 +16,11 @@ interface SubjectApi {
     @GET("/subjectById/{subjectId}")
     suspend fun getSubjectById(@Path("subjectId") id : String) : Subject
 
-    @GET("/documents/{subjectId}")
+
     suspend fun getDocumentUrls(@Path("subjectId") id : String) : List<String>
 
     @PUT("/updateRanking/{subjectId}/{userId}")
     suspend fun updateRanking(@Path("subjectId") subjectId : String, @Path("userId") userId : String)
+    @GET("/completedSubjects/{userId}")
+    suspend fun completedSubjectsUser(@Path("userId") userId: String) : Int
 }

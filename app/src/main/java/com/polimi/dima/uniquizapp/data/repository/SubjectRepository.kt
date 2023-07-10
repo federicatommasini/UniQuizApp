@@ -27,4 +27,8 @@ class SubjectRepository@Inject constructor(
     suspend fun updateRanking(subjectId: String, userId: String){
         subjectApi.updateRanking(subjectId,userId)
     }
+
+    suspend fun completedSubjectsUser(userId: String) : Int {
+        return subjectApi.completedSubjectsUser(userId)
+    }
 }

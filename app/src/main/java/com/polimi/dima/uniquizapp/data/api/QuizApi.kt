@@ -22,4 +22,7 @@ interface QuizApi {
 
     @POST("/addQuestion")
     suspend fun addQuestion(@Body request: NewQuestionRequest) : Subject?
+
+    @GET("/completedQuizzes/{userId}")
+    suspend fun getQuizzesCompletedByUser(@Path("userId") userId : String) : List<Quiz?>
 }

@@ -23,6 +23,9 @@ class QuizViewModel @Inject constructor(
     private val _allQuizzesState = MutableStateFlow(emptyList<Quiz>())
     val allQuizzesState: StateFlow<List<Quiz>> = _allQuizzesState.asStateFlow()
 
+    private val _allCompletedQuizzesState = MutableStateFlow(emptyList<Quiz?>())
+    val allCompletedQuizzesState: StateFlow<List<Quiz?>> = _allCompletedQuizzesState.asStateFlow()
+
     fun getAll(subjectId : String) : List<Quiz> {
         viewModelScope.launch{
             val response = runBlocking {
@@ -54,5 +57,13 @@ class QuizViewModel @Inject constructor(
             subject = response
         }
         return subject
+    }
+
+    fun getQuizzesCompletedByUser(userId : String) : List<Quiz?>{
+        viewModelScope.launch{
+            val response = runBlocking{ quizRepo.getQuizzesCompletedByUser(userId)}
+            _allCompletedQuizzesState.value = response
+        }
+        return allCompletedQuizzesState.value
     }
 }

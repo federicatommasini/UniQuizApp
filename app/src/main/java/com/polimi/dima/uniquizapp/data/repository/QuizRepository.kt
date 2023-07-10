@@ -22,4 +22,8 @@ class QuizRepository @Inject constructor(
     suspend fun addQuestion(request: NewQuestionRequest) : Subject? {
         return quizApi.addQuestion(request)
     }
+
+    suspend fun getQuizzesCompletedByUser(userId: String) : List<Quiz?>{
+        return quizApi.getQuizzesCompletedByUser(userId)
+    }
 }
