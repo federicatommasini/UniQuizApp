@@ -65,6 +65,7 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.gotrue.GoTrue
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
@@ -72,6 +73,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.lang.Exception
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -82,7 +84,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     var user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
     var showCamera : Boolean = true
-    if(user!!.profilePicUrl != null){
+    if(user!!.profilePicUrl != ""){
         showCamera = false
     }
 
@@ -466,7 +468,9 @@ fun hasPermission(context: Context, permission: String): Boolean {
 }
 
 suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
-    client.storage[bucketName].upload(fileName, byteArray, false)
+    try{
+        client.storage[bucketName].upload(fileName, byteArray, false)
+    }catch(e : HttpRequestException){ }
     val url = client.storage[bucketName].publicUrl(fileName)
     runBlocking { saveItToDb(sharedViewModel, url) }
 }
