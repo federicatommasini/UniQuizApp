@@ -47,7 +47,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
     val message = remember { mutableStateOf("") }
 
     val context = LocalContext.current
-    val passwordFocusRequester = FocusRequester()
+    val passwordFocusRequester = remember {FocusRequester()}
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -106,7 +106,6 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     keyboardActions = KeyboardActions(onDone = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        //context.doLogin()
                     }),
                     focusRequester = passwordFocusRequester
                 )

@@ -17,8 +17,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 //import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -80,7 +85,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
     val user = sharedViewModel.user
 
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false)},
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { padding ->
         Column(
@@ -225,7 +230,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false)},
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
         bottomBar = { BottomNavigationBar(navController = navController) },
         content = { padding ->
             Column(
@@ -255,29 +260,36 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
     )
 }
 
-
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
+    val subjects = sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
+    val pagerState = rememberPagerState()
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false)},
-        bottomBar = { BottomNavigationBar(navController = navController) }
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
+        bottomBar = { BottomNavigationBar(navController = navController) },
+        modifier = Modifier.fillMaxHeight(1f)
     ) { padding ->
         Column(
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
                 .padding(padding)
         ) {
-
-            Text(
-                text = "groups screen",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
+            ScreenTitle("Ranking")
+            Column(modifier = Modifier.fillMaxHeight(0.9f).padding(20.dp)){
+                Slider(subjects, pagerState, sharedViewModel, navController)
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f)) {
+                DotsIndicator(
+                    totalDots = subjects.size,
+                    selectedIndex = pagerState.currentPage,
+                    selectedColor = customizedBlue,
+                    unSelectedColor = customGray
+                )
+            }
         }
     }
 }

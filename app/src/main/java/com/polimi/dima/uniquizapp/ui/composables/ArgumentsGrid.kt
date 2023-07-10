@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +17,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -47,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.Quiz
@@ -61,6 +67,7 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
 
     sharedViewModel.quizViewModel.getAll(subject!!.id)
     val state by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
+    val isPopupVisible = remember { mutableStateOf(false) }
 
     LazyVerticalGrid(columns = GridCells.Fixed(1),
         contentPadding = PaddingValues(
@@ -74,10 +81,14 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
             items(state){ item ->
                 Card(
                     onClick = {
-                        navController.navigate(route = route + item.id + "/"+0){
-                            popUpTo(Screen.QuizScreen.route){
-                                inclusive = true
-                    }} },
+                        if(sharedViewModel.user!!.subjectIds.contains(subject.id))
+                            navController.navigate(route = route + item.id + "/"+0){
+                                popUpTo(Screen.QuizScreen.route){
+                                    inclusive = true
+                                }
+                            }
+                        else isPopupVisible.value=true
+                    },
                     backgroundColor = Color.White,
                     border = BorderStroke(1.dp, customLightGray),
                     modifier = Modifier
@@ -97,6 +108,39 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
                                 )
                                 .padding(2.dp)
                         )
+                        if(isPopupVisible.value){
+                            AlertDialog(
+                                onDismissRequest = { isPopupVisible.value = false },
+                                title = {
+                                    Text(text = "Add the subject before!")
+                                },
+                                text = {
+                                    Text(text = "You have to add ${subject.name} to your subjects using the button above, then you will be able to  start exercising using quizzes!")
+                                },
+                                confirmButton = {
+                                    Box(contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Button(
+                                                onClick = {
+                                                    isPopupVisible.value = false
+                                                },
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                shape = CircleShape
+                                            ) {
+                                                Text(text = "Okay")
+                                            }
+                                        }
+                                    }
+                                },
+                                properties = DialogProperties(usePlatformDefaultWidth = true),
+                                modifier = Modifier.background(Color.White, RoundedCornerShape(20.dp))
+                                )
+                        }
                     }
                 }
             }

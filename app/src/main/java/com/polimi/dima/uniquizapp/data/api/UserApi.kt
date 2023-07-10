@@ -19,8 +19,8 @@ interface UserApi {
     suspend fun getUsers() : List<User>
     @GET("/users/{userId}")
     suspend fun getUserById(
-        @Path("userId") number : String
-    ): Response<User>
+        @Path("userId") userId : String
+    ): User
 
     @POST("/login")
     suspend fun login(@Body loginRequest : LoginRequest) : LoginResponse

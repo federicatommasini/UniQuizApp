@@ -101,190 +101,133 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent)
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(whiteBackground)
-            .verticalScroll(rememberScrollState())
-            .padding(0.dp)
-    ) {
-        Box(
+    Scaffold(
+        topBar = {AppBar(navController = navController,false, true, sharedViewModel, true)}
+    ) { padding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .size(290.dp)
-                .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp))
-                .padding(0.dp)
-                .background(customizedBlue)
-        )
-        {
+                .fillMaxSize()
+                .background(whiteBackground)
+                .verticalScroll(rememberScrollState())
+                .padding(padding)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp))
+                    .padding(0.dp)
+                    .background(customizedBlue)
+            )
+            { ProfileImage(user, sharedViewModel, true)
+            }
+            CustomSpacer()
+            ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
+            CustomSpacer()
+            ProfileTextField(field = lastName, nameField = "Last Name", colors = customizedColors)
+            CustomSpacer()
+            ProfileTextField(field = username, nameField = "Username", colors = customizedColors)
+            CustomSpacer()
+            ProfileTextField(
+                field = university,
+                nameField = "University",
+                colors = customizedColors
+            )
+            CustomSpacer()
+            ProfileTextField(field = email, nameField = "Email", colors = customizedColors)
+            CustomSpacer()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
-                //horizontalArrangement = Arrangement.Center
+                    .padding(start = 4.dp, end = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             )
             {
-                Box(modifier = Modifier.fillMaxWidth()){
-                    IconButton(
-                        onClick = {
-                            //navController.popBackStack()  //figure out if it is possible to come back to a different screen than home
-                            navController.navigate(BottomNavItem.Home.screen_route){
-                                popUpTo(BottomNavItem.Home.screen_route)
-                                {
-                                    inclusive = true
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(0.dp)
-                            .align(Alignment.TopStart),
-                        content = {
-                            Icon(
-                                Icons.Default.ArrowBack,
-                                contentDescription = "Back Icon",
-                                tint = Color.Black,
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .align(Alignment.TopEnd) //doesnt seem to work
-                                    .background(Color.Transparent, CircleShape)
-                                    .padding(4.dp)
-                            )
-                        }
-                    )
-                    Text(
-                        text = "Profile",
-                        fontSize = 32.sp,
-                        modifier = Modifier.align(Alignment.Center),
-                        color = whiteBackground,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 2.sp
-                        )
-                    )
-                    IconButton(
-                        onClick = {
-                            showAlert = true
-                        },
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(0.dp)
-                            .align(Alignment.TopEnd),
-                        content = {
-                            Icon(
-                                Icons.Default.Logout,
-                                contentDescription = "Logout Icon",
-                                tint = Color.Black,
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .align(Alignment.TopEnd)
-                                    .background(Color.Transparent, CircleShape)
-                                    .padding(4.dp)
-                            )
-                        }
-                    )
-                }
-            }
-            ProfileImage(user, sharedViewModel)
-        }
-        CustomSpacer()
-        ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
-        CustomSpacer()
-        ProfileTextField(field = lastName, nameField = "Last Name", colors = customizedColors)
-        CustomSpacer()
-        ProfileTextField(field = username, nameField = "Username", colors = customizedColors)
-        CustomSpacer()
-        ProfileTextField(field = university, nameField = "University", colors = customizedColors)
-        CustomSpacer()
-        ProfileTextField(field = email, nameField = "Email", colors = customizedColors)
-        CustomSpacer()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            Text(text = "Password", modifier = Modifier.width(100.dp))
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                colors = customizedColors,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .background(grayBackground, RoundedCornerShape(20.dp)),
-                visualTransformation = if (passwordVisibility.value) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
-                },
-                trailingIcon = {
-                    if (passwordVisibility.value) {
-                        IconButton(
-                            onClick = {
-                                passwordVisibility.value = false
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.visibility),
-                                contentDescription = null
-                            )
-                        }
+                Text(text = "Password", modifier = Modifier.width(100.dp))
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    colors = customizedColors,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .background(grayBackground, RoundedCornerShape(20.dp)),
+                    visualTransformation = if (passwordVisibility.value) {
+                        VisualTransformation.None
                     } else {
-                        IconButton(
-                            onClick = { passwordVisibility.value = true  },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.visibility_off),
-                                contentDescription = null
-                            )
+                        PasswordVisualTransformation()
+                    },
+                    trailingIcon = {
+                        if (passwordVisibility.value) {
+                            IconButton(
+                                onClick = {
+                                    passwordVisibility.value = false
+                                },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.visibility),
+                                    contentDescription = null
+                                )
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { passwordVisibility.value = true },
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.visibility_off),
+                                    contentDescription = null
+                                )
+                            }
                         }
-                    }
-                },
-                enabled = isEditable
+                    },
+                    enabled = isEditable
+                )
+            }
+            CustomSpacer()
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             )
-        }
-        CustomSpacer()
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        )
-        {
-            Button(
-                onClick = {
-                    if(isEditable){
-                        var updatedUser = User(
-                            user!!.id,
-                            user!!.username,
-                            user!!.email,
-                            password,
-                            user!!.firstName,
-                            user!!.lastName,
-                            user!!.universityId,
-                            user!!.subjectIds,
-                            user!!.exams,
-                            user!!.schedules,
-                            user!!.profilePicUrl)
-                        runBlocking { user = sharedViewModel.userViewModel.updateProfile(updatedUser, user!!.id) }
-                        user?.let { sharedViewModel.addUser(it) }
+            {
+                Button(
+                    onClick = {
+                        if (isEditable) {
+                            var updatedUser = User(
+                                user!!.id,
+                                user!!.username,
+                                user!!.email,
+                                password,
+                                user!!.firstName,
+                                user!!.lastName,
+                                user!!.universityId,
+                                user!!.subjectIds,
+                                user!!.exams,
+                                user!!.schedules,
+                                user!!.profilePicUrl
+                            )
+                            runBlocking {
+                                user = sharedViewModel.userViewModel.updateProfile(
+                                    updatedUser,
+                                    user!!.id
+                                )
+                            }
+                            user?.let { sharedViewModel.addUser(it) }
+                        }
+                        isEditable = !isEditable
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
+                    shape = RoundedCornerShape(20.dp),
+                    content = {
+                        Text(text = if (isEditable) "Save" else "Edit", color = whiteBackground)
                     }
-                    isEditable = !isEditable
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue),
-                shape = RoundedCornerShape(20.dp),
-                content = {
-                    Text(text = if (isEditable) "Save" else "Edit", color = whiteBackground)
-                }
-            )
+                )
+            }
         }
     }
 }
@@ -292,7 +235,8 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
+fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Boolean) {
+
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val permissionState = rememberPermissionState(
@@ -331,25 +275,25 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(0.dp))
         Box(modifier = Modifier
-            .size(140.dp, 140.dp)){
+            .size(140.dp, 140.dp)) {
             Card(
                 shape = CircleShape,
                 modifier = Modifier
                     .padding(0.dp)
                     .size(140.dp)
                     .align(Alignment.Center),
-            ) {if(imageUri != null){
+            ) {
+                if (imageUri != null) {
                     if (Build.VERSION.SDK_INT < 28) {
                         bitmap.value = MediaStore.Images
                             .Media.getBitmap(context.contentResolver, imageUri)
-                    }
-                    else {
+                    } else {
                         val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
                         bitmap.value = ImageDecoder.decodeBitmap(source)
                     }
-                    if(bitmap.value != null){
+                    if (bitmap.value != null) {
                         Image(
                             bitmap = bitmap.value!!.asImageBitmap(),
                             contentDescription = null,
@@ -363,12 +307,12 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
                         }
-                        if(onlyOnce) {
+                        if (onlyOnce) {
                             uploadImage(filePath!!, sharedViewModel)
                             onlyOnce = false
                         }
                     }
-                } else{
+                } else {
                     Image(
                         painter = painter, contentDescription = null,
                         modifier = Modifier
@@ -377,7 +321,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                         contentScale = ContentScale.Crop
                     )
                 }
-                if(showDialog) {
+                if (showDialog) {
                     Dialog(onDismissRequest = { showDialog = false },
                         content = {
                             FullImage(
@@ -388,6 +332,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                     )
                 }
             }
+            if (showCamera) {
             IconButton(
                 onClick = {
                     clicked.value = true
@@ -413,6 +358,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                     )
                 }
             )
+            }
         }
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -484,49 +430,6 @@ fun ProfileTextField(field: String, nameField: String, colors: TextFieldColors){
                 .fillMaxWidth(0.9f)
                 .background(grayBackground, RoundedCornerShape(20.dp)),
             enabled = false
-        )
-    }
-}
-
-@Composable
-fun alertDialogLogout(navController: NavController){
-
-    val context = LocalContext.current
-    val openDialog = remember { mutableStateOf(true) }
-
-    if (openDialog.value){
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = { Text(text = "Logout", color = Color.Black)},
-            text = {Text(text = "Are you sure you want to log out?", color = Color.Black)},
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                        val activity = context as MainActivity
-                        val signInGoogle = GoogleSignInActivity()
-                        signInGoogle.initialize(activity)
-                        signInGoogle.googleSignInClient.signOut()
-                        navController.navigate(route = Screen.Login.route){
-                            popUpTo(route = Screen.Login.route) //i dont know if this is correct
-                            {
-                                inclusive = true
-                            }
-                        }
-                    }) {
-                    Text(text = "Confirm", color = Color.Black)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                    }) {
-                    Text(text = "Cancel", color = Color.Black)
-                }
-            },
-            backgroundColor = grayBackground,
-            shape = RoundedCornerShape(20.dp)
         )
     }
 }
