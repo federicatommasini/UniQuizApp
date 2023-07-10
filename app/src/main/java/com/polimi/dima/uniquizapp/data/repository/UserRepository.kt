@@ -17,7 +17,7 @@ class UserRepository @Inject constructor(
         return userApi.getUsers()
     }
 
-    suspend fun getUserById(userId: String): Response<User> {
+    suspend fun getUserById(userId: String): User {
         return userApi.getUserById(userId)
     }
 

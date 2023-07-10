@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -61,6 +62,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
         topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -174,74 +176,35 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
+    val subjects = sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
+    val pagerState = rememberPagerState()
     Scaffold(
         topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
-        bottomBar = { BottomNavigationBar(navController = navController) }
+        bottomBar = { BottomNavigationBar(navController = navController) },
+        modifier = Modifier.fillMaxHeight(1f)
     ) { padding ->
         Column(
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
-                .padding(30.dp)
+                .padding(padding)
         ) {
-            Column(modifier = Modifier.border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)).weight(1f)){
-            Column(modifier = Modifier.weight(0.15f)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Your Friends",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.padding(5.dp).weight(0.6f),
-                        color = customizedBlue
-                    )
-                    Spacer(modifier=Modifier.weight(0.1f))
-                    IconButton(
-                        onClick = {}, modifier = Modifier.background(
-                            customizedBlue,
-                            CircleShape
-                        ).size(15.dp).weight(0.2f)
-                    )
-                    {
-                        Icon(
-                            tint = Color.White,
-                            imageVector = Icons.Default.Add,
-                            contentDescription = ""
-                        )
-                    }
-                    Spacer(modifier=Modifier.weight(0.1f))
-
-                }
+            ScreenTitle("Ranking")
+            Column(modifier = Modifier.fillMaxHeight(0.9f).padding(20.dp)){
+                Slider(subjects, pagerState, sharedViewModel, navController)
             }
-                Column(modifier = Modifier.weight(0.85f)) {
-                     FriendsList(sharedViewModel, navController)
-                }
-
-            }
-            Spacer(modifier = Modifier.size(10.dp))
-            Column(modifier = Modifier.border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)).weight(1f)){
-                Column(modifier = Modifier.weight(0.2f)) {
-                    Row(
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Text(
-                            text = "Your Rankings",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.padding(5.dp),
-                            color = customizedBlue
-                        )
-                    }
-                }
-                Column(modifier = Modifier.weight(0.8f)) {
-
-                }
-
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.2f)) {
+                DotsIndicator(
+                    totalDots = subjects.size,
+                    selectedIndex = pagerState.currentPage,
+                    selectedColor = customizedBlue,
+                    unSelectedColor = customGray
+                )
             }
         }
     }

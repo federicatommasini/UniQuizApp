@@ -32,7 +32,6 @@ class MainActivity : androidx.activity.ComponentActivity() {
             UniQuizAppTheme {
                 navController = rememberNavController()
                 SetupNavGraph(navController = navController)
-                DefaultPreview()
             }
         }
     }

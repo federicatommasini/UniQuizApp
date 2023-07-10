@@ -87,4 +87,12 @@ class UserViewModel @Inject constructor(
         }
         return _loginState.value
     }
+
+    fun getUserById(userId: String) : User {
+        var user : User? = null
+        viewModelScope.launch{
+            user = runBlocking { userRepo.getUserById( userId) }
+        }
+        return user!!
+    }
 }

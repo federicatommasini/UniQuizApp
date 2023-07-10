@@ -117,7 +117,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     .padding(0.dp)
                     .background(customizedBlue)
             )
-            { ProfileImage(user, sharedViewModel)
+            { ProfileImage(user, sharedViewModel, true)
             }
             CustomSpacer()
             ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
@@ -234,7 +234,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
+fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Boolean) {
 
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -245,7 +245,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
         contract = ActivityResultContracts.GetContent(),
         onResult = { imageUri = it })
 
-    SideEffect { permissionState.launchPermissionRequest() }
+    //SideEffect { permissionState.launchPermissionRequest() }
 
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -324,30 +324,32 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel) {
                     )
                 }
             }
-            IconButton(
-                onClick = {
-                    if (permissionState.status.isGranted) {
-                        filePickerLauncher.launch("*/*")
+            if(showCamera){
+                IconButton(
+                    onClick = {
+                        if (permissionState.status.isGranted) {
+                            filePickerLauncher.launch("*/*")
+                        }
+                        else{
+                            permissionState.launchPermissionRequest()
+                        }},
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(0.dp)
+                        .align(Alignment.BottomEnd),
+                    content = {
+                        Icon(
+                            Icons.Default.PhotoCamera,
+                            contentDescription = "Edit Icon",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(4.dp)
+                        )
                     }
-                    else{
-                        permissionState.launchPermissionRequest()
-                    }},
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(0.dp)
-                    .align(Alignment.BottomEnd),
-                content = {
-                    Icon(
-                        Icons.Default.PhotoCamera,
-                        contentDescription = "Edit Icon",
-                        tint = Color.Black,
-                        modifier = Modifier
-                            .size(44.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(4.dp)
-                    )
-                }
-            )
+                )
+            }
         }
         Row(modifier = Modifier
             .fillMaxWidth()
