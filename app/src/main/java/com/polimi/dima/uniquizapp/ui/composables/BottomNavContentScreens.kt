@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -21,8 +20,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +32,6 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -57,19 +55,20 @@ import com.polimi.dima.uniquizapp.BottomNavigationBar
 import com.polimi.dima.uniquizapp.GoogleSignInActivity
 import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
-import com.polimi.dima.uniquizapp.data.model.Exam
 import com.polimi.dima.uniquizapp.data.model.UserExam
 import com.polimi.dima.uniquizapp.ui.theme.*
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
-
+import java.util.concurrent.TimeUnit
 
 
 @Composable
@@ -356,7 +355,8 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 ) {
                     if (user!!.exams.isEmpty() && (googleAccount != null)) {
                         Column(
-                            modifier = Modifier.height(200.dp)//.fillMaxSize()
+                            modifier = Modifier
+                                .height(200.dp)//.fillMaxSize()
                                 .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -378,7 +378,9 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                 end = 0.dp,
                                 bottom = 0.dp
                             ),
-                            modifier = Modifier.background(Color.White).fillMaxSize()
+                            modifier = Modifier
+                                .background(Color.White)
+                                .fillMaxSize()
                         ) {
                             items(onlyFutureExams(user!!.exams)) { item ->
                                 val name = runBlocking {
@@ -423,12 +425,17 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                             )
                                         }
                                         Column(
-                                            modifier = Modifier.weight(0.7f).wrapContentHeight()
+                                            modifier = Modifier
+                                                .weight(0.7f)
+                                                .wrapContentHeight()
                                         ) {
 
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
-                                                modifier = Modifier.weight(1f).wrapContentHeight().padding(start = 10.dp)
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .wrapContentHeight()
+                                                    .padding(start = 10.dp)
                                             ) {
                                                 Text(
                                                     text = name,
@@ -497,10 +504,13 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     }
                 }
             }
+            if(!notNow.value){
+
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                 //   .border(2.dp, Color.Red, RectangleShape)
+                    //   .border(2.dp, Color.Red, RectangleShape)
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -550,6 +560,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
             }
         }
     }
+
 }
 
 fun getStringDate(date : Date) : String {
@@ -584,12 +595,14 @@ fun googleLoginButton(
     if(launcher != null){ fraction = 0.8F }
     else{ fraction = 0.95F }
     var clicked by remember { mutableStateOf(false) }
+    var showAlert by remember { mutableStateOf(false) }
 
     Surface(
         onClick = {
             clicked = !clicked
             if(launcher == null && signInIntent == null && calendarService != null){
                 createCalendarExams(calendarService = calendarService, sharedViewModel)!!
+                showAlert = true
                 clicked = !clicked
             }
             else{
@@ -636,6 +649,14 @@ fun googleLoginButton(
             }
         }
     }
+
+    if(showAlert){
+        AutoDismissAlert(
+            message = "Exams Calendar created!",
+            durationInSeconds = 3,
+            onDismiss = { showAlert = false }
+        )
+    }
 }
 
 fun deleteCalendar(calendarService : Calendar) {
@@ -668,5 +689,25 @@ private fun onlyFutureExams(allExams : List<UserExam>) : List<UserExam>{
             onlyFutureExams.add(userExam)
         }
     }
+    onlyFutureExams.sortBy { item -> item.exam.date}
     return onlyFutureExams
+}
+
+@Composable
+fun AutoDismissAlert(
+    message: String,
+    durationInSeconds : Int,
+    onDismiss: () -> Unit
+){
+
+    LaunchedEffect(Unit) {
+        delay(TimeUnit.SECONDS.toMillis(durationInSeconds.toLong()))
+        onDismiss()
+    }
+
+    Snackbar (
+        modifier = Modifier.padding(16.dp)
+    ){
+        Text(text = message)
+    }
 }
