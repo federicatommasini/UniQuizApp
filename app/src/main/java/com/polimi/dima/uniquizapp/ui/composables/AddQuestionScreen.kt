@@ -217,7 +217,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                                     break
                                 }
                             }
-                            val request = NewQuestionRequest(subjectId,quizId,newQuizName.value,question)
+                            val request = NewQuestionRequest(sharedViewModel.user!!.id,subjectId,quizId,newQuizName.value,question)
                             val subject = runBlocking{sharedViewModel.quizViewModel.addQuestion(request)}
                             if (subject != null) {
                                 sharedViewModel.addSubject(subject)
