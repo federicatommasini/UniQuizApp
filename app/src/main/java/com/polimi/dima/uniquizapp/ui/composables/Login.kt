@@ -105,8 +105,8 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     nameField = "Password",
                     visibility = passwordVisibility,
                     keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
                         keyboardController?.hide()
+                        focusManager.clearFocus()
                     }),
                     focusRequester = passwordFocusRequester
                 )
