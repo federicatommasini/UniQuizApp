@@ -46,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.bumptech.glide.load.HttpException
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
@@ -63,6 +64,7 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.exceptions.HttpRequestException
+import io.github.jan.supabase.exceptions.UnknownRestException
 import io.github.jan.supabase.gotrue.GoTrue
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
@@ -214,6 +216,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                         )
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
+                            println(filePath)
                         }
                         if (onlyOnce) {
                             uploadImage(filePath!!, sharedViewModel)
@@ -486,14 +489,13 @@ fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
     }
     val lifecycleCoroutineScope = rememberCoroutineScope()
     lifecycleCoroutineScope.launch(Dispatchers.IO) {
-        uploadToSupabase(client, file.name, byteArray, bucketName, sharedViewModel)
+        runBlocking { uploadToSupabase(client, file.name, byteArray, bucketName, sharedViewModel) }
+
     }
 }
 
 suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
-    try{
-        client.storage[bucketName].upload(fileName, byteArray, false)
-    }catch(e : HttpRequestException){ }
+    client.storage[bucketName].upload(fileName, byteArray, false)
     val url = client.storage[bucketName].publicUrl(fileName)
     runBlocking { saveItToDb(sharedViewModel, url) }
 }
