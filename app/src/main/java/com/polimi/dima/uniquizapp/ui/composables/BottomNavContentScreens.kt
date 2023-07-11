@@ -635,6 +635,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(Color.Transparent)
                         //   .border(2.dp, Color.Red, RectangleShape)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
