@@ -81,7 +81,7 @@ fun ItemList(text : String, items : List<Subject>, navController: NavController)
     LazyColumn(modifier = Modifier.fillMaxWidth(0.9f)) {
         val searchedText = text
         filteredItems = if (searchedText.isEmpty()) {
-            listOf()
+            items
         } else {
             val resultList = ArrayList<Subject>()
             for (item in items) {

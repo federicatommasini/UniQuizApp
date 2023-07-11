@@ -54,13 +54,13 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
         modifier = Modifier.wrapContentSize(Alignment.Center))},
     modifier = Modifier.background(customizedBlue),
     navigationIcon = {
-        if(seeBackArrow)
+        if(seeBackArrow )
             IconButton(onClick = {
                 var route = navController.previousBackStackEntry?.destination!!.route!!
                 var finalRoute =route
                 if( route == Screen.SubjectScreen.route)
                     finalRoute = route.replace("{subjectId}", sharedViewModel.subject!!.id)
-                if(null!=isVisible)
+                if(!seeLogout && null!=isVisible)
                     isVisible.value=true
                 else{
                     navController.navigate(finalRoute){
