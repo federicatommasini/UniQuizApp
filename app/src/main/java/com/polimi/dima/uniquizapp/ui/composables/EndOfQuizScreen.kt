@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
-import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -59,7 +58,12 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
             Spacer(modifier = Modifier.fillMaxHeight(0.3f))
             Box(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
             contentAlignment = Alignment.Center){
-                Image(painter = painterResource(id = R.drawable.img), contentDescription = "QuizImage", modifier = Modifier.align(Alignment.Center))
+                if(points <= quiz!!.questions.size/2){
+                    Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center))
+                }
+                else{
+                    Image(painter = painterResource(id = R.drawable.pass_image), contentDescription = "QuizPassImage", modifier = Modifier.align(Alignment.Center))
+                }
             }
 
             Row(
