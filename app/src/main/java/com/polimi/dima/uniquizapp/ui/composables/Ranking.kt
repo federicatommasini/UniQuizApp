@@ -76,7 +76,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         modifier = Modifier.fillMaxWidth(1f)
                     ) {
                         Box(modifier = Modifier.weight(0.3f)){
-                            ProfileImage(user = user, sharedViewModel = sharedViewModel,false)
+                            ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.5f)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text=user.firstName + user.lastName, modifier = Modifier.weight(0.45f))
