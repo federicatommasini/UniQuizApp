@@ -38,6 +38,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
     val state by sharedViewModel.userViewModel.allUsersState.collectAsState()
     val map = subject.ranking.toSortedMap()
     val stateMap by remember {mutableStateOf(subject.ranking.toSortedMap())}
+    var count =0
 
     LazyVerticalGrid(columns = GridCells.Fixed(1),
         contentPadding = PaddingValues(
@@ -50,6 +51,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
         content = {
             items(map.keys.toList()){ item ->
                 val user = sharedViewModel.userViewModel.getUserById(item)
+                count +=1
                 Card(
                     onClick = { },
                     backgroundColor = Color.White,
@@ -67,7 +69,11 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                             ProfileImage(user = user, sharedViewModel = sharedViewModel,false)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))
-                        Text(text=user.firstName + user.lastName + map.get(item).toString(), modifier = Modifier.weight(0.65f))
+                        Text(text=user.firstName + user.lastName, modifier = Modifier.weight(0.45f))
+                        Spacer(modifier = Modifier.weight(0.05f))
+                        Text(text = map.get(item).toString(), modifier = Modifier.weight(0.1f))
+                        Spacer(modifier = Modifier.weight(0.05f))
+                        Text(text = map.get(item).toString(), modifier = Modifier.weight(0.1f))
                     }
                 }
             }
