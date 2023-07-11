@@ -47,7 +47,7 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean, sharedViewModel: SharedViewModel, seeLogout : Boolean, isVisible: MutableState<Boolean>?){
 
     CenterAlignedTopAppBar(
-    title = { Text("UniQuizApp",
+    title = { Text("UniQuiz",
         fontWeight = FontWeight.Bold,
         letterSpacing = 2.sp,
         color = Color.White,

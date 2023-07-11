@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,17 +56,16 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
         ) {
 
             Text(text, textAlign = TextAlign.Center, color = customizedBlue, fontSize = 30.sp)
-            Spacer(modifier = Modifier.fillMaxHeight(0.3f))
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-            contentAlignment = Alignment.Center){
+            Spacer(modifier = Modifier.fillMaxHeight(0.1f))
+            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).align(Alignment.CenterHorizontally),
+            contentAlignment = Alignment.TopCenter){
                 if(points <= quiz!!.questions.size/2){
-                    Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center))
+                    Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center).fillMaxSize())
                 }
                 else{
-                    Image(painter = painterResource(id = R.drawable.pass_image), contentDescription = "QuizPassImage", modifier = Modifier.align(Alignment.Center))
+                    Image(painter = painterResource(id = R.drawable.pass_image), contentDescription = "QuizPassImage", modifier = Modifier.align(Alignment.Center).fillMaxSize())
                 }
             }
-
             Row(
                 verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
