@@ -71,6 +71,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Card
+import androidx.compose.ui.graphics.RectangleShape
 import com.polimi.dima.uniquizapp.data.model.Subject
 
 
@@ -263,6 +264,24 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
+                if(userSubjectState.isEmpty()) {
+                    Box(modifier = Modifier
+                        .fillMaxSize(0.8f)
+                        .align(Alignment.CenterHorizontally),){
+                        Text(
+                            text = "Search your subjects to add them!",
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .align(Center)
+                                .fillMaxWidth(0.8f),
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+
+                            )
+                    }
+
+                }
                 /*if(userSubjectState[0] != null) {*/
                     LazyGrid(
                         route = "subject_screen/",

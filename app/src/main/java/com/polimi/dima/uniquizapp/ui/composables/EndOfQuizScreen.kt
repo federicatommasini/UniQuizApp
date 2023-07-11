@@ -60,10 +60,16 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
             Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).align(Alignment.CenterHorizontally),
             contentAlignment = Alignment.TopCenter){
                 if(points <= quiz!!.questions.size/2){
-                    Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center).fillMaxSize())
+                    Image(
+                        painter = painterResource(id = R.drawable.fail_image),
+                        contentDescription = "QuizFailImage",
+                        modifier = Modifier.align(Alignment.Center).fillMaxSize())
                 }
                 else{
-                    Image(painter = painterResource(id = R.drawable.pass_image), contentDescription = "QuizPassImage", modifier = Modifier.align(Alignment.Center).fillMaxSize())
+                    Image(
+                        painter = painterResource(id = R.drawable.pass_image),
+                        contentDescription = "QuizPassImage",
+                        modifier = Modifier.align(Alignment.Center).fillMaxSize())
                 }
             }
             Row(
