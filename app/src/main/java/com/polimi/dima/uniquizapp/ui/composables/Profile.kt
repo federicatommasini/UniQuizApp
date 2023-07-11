@@ -113,10 +113,9 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                             .padding(0.dp)
                             .background(customizedBlue)
                     ){
-                        ProfileImage(user, sharedViewModel, showCamera, 0.6f)
+                        ProfileImage(user, sharedViewModel, showCamera, 0.5f)
                     }
-                    Column(modifier = Modifier.weight(0.5f).fillMaxHeight().verticalScroll(rememberScrollState()).border(3.dp,
-                        Color.Red),
+                    Column(modifier = Modifier.weight(0.5f).fillMaxHeight().verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center) {
                         FieldsProfileSection(sharedViewModel)
                     }
@@ -127,12 +126,11 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(whiteBackground)
-                        .verticalScroll(rememberScrollState())
                         .padding(padding),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    Box(
-                        modifier = Modifier.weight(0.4f).fillMaxWidth()
+                    Column(
+                        modifier = Modifier.weight(0.3f).fillMaxWidth().verticalScroll(rememberScrollState())
                             .clip(shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp))
                             .background(customizedBlue)
                     ) {
@@ -186,7 +184,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
     var onlyOnce by remember { mutableStateOf(true) }
 
 
-    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight().border(3.dp,Color.Black),
+    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally)
     {
@@ -194,7 +192,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
             Card(
                 shape = CircleShape,
                 modifier = Modifier.fillMaxSize()
-                    .align(Alignment.Center).border(3.dp,Color.Red),
+                    .align(Alignment.Center),
             ) {
                 if (imageUri != null) {
                     if (Build.VERSION.SDK_INT < 28) {
@@ -271,7 +269,7 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
         }
         Row(modifier = Modifier
             .wrapContentHeight()
-            .padding(26.dp),
+            .padding(10.dp),
             horizontalArrangement = Arrangement.Center)
         {
             Text(text = user!!.username, fontSize = 28.sp,
@@ -327,7 +325,7 @@ fun FieldsProfileSection(sharedViewModel: SharedViewModel){
         horizontalArrangement = Arrangement.Center
     )
     {
-        Text(text = "Password",textAlign = TextAlign.Center, modifier = Modifier.weight(0.2f))
+        Text(text = "Password",textAlign = TextAlign.Center, modifier = Modifier.weight(0.3f))
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -335,7 +333,7 @@ fun FieldsProfileSection(sharedViewModel: SharedViewModel){
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.weight(0.8f)
+            modifier = Modifier.weight(0.7f)
                 .background(grayBackground, RoundedCornerShape(20.dp)),
             visualTransformation = if (passwordVisibility.value) {
                 VisualTransformation.None
@@ -369,7 +367,6 @@ fun FieldsProfileSection(sharedViewModel: SharedViewModel){
         )
     }
     CustomSpacer()
-    Spacer(modifier = Modifier.height(16.dp))
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -457,7 +454,7 @@ fun ProfileTextField(field: String, nameField: String, colors: TextFieldColors){
         horizontalArrangement = Arrangement.Center
     )
     {
-        Text(text = nameField, textAlign = TextAlign.Center,modifier = Modifier.weight(0.2f))
+        Text(text = nameField, textAlign = TextAlign.Center,modifier = Modifier.weight(0.3f))
         TextField(
             value = field,
             onValueChange = {},
@@ -465,7 +462,7 @@ fun ProfileTextField(field: String, nameField: String, colors: TextFieldColors){
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.weight(0.8f)
+            modifier = Modifier.weight(0.7f)
                 .background(grayBackground, RoundedCornerShape(20.dp)),
             enabled = false
         )
