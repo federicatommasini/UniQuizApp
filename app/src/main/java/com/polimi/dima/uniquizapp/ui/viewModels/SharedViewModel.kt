@@ -1,19 +1,15 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.Events
-import com.polimi.dima.uniquizapp.GoogleSignInActivity
-import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.data.di.ApiModule
 import com.polimi.dima.uniquizapp.data.model.ExamRequest
 import com.polimi.dima.uniquizapp.data.model.Quiz
@@ -58,7 +54,7 @@ class SharedViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    fun loadStuff(){
+    fun loadEvents(){
         viewModelScope.launch {
             _isLoading.value = true
             delay(3000)
@@ -73,10 +69,9 @@ class SharedViewModel : ViewModel() {
                     val eventItems: List<Event> = eventsList.items
                     subjectViewModel.getSubjectsByUser(user!!.id)
                     for (event in eventItems) {
-                        println(event.toString())
                         val subjectNameInCalendar = event.summary
                         for (subject in subjectViewModel.userSubjectsState.value) {
-                            if (subject!!.name.compareTo(subjectNameInCalendar) == 0) {
+                            if (subject!!.name.compareTo(subjectNameInCalendar, ignoreCase = true) == 0) {
                                 val startDate = event.start
                                 val day = if (startDate.dateTime != null) {
                                     startDate.dateTime.toString()
@@ -85,8 +80,6 @@ class SharedViewModel : ViewModel() {
                                 }
                                 //if in the calendar there is an exam of a subject I added on uniquiz, I send the request to the backend
                                 val examRequest = ExamRequest(subject.id, day!!, event.description)
-                                Log.d("EXAM", examRequest.toString())
-                                Log.d("USERID", user!!.id)
                                 val newUser = runBlocking {
                                     examViewModel.addExam(user!!.id, examRequest)
                                 }

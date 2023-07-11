@@ -326,15 +326,10 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
 fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
     var user = sharedViewModel.user
-    println("user $user")
     var googleAccount = sharedViewModel.googleAccount
-    //println("google account $googleAccount")
     var calendarService = sharedViewModel.calendarService
-    //println("service $calendarService")
     var calExamsId = sharedViewModel.calendarId
-    //println("calid $calExamsId")
     val notNow = remember { mutableStateOf(false) }
-    //println("not now ${notNow.value}")
 
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
@@ -354,8 +349,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 signInGoogle.handleResults(task)
                 sharedViewModel.addGoogleAccount(signInGoogle.googleAccount!!)
-                //Log.d("TASK_TOKEN", task.result.idToken.toString())
-                //Log.d("TASK_EMAIL", task.result.email.toString())
             }
         }
     if (googleAccount != null && (calendarService == null)){//} || calExamsId == null)) {
@@ -375,8 +368,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
             googleAccountCredential
         ).setApplicationName("UniQuiz").build()
         sharedViewModel.addCalendarService(service)
-        //println("CREATED service $service")
-        //println("saved service ${sharedViewModel.calendarService}")
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
@@ -440,7 +431,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     state = swipeRefreshState,
                     onRefresh = {
                         if(googleAccount != null && calendarService != null && calExamsId != null){
-                            sharedViewModel.loadStuff()
+                            sharedViewModel.loadEvents()
                         }
                     },
                     indicator = { state, refreshTrigger ->
