@@ -15,7 +15,7 @@ data class User(
     var universityId: String,
     val subjectIds: List<String>,
     val exams : List<UserExam>,
-    val schedules: List<Schedule>,
+    //val schedules: List<Schedule>,
     val profilePicUrl: String,
     val questionsAdded : Int,
     val questionsReported : Int

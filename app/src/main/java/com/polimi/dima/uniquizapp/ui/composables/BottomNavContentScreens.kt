@@ -124,7 +124,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 fontSize = 30.sp
             )
             Text(
-                text = "With this app you can schedule your study for your university exams, learning using simple and fun quizzes!",
+                text = "With this app you can study for your university exams and learning new topics using fun quizzes!",
                 fontWeight = FontWeight.Normal,
                 color = Color.Gray,
                 modifier = Modifier
@@ -532,7 +532,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                     //lineHeight = 23.sp,
                                                     fontSize = if (item.notes == null) 26.sp else 24.sp,
                                                     fontWeight = FontWeight.Normal,
-                                                    textAlign = TextAlign.Center,
+                                                    textAlign = TextAlign.Left,
                                                     modifier = Modifier
                                                         // .weight(1f)
                                                         .padding(
@@ -550,7 +550,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                     modifier = Modifier
                                                         // .weight(1f)
                                                         .padding(
-                                                            start = 0.dp,
+                                                            start = 10.dp,
                                                             top = 2.dp,
                                                             end = 8.dp,
                                                             bottom = 5.dp

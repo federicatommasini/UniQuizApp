@@ -214,7 +214,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                                 user!!.universityId,
                                 user!!.subjectIds,
                                 user!!.exams,
-                                user!!.schedules,
+                                //user!!.schedules,
                                 user!!.profilePicUrl,
                                 user!!.questionsAdded,
                                 user!!.questionsReported
@@ -488,7 +488,7 @@ fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
         oldUser!!.universityId,
         oldUser!!.subjectIds,
         oldUser!!.exams,
-        oldUser!!.schedules,
+        //oldUser!!.schedules,
         url!!,
         oldUser!!.questionsAdded,
         oldUser!!.questionsReported)
