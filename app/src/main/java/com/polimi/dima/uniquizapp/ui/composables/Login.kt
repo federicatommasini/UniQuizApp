@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -45,8 +44,6 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
     val configuration = LocalConfiguration.current
 
-
-
     Column(
         modifier = Modifier
             //.imePadding()
@@ -65,35 +62,22 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     .background(whiteBackground)
                 ){
                     Column(
-                        modifier = Modifier.weight(0.5f).fillMaxHeight(),
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
-                        Text(
-                            text = "UniQuiz",
-                            fontSize = 50.sp,
-                            color = customizedBlue,
-                            style = TextStyle(fontWeight = FontWeight.Bold,),// letterSpacing = 2.sp
-                            textAlign = TextAlign.Justify,
-                            modifier = Modifier
-                                .fillMaxHeight(0.1f)
-                        )
-                        Box(modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .aspectRatio(1f)
-                        ){
-                            Image(
-                                painter = painterResource(id = R.drawable.logo),
-                                contentDescription = "",
-                                modifier = Modifier.fillMaxWidth(1f))//.align(Alignment.BottomCenter))
-                        }
+                        LogoLandscape()
                     }
                     Column(
-                        modifier = Modifier.weight(0.5f).fillMaxHeight(1f),
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .fillMaxHeight(1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
-                        fields(sharedViewModel = sharedViewModel, navController = navController)
+                        loginFields(sharedViewModel = sharedViewModel, navController = navController, false)
                     }
                 }
 
@@ -124,25 +108,23 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                             Image(
                                 painter = painterResource(id = R.drawable.logo),
                                 contentDescription = "",
-                                modifier = Modifier.fillMaxWidth(0.8f)
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
                                     .align(Alignment.Center))
                         }
                     }
-                    fields(sharedViewModel = sharedViewModel, navController)
+                    loginFields(sharedViewModel = sharedViewModel, navController, true)
                 }
             }
         }
-
-
-
-
     }
 }
 
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun fields(sharedViewModel : SharedViewModel, navController: NavController){
+fun loginFields(sharedViewModel : SharedViewModel, navController: NavController, isInsideAnotherColumn : Boolean){
 
     val rememberedUserViewModel = remember { sharedViewModel.userViewModel }
 
@@ -158,7 +140,10 @@ fun fields(sharedViewModel : SharedViewModel, navController: NavController){
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .then(if(!isInsideAnotherColumn) Modifier.verticalScroll(rememberScrollState()) else Modifier.fillMaxWidth()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         //modifier = Modifier.verticalScroll(rememberScrollState()),
