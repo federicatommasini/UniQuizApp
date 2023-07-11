@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.BottomNavItem
+import com.polimi.dima.uniquizapp.GoogleSignInActivity
+import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
@@ -114,6 +116,10 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 
                 Button(
                     onClick = {
+                        val activity = context as MainActivity
+                        val signInGoogle = GoogleSignInActivity()
+                        signInGoogle.initialize(activity)
+                        signInGoogle.googleSignInClient.signOut()
                         sharedViewModel.logout()
                         Log.d("request", emailValue.value + " "+ passwordValue.value)
                         val loginReq = LoginRequest(emailValue.value, passwordValue.value)
