@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,7 @@ import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
-import org.apache.commons.logging.Log
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -57,6 +58,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
         modifier = Modifier.background(Color.White),
         content = {
             items(map.keys.toList()){ item ->
+                Log.d("userId ",item)
                 val user = sharedViewModel.userViewModel.getUserById(item)
                 count +=1
                 Card(
