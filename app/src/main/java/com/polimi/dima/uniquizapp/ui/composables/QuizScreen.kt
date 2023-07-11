@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -20,6 +21,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.material3.Text
@@ -52,6 +54,7 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
     var selected  = remember { mutableStateListOf<Boolean>(false,false,false,false) }
     var check = remember { mutableStateOf(false)}
     var correct = remember { mutableStateOf(false)}
+    val isPopupVisible = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {AppBar(navController = navController,false, true,sharedViewModel, false)},
     ){ padding ->
@@ -68,16 +71,19 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                     .weight(3f)
                     .border(3.dp, Color.Gray, RoundedCornerShape(30.dp))
                     .background(color = customLightGray, shape = RoundedCornerShape(30.dp))
+                    .padding(bottom = 10.dp, end = 10.dp)
             ) {
                 Text(
                     text = question.content,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(10.dp)
                 )
-                IconButton(onClick = {}, modifier = Modifier.align(Alignment.BottomEnd)){
-                    Icon(tint = Color.White,
-                        imageVector = Icons.Default.Report,
-                        contentDescription = "",)
+                IconButton(onClick = {isPopupVisible.value=true}, modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp)){
+                    Icon(tint = Color.Gray,
+                        imageVector = Icons.Default.Feedback,
+                        contentDescription = "")
                 }
             }
 
@@ -127,6 +133,10 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                     )
                 }
             }
+            if(isPopupVisible.value){
+                PopUp(title = "Send a feedback", text = "", buttonText = "Send", isPopupVisible = isPopupVisible,
+                    isFeedback = true, sharedViewModel = sharedViewModel,quizId = quiz.id, index = questionId)
+            }
             Box(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
@@ -168,7 +178,9 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                       },
                     colors = ButtonDefaults.buttonColors(backgroundColor = customizedBlue, contentColor = Color.White),
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.align(Alignment.CenterEnd).sizeIn(minWidth = 70.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .sizeIn(minWidth = 70.dp)
                 ) {
                     if(!check.value)
                         Text("Check", color = Color.White)

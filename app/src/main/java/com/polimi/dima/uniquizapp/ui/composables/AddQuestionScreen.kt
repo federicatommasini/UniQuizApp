@@ -221,6 +221,8 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                             val subject = runBlocking{sharedViewModel.quizViewModel.addQuestion(request)}
                             if (subject != null) {
                                 sharedViewModel.addSubject(subject)
+                                var newUser = sharedViewModel.userViewModel.getUserById(sharedViewModel.user!!.id)
+                                sharedViewModel.addUser(newUser)
                                 navController.navigate(Screen.AddQuestionScreen.route) {
                                     popUpTo(Screen.AddQuestionScreen.route) {
                                         inclusive = true

@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.data.api
 import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
+import com.polimi.dima.uniquizapp.data.model.User
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -22,4 +23,7 @@ interface QuizApi {
 
     @POST("/addQuestion")
     suspend fun addQuestion(@Body request: NewQuestionRequest) : Subject?
+
+    @POST("/addReport/{quizId}/{index}/{userId}")
+    suspend fun addReport(@Path("quizId") quizId : String,@Path("index") index : Int, @Path("userId") userId : String, @Body message: String) : User?
 }

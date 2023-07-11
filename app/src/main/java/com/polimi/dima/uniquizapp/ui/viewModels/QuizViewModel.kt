@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
+import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.repository.QuizRepository
 import com.polimi.dima.uniquizapp.data.repository.SubjectRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import retrofit2.http.Body
+import retrofit2.http.Path
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,5 +57,14 @@ class QuizViewModel @Inject constructor(
             subject = response
         }
         return subject
+    }
+
+    fun addReport(quizId : String, index : Int, userId : String, message: String) : User?{
+        var user: User? = null
+        viewModelScope.launch{
+            val response = runBlocking { quizRepo.addReport(quizId,index,userId,message) }
+            user = response
+        }
+        return user
     }
 }

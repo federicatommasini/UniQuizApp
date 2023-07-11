@@ -4,6 +4,9 @@ import com.polimi.dima.uniquizapp.data.api.QuizApi
 import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
 import com.polimi.dima.uniquizapp.data.model.Quiz
 import com.polimi.dima.uniquizapp.data.model.Subject
+import com.polimi.dima.uniquizapp.data.model.User
+import retrofit2.http.Body
+import retrofit2.http.Path
 import javax.inject.Inject
 
 class QuizRepository @Inject constructor(
@@ -21,5 +24,8 @@ class QuizRepository @Inject constructor(
     }
     suspend fun addQuestion(request: NewQuestionRequest) : Subject? {
         return quizApi.addQuestion(request)
+    }
+    suspend fun addReport(quizId : String,index : Int, userId : String, message: String): User? {
+        return quizApi.addReport(quizId,index,userId,message)
     }
 }
