@@ -56,7 +56,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
     val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
 
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false)}
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false,null)}
     ){padding ->
         Column(
             modifier = Modifier

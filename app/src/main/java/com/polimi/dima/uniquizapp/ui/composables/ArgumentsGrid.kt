@@ -109,37 +109,8 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
                                 .padding(2.dp)
                         )
                         if(isPopupVisible.value){
-                            AlertDialog(
-                                onDismissRequest = { isPopupVisible.value = false },
-                                title = {
-                                    Text(text = "Add the subject before!")
-                                },
-                                text = {
-                                    Text(text = "You have to add ${subject.name} to your subjects using the button above, then you will be able to  start exercising using quizzes!")
-                                },
-                                confirmButton = {
-                                    Box(contentAlignment = Alignment.Center,
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center,
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            Button(
-                                                onClick = {
-                                                    isPopupVisible.value = false
-                                                },
-                                                modifier = Modifier.align(Alignment.CenterVertically),
-                                                shape = CircleShape
-                                            ) {
-                                                Text(text = "Okay")
-                                            }
-                                        }
-                                    }
-                                },
-                                properties = DialogProperties(usePlatformDefaultWidth = true),
-                                modifier = Modifier.background(Color.White, RoundedCornerShape(20.dp))
-                                )
+                            PopUp(title = "Add the subject before!", text = "You have to add ${subject.name} to your subjects using the button above, then you will be able to  start exercising using quizzes!",
+                                buttonText = "Okay", isPopupVisible =isPopupVisible )
                         }
                     }
                 }

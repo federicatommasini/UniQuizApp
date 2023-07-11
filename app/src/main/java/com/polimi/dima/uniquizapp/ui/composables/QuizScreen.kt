@@ -55,8 +55,9 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
     var check = remember { mutableStateOf(false)}
     var correct = remember { mutableStateOf(false)}
     val isPopupVisible = remember { mutableStateOf(false) }
+    val isPopupVisible2 = remember { mutableStateOf(false) }
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false)},
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false, isPopupVisible2)},
     ){ padding ->
         Column(
             modifier = Modifier
@@ -134,8 +135,24 @@ fun QuizScreen(navController: NavController, quizId: String?, questionId: Int?, 
                 }
             }
             if(isPopupVisible.value){
-                PopUp(title = "Send a feedback", text = "", buttonText = "Send", isPopupVisible = isPopupVisible,
-                    isFeedback = true, sharedViewModel = sharedViewModel,quizId = quiz.id, index = questionId)
+                PopUpReport(
+                    title = "Send a feedback",
+                    buttonText = "Send",
+                    isPopupVisible = isPopupVisible,
+                    sharedViewModel = sharedViewModel,
+                    quizId = quiz.id,
+                    index = questionId
+                )
+            }
+            if(isPopupVisible2.value){
+                PopUpCancel(
+                    title = "Uncompleted Quiz",
+                    text = "If you exit now, your progresses won't be saved!",
+                    isPopupVisible = isPopupVisible2 ,
+                    isQuizScreen = true,
+                    sharedViewModel = sharedViewModel,
+                    navController = navController
+                )
             }
             Box(
                 contentAlignment = Alignment.BottomCenter,

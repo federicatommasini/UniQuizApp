@@ -103,7 +103,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
     val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
 
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false, null)},
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { padding ->
         Column(
@@ -245,7 +245,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
     val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false,null)},
         bottomBar = { BottomNavigationBar(navController = navController) },
         content = { padding ->
             Column(
@@ -281,7 +281,7 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
     val subjects = sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val pagerState = rememberPagerState()
     Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
+        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false,null)},
         bottomBar = { BottomNavigationBar(navController = navController) },
         modifier = Modifier.fillMaxHeight(1f)
     ) { padding ->
@@ -405,7 +405,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
 
 
     Scaffold(
-        topBar = { AppBar(navController = navController, true, false, sharedViewModel, false) },
+        topBar = { AppBar(navController = navController, true, false, sharedViewModel, false,null) },
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { padding ->
         Column(

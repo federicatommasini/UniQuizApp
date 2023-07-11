@@ -88,9 +88,16 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
         showCamera = false
     }
 
-    var showAlert by remember {mutableStateOf(false)}
-    if(showAlert){
-        alertDialogLogout(navController)
+    var showAlert = remember { mutableStateOf(false) }
+    if(showAlert.value){
+        PopUpCancel(
+            title = "Logout",
+            text = "Are you sure you want to log out?",
+            isPopupVisible = showAlert ,
+            isQuizScreen = false,
+            sharedViewModel = sharedViewModel,
+            navController = navController
+        )
     }
 
     var isEditable by remember { mutableStateOf(false) }
@@ -108,7 +115,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent)
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true, sharedViewModel, true)}
+        topBar = {AppBar(navController = navController,false, true, sharedViewModel, true,showAlert)}
     ) { padding ->
         Column(
             modifier = Modifier

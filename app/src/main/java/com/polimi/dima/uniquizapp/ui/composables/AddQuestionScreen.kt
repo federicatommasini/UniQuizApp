@@ -66,7 +66,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     items.toList()
 
     Scaffold(
-        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false)}
+        topBar = {AppBar(navController = navController,false, true,sharedViewModel, false,null)}
     ){padding ->
         Column(
             modifier = Modifier

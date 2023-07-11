@@ -22,6 +22,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,12 +44,7 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean, sharedViewModel: SharedViewModel, seeLogout : Boolean){
-
-    var showAlert by remember { mutableStateOf(false) }
-    if(showAlert){
-        alertDialogLogout(navController)
-    }
+fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Boolean, sharedViewModel: SharedViewModel, seeLogout : Boolean, isVisible: MutableState<Boolean>?){
 
     CenterAlignedTopAppBar(
     title = { Text("UniQuizApp",
@@ -64,9 +60,13 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
                 var finalRoute =route
                 if( route == Screen.SubjectScreen.route)
                     finalRoute = route.replace("{subjectId}", sharedViewModel.subject!!.id)
-                navController.navigate(finalRoute){
-                    popUpTo(route){
-                        inclusive = true
+                if(null!=isVisible)
+                    isVisible.value=true
+                else{
+                    navController.navigate(finalRoute){
+                        popUpTo(route){
+                            inclusive = true
+                        }
                     }
                 }
             }) {
@@ -89,7 +89,7 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
         else if(seeLogout){
             IconButton(
                 onClick = {
-                    showAlert = true
+                    isVisible!!.value = true
                 },
                 modifier = Modifier
                     .size(40.dp)
@@ -110,50 +110,6 @@ fun AppBar(navController: NavController, seeProfile: Boolean, seeBackArrow: Bool
     },
     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = customizedBlue)
     )
-}
-
-
-@Composable
-fun alertDialogLogout(navController: NavController){
-
-    val context = LocalContext.current
-    val openDialog = remember { mutableStateOf(true) }
-
-    if (openDialog.value){
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = { Text(text = "Logout", color = Color.Black)},
-            text = {Text(text = "Are you sure you want to log out?", color = Color.Black)},
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                        val activity = context as MainActivity
-                        val signInGoogle = GoogleSignInActivity()
-                        signInGoogle.initialize(activity)
-                        signInGoogle.googleSignInClient.signOut()
-                        navController.navigate(route = Screen.Login.route){
-                            popUpTo(route = Screen.Login.route) //i dont know if this is correct
-                            {
-                                inclusive = true
-                            }
-                        }
-                    }) {
-                    Text(text = "Confirm", color = Color.Black)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                    }) {
-                    Text(text = "Cancel", color = Color.Black)
-                }
-            },
-            backgroundColor = grayBackground,
-            shape = RoundedCornerShape(20.dp)
-        )
-    }
 }
 
 

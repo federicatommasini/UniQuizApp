@@ -39,13 +39,12 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
     val quiz = sharedViewModel.quiz
     val subject = sharedViewModel.subject!!
     val score : String =  points.toString() + "/" + quiz!!.questions.size.toString()
-    //TODO call to backend to save the points
     val text = if (points <= quiz!!.questions.size/2) "You can do better! You scored: " + score
                else "Congratulations! You scored: " + score
 
 
     Scaffold(
-        topBar = {AppBar(navController = navController,false,true,sharedViewModel, false)},
+        topBar = {AppBar(navController = navController,false,true,sharedViewModel, false,null)},
     ){ padding ->
         Column(
             modifier = Modifier
