@@ -2,6 +2,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.util.Patterns
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.api.client.util.Strings.isNullOrEmpty
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
@@ -170,13 +172,15 @@ fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
                 Button(
                     onClick = {
                         Log.d("confirm", passwordValue.value + " " + confirmPasswordValue.value)
-                        if(!checkingVoidField(listOf(firstNameValue, lastNameValue, usernameValue, passwordValue, confirmPasswordValue, emailValue, universityValue))){
+                        if(!isValidEmail(emailValue.value)) {
+                            message.value = "Email not valid"
+                        }
+                        else if(!checkingVoidField(listOf(firstNameValue, lastNameValue, usernameValue, passwordValue, confirmPasswordValue, emailValue, universityValue))){
                             message.value = "Complete all fields"
                         }
                         else if (passwordValue.value != confirmPasswordValue.value) {
                             message.value =
                                 "Password and Confirm Password are different, please retry"
-
                         } else {
                             val request = RegistrationRequest(
                                 username = usernameValue.value,
@@ -241,5 +245,10 @@ fun checkingVoidField(
         }
     }
     return true
+}
+
+fun isValidEmail(string : String): Boolean {
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+    return string.matches(emailRegex.toRegex())
 }
 
