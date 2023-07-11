@@ -24,6 +24,9 @@ interface QuizApi {
     @POST("/addQuestion")
     suspend fun addQuestion(@Body request: NewQuestionRequest) : Subject?
 
+    @GET("/completedQuizzes/{userId}")
+    suspend fun getQuizzesCompletedByUser(@Path("userId") userId : String) : List<Quiz?>
+
     @POST("/addReport/{quizId}/{index}/{userId}")
     suspend fun addReport(@Path("quizId") quizId : String,@Path("index") index : Int, @Path("userId") userId : String, @Body message: String) : User?
 }

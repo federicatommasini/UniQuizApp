@@ -21,4 +21,6 @@ interface SubjectApi {
 
     @PUT("/updateRanking/{subjectId}/{userId}")
     suspend fun updateRanking(@Path("subjectId") subjectId : String, @Path("userId") userId : String)
+    @GET("/completedSubjects/{userId}")
+    suspend fun completedSubjectsUser(@Path("userId") userId: String) : Int
 }

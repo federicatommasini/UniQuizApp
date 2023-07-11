@@ -78,4 +78,13 @@ class SubjectViewModel @Inject constructor(
         }
     }
 
+    fun completedSubjectsUser(userId: String): Int {
+        var howManySubjectsCompleted = 0
+        viewModelScope.launch {
+            val response = runBlocking { subjectRepo.completedSubjectsUser(userId)}
+            howManySubjectsCompleted = response
+        }
+        return howManySubjectsCompleted
+    }
+
 }

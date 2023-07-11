@@ -56,7 +56,8 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
             .imePadding()
             .fillMaxSize()
             .background(whiteBackground)
-            .padding(18.dp),
+            .padding(18.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -81,7 +82,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
             }
         }
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+            //modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             Text(
                 text = "Login",

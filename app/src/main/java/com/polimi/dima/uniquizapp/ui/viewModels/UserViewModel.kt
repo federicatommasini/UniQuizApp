@@ -95,4 +95,13 @@ class UserViewModel @Inject constructor(
         }
         return user!!
     }
+
+    fun getPoints(userId: String): Int {
+        var totPoints = 0;
+        viewModelScope.launch {
+            val response = runBlocking { userRepo.getPoints(userId) }
+            totPoints = response
+        }
+        return totPoints
+    }
 }

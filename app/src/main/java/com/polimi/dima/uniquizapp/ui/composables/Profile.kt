@@ -65,6 +65,7 @@ import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.gotrue.GoTrue
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
@@ -72,6 +73,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.lang.Exception
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -81,6 +83,10 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
     val uniViewModel = sharedViewModel.uniViewModel
     var user = sharedViewModel.user
     val universityFromUser = runBlocking { uniViewModel.getUniById(user!!.universityId) }
+    var showCamera : Boolean = true
+    if(user!!.profilePicUrl != ""){
+        showCamera = false
+    }
 
     var showAlert by remember {mutableStateOf(false)}
     if(showAlert){
@@ -118,7 +124,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     .padding(0.dp)
                     .background(customizedBlue)
             )
-            { ProfileImage(user, sharedViewModel, true)
+            { ProfileImage(user, sharedViewModel, showCamera)
             }
             CustomSpacer()
             ProfileTextField(field = firstName, nameField = "First Name", colors = customizedColors)
@@ -208,7 +214,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                                 user!!.universityId,
                                 user!!.subjectIds,
                                 user!!.exams,
-                                user!!.schedules,
+                                //user!!.schedules,
                                 user!!.profilePicUrl,
                                 user!!.questionsAdded,
                                 user!!.questionsReported
@@ -239,7 +245,6 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
 @Composable
 fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Boolean) {
 
-
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val permissionState = rememberPermissionState(
         permission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -250,7 +255,6 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
 
     val clicked = remember { mutableStateOf(false) }
 
-    //SideEffect { permissionState.launchPermissionRequest() }
     LaunchedEffect(permissionState.status) {
         if (permissionState.status == PermissionStatus.Granted && clicked.value) {
             filePickerLauncher.launch("*/*")
@@ -464,7 +468,9 @@ fun hasPermission(context: Context, permission: String): Boolean {
 }
 
 suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
-    client.storage[bucketName].upload(fileName, byteArray, false)
+    try{
+        client.storage[bucketName].upload(fileName, byteArray, false)
+    }catch(e : HttpRequestException){ }
     val url = client.storage[bucketName].publicUrl(fileName)
     runBlocking { saveItToDb(sharedViewModel, url) }
 }
@@ -482,7 +488,7 @@ fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
         oldUser!!.universityId,
         oldUser!!.subjectIds,
         oldUser!!.exams,
-        oldUser!!.schedules,
+        //oldUser!!.schedules,
         url!!,
         oldUser!!.questionsAdded,
         oldUser!!.questionsReported)

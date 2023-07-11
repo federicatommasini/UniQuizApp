@@ -7,6 +7,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.21'
 }
 
+
 android {
     namespace 'com.polimi.dima.uniquizapp'
     compileSdk 33

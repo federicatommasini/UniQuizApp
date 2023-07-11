@@ -18,11 +18,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 //import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +38,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -75,7 +71,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Card
-import androidx.compose.ui.graphics.RectangleShape
 import com.polimi.dima.uniquizapp.data.model.Subject
 
 
@@ -83,6 +78,29 @@ import com.polimi.dima.uniquizapp.data.model.Subject
 fun Home(navController: NavController, sharedViewModel: SharedViewModel){
 
     val user = sharedViewModel.user
+    val totScore = totScoreUser(user!!.id, sharedViewModel)
+    val listSubjectsOfUser = sharedViewModel.subjectViewModel.getSubjectsByUser(user!!.id)
+    val completedQuizUser = completedQuizUser(sharedViewModel, user!!.id)
+    val totQuizUser = totQuizUser(listSubjectsOfUser, sharedViewModel)
+    var fractionQuiz : Float
+    if(completedQuizUser != 0 && totQuizUser != 0){
+        fractionQuiz = completedQuizUser.toFloat()/totQuizUser.toFloat()
+    }
+    else{
+        fractionQuiz = 0f
+    }
+    val completedSubjectsUser = completedSubjectsUser(sharedViewModel, user!!.id)
+    val totSubjectsUser = listSubjectsOfUser.size
+    val fractionSubject : Float
+    if(completedSubjectsUser != 0 && totSubjectsUser != 0){
+        fractionSubject = completedSubjectsUser.toFloat()/totSubjectsUser.toFloat()
+    }
+    else{
+        fractionSubject = 0f
+    }
+    val rowWithBarPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 5.dp)
+    val middleRowPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 10.dp)
+    val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
 
     Scaffold(
         topBar = {AppBar(navController = navController,true,false,sharedViewModel, false)},
@@ -106,7 +124,7 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 fontSize = 30.sp
             )
             Text(
-                text = "With this app you can schedule your study for your university exams, learning using simple and fun quizzes!",
+                text = "With this app you can study for your university exams and learning new topics using fun quizzes!",
                 fontWeight = FontWeight.Normal,
                 color = Color.Gray,
                 modifier = Modifier
@@ -121,33 +139,34 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
             )*/
 
             Spacer(modifier = Modifier.padding(10.dp))
-            Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .border(2.dp, customizedBlue, RoundedCornerShape(40.dp))
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    //Spacer(modifier = Modifier.padding(10.dp))
-                    Text(
-                        text = "Your Score:",
-                        fontSize = 26.sp,
-                        color = customizedBlue,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)
+            Row(
+                modifier = Modifier
+                    .border(2.dp, customizedBlue, RoundedCornerShape(40.dp))
+                    .align(Alignment.CenterHorizontally)
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                //Spacer(modifier = Modifier.padding(10.dp))
+                Text(
+                    text = "Your Score:",
+                    fontSize = 26.sp,
+                    color = customizedBlue,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)
                              //.border(1.dp, Color.Red, RectangleShape)
-                    )
-                    Text(
-                        text = "17",
-                        fontSize = 26.sp,
-                        color = customizedBlue,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)//.border(1.dp, Color.Green, RectangleShape)
-                    )
-                    //Spacer(modifier = Modifier.padding(10.dp))
-                }
+                )
+                Text(
+                    text = "$totScore!",
+                    fontSize = 26.sp,
+                    color = customizedBlue,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)//.border(1.dp, Color.Green, RectangleShape)
+                )
+            //Spacer(modifier = Modifier.padding(10.dp))
+            }
             Spacer(modifier = Modifier.padding(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -162,28 +181,19 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                     modifier = Modifier.weight(1f)
                 )
             }
-
             Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp))
             {
-                val listSubjects = sharedViewModel.subjectViewModel.getSubjectsByUser(user!!.id)
-                val totSubjectsUser = listSubjects.size
-                val totQuizUser = totQuizUser(user!!.id, listSubjects)
-                val completedQuizUser = completedQuizUser(user!!.id)
-                val completedSubjectsUser = completedSubjectsUser(user!!.id)
-                val rowWithBarPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 5.dp)
-                val middleRowPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 10.dp)
-                val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
                 ActivityRow(
                     paddingValues = rowWithBarPadding,
                     header = "Quizzes Completed",
-                    text = "3 out of 4",
-                    fractionCompleted = 0.75f,
+                    text = "$completedQuizUser out of $totQuizUser",
+                    fractionCompleted = fractionQuiz,
                     progressBar = true)
                 ActivityRow(
                     paddingValues = rowWithBarPadding,
                     header = "Subjects Completed",
-                    text = "1 out of 2",
-                    fractionCompleted = 0.5f,
+                    text = "$completedSubjectsUser out of $totSubjectsUser",
+                    fractionCompleted = fractionSubject,
                     progressBar = true
                 )
                 ActivityRow(
@@ -205,19 +215,24 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
     }
 }
 
-fun completedSubjectsUser(id: String): Int {
-    return 1;
+fun totScoreUser(userId : String, sharedViewModel : SharedViewModel) : Int {
+    return sharedViewModel.userViewModel.getPoints(userId);
 }
 
-fun completedQuizUser(id: String) {
-
+fun completedSubjectsUser(sharedViewModel: SharedViewModel, userId: String): Int {
+    return sharedViewModel.subjectViewModel.completedSubjectsUser(userId)
 }
 
-fun totQuizUser(id: String, subjects : List<Subject>): Int {
+fun completedQuizUser(sharedViewModel: SharedViewModel, userId: String) : Int {
+    return (sharedViewModel.quizViewModel.getQuizzesCompletedByUser(userId))!!.size
+}
+
+fun totQuizUser(subjects : List<Subject>, sharedViewModel: SharedViewModel): Int {
+    var totQuizzes = 0
     for(subject in subjects){
-
+        totQuizzes += subject.quizIds.size
     }
-    return 1;
+    return totQuizzes;
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -527,7 +542,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                     //lineHeight = 23.sp,
                                                     fontSize = if (item.notes == null) 26.sp else 24.sp,
                                                     fontWeight = FontWeight.Normal,
-                                                    textAlign = TextAlign.Center,
+                                                    textAlign = TextAlign.Left,
                                                     modifier = Modifier
                                                         // .weight(1f)
                                                         .padding(
@@ -545,7 +560,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                     modifier = Modifier
                                                         // .weight(1f)
                                                         .padding(
-                                                            start = 0.dp,
+                                                            start = 10.dp,
                                                             top = 2.dp,
                                                             end = 8.dp,
                                                             bottom = 5.dp

@@ -15,7 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ActivityRow(paddingValues: PaddingValues, header : String, text : String, fractionCompleted : Float?, progressBar : Boolean) {
+fun ActivityRow(
+    paddingValues: PaddingValues,
+    header : String,
+    text : String,
+    fractionCompleted : Float?,
+    progressBar : Boolean) {
 
     Row(
         modifier = Modifier
@@ -28,9 +33,7 @@ fun ActivityRow(paddingValues: PaddingValues, header : String, text : String, fr
                 text = header,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-
                 textAlign = TextAlign.Left,
-                fontFamily = FontFamily.Monospace,
                 modifier = Modifier.padding(end = 5.dp)
             )
         }
@@ -48,5 +51,4 @@ fun ActivityRow(paddingValues: PaddingValues, header : String, text : String, fr
     if(progressBar){
         CustomProgressBar(progress = fractionCompleted!!)
     }
-
 }
