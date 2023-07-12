@@ -24,7 +24,7 @@ fun ActivityRow(
 
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .padding(paddingValues),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -23,7 +23,7 @@ fun CustomProgressBar(progress: Float) {
     // Progress Bar
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .height(10.dp)
     ) {
         // for the background of the ProgressBar

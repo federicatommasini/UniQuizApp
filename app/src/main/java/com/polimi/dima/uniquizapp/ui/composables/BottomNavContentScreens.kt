@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Paint.Align
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -71,6 +72,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Card
+import androidx.compose.ui.Alignment.Companion.Top
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.graphics.RectangleShape
 import com.polimi.dima.uniquizapp.data.model.Subject
 
@@ -110,9 +113,11 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
+                .wrapContentSize(Center)
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
                 text = "Welcome ${user?.username} to the UniQuiz app!",
@@ -120,7 +125,8 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                 color = customizedBlue,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(30.dp),
+                    .padding(30.dp)
+                    .fillMaxSize().padding(30.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 30.sp
             )
@@ -182,8 +188,10 @@ fun Home(navController: NavController, sharedViewModel: SharedViewModel){
                     modifier = Modifier.weight(1f)
                 )
             }
-            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp))
-            {
+            Column(
+                //verticalArrangement = Arrangement.Center
+                //modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+            ) {
                 ActivityRow(
                     paddingValues = rowWithBarPadding,
                     header = "Quizzes Completed",

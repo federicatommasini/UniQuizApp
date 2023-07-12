@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +22,10 @@ import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -54,13 +57,25 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     val questionTextFocusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
     val answers = remember { mutableListOf(mutableStateOf(""),mutableStateOf(""),mutableStateOf(""),mutableStateOf("")) }
     val answersFocusRequester = remember { mutableListOf(FocusRequester(),FocusRequester(),FocusRequester(),FocusRequester()) }
     val message = remember { mutableStateOf("") }
     val subjectId = sharedViewModel.subject!!.id
     val quizzes = sharedViewModel.quizViewModel.getAll(subjectId)
     val items = mutableListOf<String>()
-    val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
+    //val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
+
+    val check1 = remember { mutableStateOf(false) }
+    val check2 = remember { mutableStateOf(false) }
+    val check3 = remember { mutableStateOf(false) }
+    val check4 = remember { mutableStateOf(false) }
+
+    val checkedState = listOf(check1, check2, check3, check4)
+    Log.d("START", message.value)
+
+    var showAlert by remember { mutableStateOf(false) }
+
     for(q in quizzes) { items.add(q.name) }
     items.add("New Quiz")
     items.toList()
@@ -148,8 +163,8 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                             Checkbox(
                                 checked = checkedState[i].value,
                                 onCheckedChange = {
-                                    checkedState[i].value = it
-                                    if (it)
+                                    checkedState[i].value = !checkedState[i].value
+                                    if (checkedState[i].value)
                                         for (j in 0..3)
                                             if (j != i) {
                                                 checkedState[j].value = false
@@ -179,8 +194,8 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                         Checkbox(
                             checked = checkedState[3].value,
                             onCheckedChange = {
-                                checkedState[3].value = it
-                                if (it)
+                                checkedState[3].value = !checkedState[3].value
+                                if (checkedState[3].value)
                                     for (j in 0..3)
                                         if (j != 3) {
                                             checkedState[j].value = false
@@ -196,16 +211,29 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
 
                 Spacer(modifier = Modifier.size(20.dp))
                 Box( contentAlignment = Alignment.BottomCenter, modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().fillMaxHeight()
                 ) {
                     Button(
                         onClick = {
                         if((quizValue.value=="New Quiz" &&  !checkingVoidField(listOf(quizValue, newQuizName, questionText, answers[0], answers[1], answers[2], answers[3])))
-                            || (quizValue.value!=="New Quiz" && !checkingVoidField(listOf(quizValue, questionText, answers[0], answers[1], answers[2], answers[3]))))
+                            || (quizValue.value!=="New Quiz" && !checkingVoidField(listOf(quizValue, questionText, answers[0], answers[1], answers[2], answers[3])))) {
                             message.value = "Complete all fields to add"
-                        else if(quizValue.value=="New Quiz" && items.contains(newQuizName.value))
+                            showAlert = true
+                            Log.d("PRIMO IF", message.value)
+                        }else if(quizValue.value=="New Quiz" && items.contains(newQuizName.value)) {
                             message.value = "A quiz with this name already exists"
-                        else {
+                            showAlert = true
+                            Log.d("SEcondo IF", message.value)
+
+                        }else if(!checkedState[0].value && !checkedState[1].value && !checkedState[2].value && !checkedState[3].value) {
+                            message.value = "Tick the correct answer!"
+                            showAlert = true
+                            Log.d("TERZOIF", message.value)
+
+                        }else {
+                            message.value = ""
+                            Log.d("ELSE", message.value)
+
                             var list: MutableList<Answer> = mutableListOf()
                             for( (index,a) in answers.withIndex())
                                 list.add(Answer( answers[index].value, checkedState[index].value))
@@ -237,10 +265,17 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                     ) {
                         Text("Add question", fontWeight = FontWeight.Bold)
                     }
-                    Spacer(modifier = Modifier.padding(20.dp))
-                    Text(
-                        text = message.value,
-                        color = Color.Red)
+                    Spacer(modifier = Modifier.padding(50.dp))
+                    if(showAlert){
+                        Box(modifier = Modifier.align(Alignment.BottomCenter)){
+                            AutoDismissAlert(
+                                message = message.value,
+                                durationInSeconds = 3,
+                                onDismiss = { showAlert = false }
+                            )
+                        }
+
+                    }
                 }
 
 
