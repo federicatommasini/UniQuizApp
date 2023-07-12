@@ -36,4 +36,7 @@ interface UserApi {
 
     @GET("/{userId}/points")
     suspend fun getPoints(@Path("userId") userId: String): Int
+
+    @PUT("/{userId}/{picUrl}")
+    suspend fun uploadProfileIconTest(@Path("userId") userId: String, @Path("picUrl") picUrl: String):User
 }

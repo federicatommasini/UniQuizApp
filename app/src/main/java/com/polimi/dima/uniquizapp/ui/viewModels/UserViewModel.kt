@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
@@ -83,6 +84,14 @@ class UserViewModel @Inject constructor(
     fun uploadProfileIcon(user: User, userId: String) : User? {
         viewModelScope.launch {
             var response = runBlocking { userRepo.uploadProfileIcon(user, userId) }
+            _loginState.value = response
+        }
+        return _loginState.value
+    }
+
+    fun uploadProfileIconTest(userId: String, url: String) : User? {
+        viewModelScope.launch {
+            var response = runBlocking { userRepo.uploadProfileIconTest(userId, url) }
             _loginState.value = response
         }
         return _loginState.value

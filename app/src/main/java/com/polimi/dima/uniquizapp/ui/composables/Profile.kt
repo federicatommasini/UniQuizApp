@@ -2,12 +2,15 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -53,6 +56,7 @@ import com.polimi.dima.uniquizapp.data.Constants.SUPABASE_KEY
 import com.polimi.dima.uniquizapp.data.Constants.SUPABASE_URL
 import com.polimi.dima.uniquizapp.data.model.UriPathFinder
 import com.polimi.dima.uniquizapp.data.model.User
+import com.polimi.dima.uniquizapp.data.model.UserExam
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
@@ -208,10 +212,16 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                         )
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
-                            println(filePath)
+                            println(" prima path"+filePath)
+
                         }
+                        val fileName = getNameImage(imageUri!!, context)
+                        println(" prima "+fileName)
+                        //val encodedFilePath = URLEncoder.encode(filePath, "UTF-8")
+                        val encodedFileName = fileName!!.replace(" ", "%20")
+                        //println("dopo replace name " +encodedFileName)
                         if (onlyOnce) {
-                            uploadImage(filePath!!, sharedViewModel)
+                            uploadImage(filePath!!, sharedViewModel, fileName)
                             onlyOnce = false
                         }
                     }
@@ -465,7 +475,7 @@ fun ProfileTextField(field: String, nameField: String, colors: TextFieldColors){
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
+fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel, fileName: String){
 
     val supabaseUrl = SUPABASE_URL
     val supabaseKey = SUPABASE_KEY
@@ -480,14 +490,15 @@ fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel){
     }
     val lifecycleCoroutineScope = rememberCoroutineScope()
     lifecycleCoroutineScope.launch(Dispatchers.IO) {
-        runBlocking { uploadToSupabase(client, file.name, byteArray, bucketName, sharedViewModel) }
+        runBlocking { uploadToSupabase(client, fileName, byteArray, bucketName, sharedViewModel) }
 
     }
 }
 
 suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
-    client.storage[bucketName].upload(fileName, byteArray, false)
+    runBlocking { client.storage[bucketName].upload(fileName, byteArray, false) }
     val url = client.storage[bucketName].publicUrl(fileName)
+    Log.d("url ", url)
     runBlocking { saveItToDb(sharedViewModel, url) }
 }
 
@@ -509,9 +520,23 @@ fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
         oldUser!!.questionsAdded,
         oldUser!!.questionsReported)
     runBlocking {
-        justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
+        justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIconTest(oldUser!!.id, url)
+        //justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
     }
     justUpdatedUser?.let { sharedViewModel.addUser(it) }
 }
 
+private fun getNameImage(contentURI: Uri, context: Context) : String? {
+    var thePath = "no-path-found"
+    val filePathColumn = arrayOf(MediaStore.Images.Media.DISPLAY_NAME)
+    val cursor: Cursor? = context.contentResolver.query(contentURI, filePathColumn, null, null, null)
+    if (cursor != null) {
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor?.getColumnIndex(filePathColumn[0])
+            thePath = columnIndex?.let { cursor.getString(it) }.toString()
+        }
+    }
+    cursor?.close()
+    return thePath
+}
 

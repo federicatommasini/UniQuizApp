@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.data.repository
 
+import android.util.Log
 import com.polimi.dima.uniquizapp.data.api.UserApi
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.LoginResponse
@@ -39,6 +40,10 @@ class UserRepository @Inject constructor(
 
     suspend fun uploadProfileIcon(user : User, userId: String) : User {
         return userApi.uploadProfileIcon(user, userId)
+    }
+
+    suspend fun uploadProfileIconTest(userId: String, url : String):User{
+        return userApi.uploadProfileIconTest(userId, url)
     }
 
     suspend fun getPoints(userId: String) : Int{
