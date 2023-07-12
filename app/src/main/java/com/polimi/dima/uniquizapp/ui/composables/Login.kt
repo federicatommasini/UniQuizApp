@@ -94,7 +94,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     ) {
                         Text(
                             text = "UniQuiz",
-                            fontSize = 32.sp,
+                            fontSize = 28.sp,
                             color = customizedBlue,
                             style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp),
                             textAlign = TextAlign.Center,

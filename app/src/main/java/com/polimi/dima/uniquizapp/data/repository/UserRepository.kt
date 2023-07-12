@@ -30,20 +30,16 @@ class UserRepository @Inject constructor(
         return userApi.register(user)
     }
 
-    suspend fun updateProfile(user : User, userId: String): User {
-        return userApi.update(user, userId)
+    suspend fun updateProfile(pw : String, userId: String): User {
+        return userApi.update(pw, userId)
     }
 
     suspend fun addSubject(subject : Subject, userId: String) : User {
         return userApi.addSubject(subject, userId)
     }
 
-    suspend fun uploadProfileIcon(user : User, userId: String) : User {
-        return userApi.uploadProfileIcon(user, userId)
-    }
-
-    suspend fun uploadProfileIconTest(userId: String, url : String):User{
-        return userApi.uploadProfileIconTest(userId, url)
+    suspend fun uploadProfileIcon(userId : String, url: String) : User {
+        return userApi.uploadProfileIcon(userId, url)
     }
 
     suspend fun getPoints(userId: String) : Int{

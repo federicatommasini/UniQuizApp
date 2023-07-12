@@ -26,17 +26,14 @@ interface UserApi {
     suspend fun login(@Body loginRequest : LoginRequest) : LoginResponse
     @POST("/registration")
     suspend fun register(@Body user: RegistrationRequest): User
-    @PUT("/updateProfile/{id}")
-    suspend fun update(@Body user: User, @Path("id") number: String ) : User
+    @PUT("/updateProfile/{userId}")
+    suspend fun update(@Body pw: String, @Path("userId") userId: String ) : User
 
     @POST("/{userId}/addSubject")
     suspend fun addSubject(@Body subject : Subject, @Path("userId") userId : String) : User
-    @PUT("/{userId}/pic")
-    suspend fun uploadProfileIcon(@Body user : User, @Path("userId") number: String) : User
+    @PUT("pic/{userId}")
+    suspend fun uploadProfileIcon( @Path("userId") userId: String,@Body url: String) : User
 
     @GET("/{userId}/points")
     suspend fun getPoints(@Path("userId") userId: String): Int
-
-    @PUT("/{userId}/{picUrl}")
-    suspend fun uploadProfileIconTest(@Path("userId") userId: String, @Path("picUrl") picUrl: String):User
 }

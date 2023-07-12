@@ -55,12 +55,8 @@ class UserViewModel @Inject constructor(
         else return _loginState.value
     }
 
-    fun updateProfile(user : User, userId: String) : User? {
-        viewModelScope.launch {
-            var response = runBlocking { userRepo.updateProfile(user, userId) }
-            _loginState.value = response
-        }
-        return _loginState.value
+    suspend fun updateProfile(pw : String, userId: String) : User {
+        return runBlocking{userRepo.updateProfile(pw, userId)}
     }
 
     fun register(user: RegistrationRequest) : User? {
@@ -81,20 +77,10 @@ class UserViewModel @Inject constructor(
         return user!!
     }
 
-    fun uploadProfileIcon(user: User, userId: String) : User? {
-        viewModelScope.launch {
-            var response = runBlocking { userRepo.uploadProfileIcon(user, userId) }
-            _loginState.value = response
+    suspend fun uploadProfileIcon(userId: String, url: String) : User {
+        return runBlocking {
+            userRepo.uploadProfileIcon(userId, url)
         }
-        return _loginState.value
-    }
-
-    fun uploadProfileIconTest(userId: String, url: String) : User? {
-        viewModelScope.launch {
-            var response = runBlocking { userRepo.uploadProfileIconTest(userId, url) }
-            _loginState.value = response
-        }
-        return _loginState.value
     }
 
     fun getUserById(userId: String) : User {

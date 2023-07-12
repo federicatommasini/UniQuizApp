@@ -134,7 +134,7 @@ fun Profile(navController: NavController, sharedViewModel: SharedViewModel) {
                     ) {
                         ProfileImage(user, sharedViewModel, showCamera,0.4f)
                     }
-                    Column(modifier = Modifier.weight(0.6f).fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+                    Column(modifier = Modifier.weight(0.6f).fillMaxWidth().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Center) {
                         FieldsProfileSection(sharedViewModel)
                     }
                 }
@@ -212,16 +212,10 @@ fun ProfileImage(user: User?, sharedViewModel: SharedViewModel, showCamera: Bool
                         )
                         runBlocking {
                             filePath = uriPathFinder.getPath(context, imageUri!!)
-                            println(" prima path"+filePath)
-
                         }
                         val fileName = getNameImage(imageUri!!, context)
-                        println(" prima "+fileName)
-                        //val encodedFilePath = URLEncoder.encode(filePath, "UTF-8")
-                        val encodedFileName = fileName!!.replace(" ", "%20")
-                        //println("dopo replace name " +encodedFileName)
                         if (onlyOnce) {
-                            uploadImage(filePath!!, sharedViewModel, fileName)
+                            uploadImage(filePath!!, sharedViewModel, fileName!!)
                             onlyOnce = false
                         }
                     }
@@ -382,28 +376,13 @@ fun FieldsProfileSection(sharedViewModel: SharedViewModel){
         Button(
             onClick = {
                 if (isEditable) {
-                    var updatedUser = User(
-                        user!!.id,
-                        user!!.username,
-                        user!!.email,
-                        password,
-                        user!!.firstName,
-                        user!!.lastName,
-                        user!!.universityId,
-                        user!!.subjectIds,
-                        user!!.exams,
-                        //user!!.schedules,
-                        user!!.profilePicUrl,
-                        user!!.questionsAdded,
-                        user!!.questionsReported
-                    )
-                    runBlocking {
-                        user = sharedViewModel.userViewModel.updateProfile(
-                            updatedUser,
+
+                        user = runBlocking {sharedViewModel.userViewModel.updateProfile(
+                            password,
                             user!!.id
-                        )
-                    }
-                    user?.let { sharedViewModel.addUser(it) }
+                        )}
+
+                    sharedViewModel.addUser(user!!)
                 }
                 isEditable = !isEditable
             },
@@ -498,32 +477,13 @@ fun uploadImage(imagePath : String, sharedViewModel: SharedViewModel, fileName: 
 suspend fun uploadToSupabase(client : SupabaseClient, fileName: String, byteArray: ByteArray, bucketName: String, sharedViewModel: SharedViewModel) {
     runBlocking { client.storage[bucketName].upload(fileName, byteArray, false) }
     val url = client.storage[bucketName].publicUrl(fileName)
-    Log.d("url ", url)
     runBlocking { saveItToDb(sharedViewModel, url) }
 }
 
 fun saveItToDb(sharedViewModel: SharedViewModel, url : String){
     var oldUser = sharedViewModel.user
-    var justUpdatedUser : User?
-    var userToUpdate = User(
-        oldUser!!.id,
-        oldUser!!.username,
-        oldUser!!.email,
-        oldUser!!.password,
-        oldUser!!.firstName,
-        oldUser!!.lastName,
-        oldUser!!.universityId,
-        oldUser!!.subjectIds,
-        oldUser!!.exams,
-        //oldUser!!.schedules,
-        url!!,
-        oldUser!!.questionsAdded,
-        oldUser!!.questionsReported)
-    runBlocking {
-        justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIconTest(oldUser!!.id, url)
-        //justUpdatedUser = sharedViewModel.userViewModel.uploadProfileIcon(userToUpdate, oldUser.id)
-    }
-    justUpdatedUser?.let { sharedViewModel.addUser(it) }
+    var justUpdatedUser = runBlocking {sharedViewModel.userViewModel.uploadProfileIcon(oldUser!!.id, url)}
+    sharedViewModel.addUser(justUpdatedUser)
 }
 
 private fun getNameImage(contentURI: Uri, context: Context) : String? {
