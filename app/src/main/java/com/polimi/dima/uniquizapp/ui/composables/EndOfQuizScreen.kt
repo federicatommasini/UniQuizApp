@@ -2,7 +2,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,35 +47,27 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
         topBar = {AppBar(navController = navController,false,true,sharedViewModel, false,null)},
     ){ padding ->
         Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxHeight(1f)
                 .padding(30.dp)
                 .background(Color.White)
         ) {
-
-            Text(text, textAlign = TextAlign.Center, color = customizedBlue, fontSize = 30.sp)
-            Spacer(modifier = Modifier.fillMaxHeight(0.1f))
-            Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.6f).align(Alignment.CenterHorizontally),
-            contentAlignment = Alignment.TopCenter){
+            Text(text, textAlign = TextAlign.Center, color = customizedBlue, fontSize = 30.sp, modifier = Modifier.weight(0.1f).fillMaxWidth())
+            Box(modifier = Modifier.weight(0.8f).fillMaxWidth().align(Alignment.CenterHorizontally),
+            contentAlignment = Alignment.Center){
                 if(points <= quiz!!.questions.size/2){
-                    Image(
-                        painter = painterResource(id = R.drawable.fail_image),
-                        contentDescription = "QuizFailImage",
-                        modifier = Modifier.align(Alignment.Center).fillMaxSize())
+                    Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center))
                 }
                 else{
-                    Image(
-                        painter = painterResource(id = R.drawable.pass_image),
-                        contentDescription = "QuizPassImage",
-                        modifier = Modifier.align(Alignment.Center).fillMaxSize())
+                    Image(painter = painterResource(id = R.drawable.pass_image), contentDescription = "QuizPassImage", modifier = Modifier.align(Alignment.Center))
                 }
             }
             Row(
                 verticalAlignment = Alignment.Bottom,
-                modifier = Modifier
+                modifier = Modifier.weight(0.1f)
                     .fillMaxWidth()
-                    .weight(1f)
             ) {
                 Button(
                     onClick = {

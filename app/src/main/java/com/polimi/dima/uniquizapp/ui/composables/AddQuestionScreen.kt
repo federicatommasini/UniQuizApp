@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,13 +64,6 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     val quizzes = sharedViewModel.quizViewModel.getAll(subjectId)
     val items = mutableListOf<String>()
     val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
-
-    /*val check1 = remember { mutableStateOf(false) }
-    val check2 = remember { mutableStateOf(false) }
-    val check3 = remember { mutableStateOf(false) }
-    val check4 = remember { mutableStateOf(false) }
-
-    val checkedState = listOf(check1, check2, check3, check4)*/
 
     var showAlert by remember { mutableStateOf(false) }
 

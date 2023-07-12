@@ -3,6 +3,7 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,8 +45,9 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: NavController){
 
     var user = sharedViewModel.user
-    val map = subject.ranking.toSortedMap()
-    val stateMap by remember {mutableStateOf(subject.ranking.toSortedMap())}
+    val map : Map<String, Integer> = subject.ranking
+    //val stateMap by remember {mutableStateOf(subject.ranking.toSortedMap())}
+    val sortedList = map.entries.sortedByDescending{it.value as Int}
     var count =0
 
     LazyVerticalGrid(columns = GridCells.Fixed(1),
@@ -57,10 +59,13 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
         ),
         modifier = Modifier.background(Color.White),
         content = {
-            items(map.keys.toList()){ item ->
-                Log.d("userId ",item)
-                val user = sharedViewModel.userViewModel.getUserById(item)
-                count +=1
+            items(sortedList){ item ->
+                for((i,value) in sortedList.withIndex()){
+                    if(item.equals(value))
+                        count = i+1
+                }
+                Log.d("userId ",item.key)
+                val user = sharedViewModel.userViewModel.getUserById(item.key)
                 Card(
                     onClick = { },
                     backgroundColor = Color.White,
@@ -81,7 +86,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text=user.firstName + user.lastName, modifier = Modifier.weight(0.45f))
                         Spacer(modifier = Modifier.weight(0.05f))
-                        Text(text = map.get(item).toString(), modifier = Modifier.weight(0.1f))
+                        Text(text = map.get(item.key).toString(), modifier = Modifier.weight(0.1f))
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text = count.toString() + "\u00B0", fontSize = 28.sp,
                             color = customizedBlue,
