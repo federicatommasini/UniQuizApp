@@ -64,15 +64,14 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     val subjectId = sharedViewModel.subject!!.id
     val quizzes = sharedViewModel.quizViewModel.getAll(subjectId)
     val items = mutableListOf<String>()
-    //val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
+    val checkedState = remember { mutableListOf(mutableStateOf(false),mutableStateOf(false),mutableStateOf(false),mutableStateOf(false)) }
 
-    val check1 = remember { mutableStateOf(false) }
+    /*val check1 = remember { mutableStateOf(false) }
     val check2 = remember { mutableStateOf(false) }
     val check3 = remember { mutableStateOf(false) }
     val check4 = remember { mutableStateOf(false) }
 
-    val checkedState = listOf(check1, check2, check3, check4)
-    Log.d("START", message.value)
+    val checkedState = listOf(check1, check2, check3, check4)*/
 
     var showAlert by remember { mutableStateOf(false) }
 
@@ -219,21 +218,14 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                             || (quizValue.value!=="New Quiz" && !checkingVoidField(listOf(quizValue, questionText, answers[0], answers[1], answers[2], answers[3])))) {
                             message.value = "Complete all fields to add"
                             showAlert = true
-                            Log.d("PRIMO IF", message.value)
                         }else if(quizValue.value=="New Quiz" && items.contains(newQuizName.value)) {
                             message.value = "A quiz with this name already exists"
                             showAlert = true
-                            Log.d("SEcondo IF", message.value)
-
                         }else if(!checkedState[0].value && !checkedState[1].value && !checkedState[2].value && !checkedState[3].value) {
                             message.value = "Tick the correct answer!"
                             showAlert = true
-                            Log.d("TERZOIF", message.value)
-
                         }else {
                             message.value = ""
-                            Log.d("ELSE", message.value)
-
                             var list: MutableList<Answer> = mutableListOf()
                             for( (index,a) in answers.withIndex())
                                 list.add(Answer( answers[index].value, checkedState[index].value))
