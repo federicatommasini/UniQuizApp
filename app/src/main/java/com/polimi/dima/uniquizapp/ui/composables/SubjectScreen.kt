@@ -53,7 +53,6 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
     val urls = sharedViewModel.subjectViewModel.getDocumentUrls(subjectId!!)
     var present : Boolean = false
     sharedViewModel.quizViewModel.getAll(subject!!.id)
-    val subjectQuizzes by sharedViewModel.quizViewModel.allQuizzesState.collectAsState()
 
     Scaffold(
         topBar = {AppBar(navController = navController,false, true,sharedViewModel, false,null)}

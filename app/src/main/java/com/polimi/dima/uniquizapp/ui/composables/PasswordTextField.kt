@@ -12,10 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.ImeOptions
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,7 +26,7 @@ import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 fun PasswordTextField(field: MutableState<String>,
                       nameField: String,
                       visibility: MutableState<Boolean>,
-                      focusRequester: FocusRequester,//? = null
+                      focusRequester: FocusRequester,
                       keyboardActions: KeyboardActions){
 
     val customKeyboardOptions = KeyboardOptions(

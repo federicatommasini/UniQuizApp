@@ -73,7 +73,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
 
     Scaffold(
         topBar = {AppBar(navController = navController,false, true,sharedViewModel, false,null)}
-    ){padding ->
+    ){ padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize().fillMaxHeight()
@@ -258,14 +258,9 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                                 onDismiss = { showAlert = false }
                             )
                         }
-
                     }
                 }
-
-
-
             }
-
         }
     }
 }

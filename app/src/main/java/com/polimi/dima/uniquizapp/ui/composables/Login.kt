@@ -38,7 +38,6 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.runBlocking
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
 

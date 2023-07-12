@@ -2,12 +2,10 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
@@ -33,7 +31,6 @@ import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.ArrayList
 import java.util.Locale
 
@@ -76,7 +73,6 @@ fun CustomSearchBar(items : List<Subject>, navController: NavController){
 }
 @Composable
 fun ItemList(text : String, items : List<Subject>, navController: NavController) {
-    //val items by remember { mutableStateOf(listOf("Software Engineering", "Database", "DistributedSystems")) }
     var filteredItems: List<Subject>
     LazyColumn(modifier = Modifier.fillMaxWidth(0.9f)) {
         val searchedText = text

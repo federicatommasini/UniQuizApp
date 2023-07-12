@@ -15,13 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.widget.TextViewCompat.AutoSizeTextType
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
-import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
-import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
 @Composable
 fun LogoLandscape() {

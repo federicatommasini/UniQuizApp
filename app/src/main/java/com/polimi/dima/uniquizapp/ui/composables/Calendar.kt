@@ -3,7 +3,6 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Paint.Align
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -18,11 +17,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-//import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,285 +68,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.compose.runtime.Composable
 import androidx.compose.material.Card
-import androidx.compose.ui.Alignment.Companion.Top
-import androidx.compose.ui.Alignment.Companion.TopCenter
-import androidx.compose.ui.graphics.RectangleShape
-import com.polimi.dima.uniquizapp.data.model.Subject
-
-
-@Composable
-fun Home(navController: NavController, sharedViewModel: SharedViewModel){
-
-    val user = sharedViewModel.user
-    val totScore = totScoreUser(user!!.id, sharedViewModel)
-    val listSubjectsOfUser = sharedViewModel.subjectViewModel.getSubjectsByUser(user!!.id)
-    val completedQuizUser = completedQuizUser(sharedViewModel, user!!.id)
-    val totQuizUser = totQuizUser(listSubjectsOfUser, sharedViewModel)
-    var fractionQuiz : Float
-    if(completedQuizUser != 0 && totQuizUser != 0){
-        fractionQuiz = completedQuizUser.toFloat()/totQuizUser.toFloat()
-    }
-    else{
-        fractionQuiz = 0f
-    }
-    val completedSubjectsUser = completedSubjectsUser(sharedViewModel, user!!.id)
-    val totSubjectsUser = listSubjectsOfUser.size
-    val fractionSubject : Float
-    if(completedSubjectsUser != 0 && totSubjectsUser != 0){
-        fractionSubject = completedSubjectsUser.toFloat()/totSubjectsUser.toFloat()
-    }
-    else{
-        fractionSubject = 0f
-    }
-    val rowWithBarPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 5.dp)
-    val middleRowPadding = PaddingValues(start = 0.dp, top = 20.dp, end = 0.dp, bottom = 10.dp)
-    val lastRowPadding = PaddingValues(start = 0.dp, top = 10.dp, end = 0.dp, bottom = 20.dp)
-
-    Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false, null)},
-        bottomBar = { BottomNavigationBar(navController = navController) }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(Center)
-                .padding(padding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Welcome ${user?.username} to the UniQuiz app!",
-                fontWeight = FontWeight.Bold,
-                color = customizedBlue,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(30.dp)
-                    .fillMaxSize().padding(30.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp
-            )
-            Text(
-                text = "With this app you can study for your university exams and learning new topics using fun quizzes!",
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 0.dp, horizontal = 20.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp
-            )
-            /*Image(painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo",
-                   modifier = Modifier.size(300.dp).align(Alignment.CenterHorizontally).padding(10.dp,0.dp)
-            )*/
-
-            Spacer(modifier = Modifier.padding(10.dp))
-            Row(
-                modifier = Modifier
-                    .border(2.dp, customizedBlue, RoundedCornerShape(40.dp))
-                    .align(Alignment.CenterHorizontally)
-                    .padding(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                //Spacer(modifier = Modifier.padding(10.dp))
-                Text(
-                    text = "Your Score:",
-                    fontSize = 26.sp,
-                    color = customizedBlue,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)
-                             //.border(1.dp, Color.Red, RectangleShape)
-                )
-                Text(
-                    text = "$totScore!",
-                    fontSize = 26.sp,
-                    color = customizedBlue,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 2.dp)//.border(1.dp, Color.Green, RectangleShape)
-                )
-            //Spacer(modifier = Modifier.padding(10.dp))
-            }
-            Spacer(modifier = Modifier.padding(10.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Your Activities",
-                    fontSize = 26.sp,
-                    color = customizedBlue,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Column(
-                //verticalArrangement = Arrangement.Center
-                //modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-            ) {
-                ActivityRow(
-                    paddingValues = rowWithBarPadding,
-                    header = "Quizzes Completed",
-                    text = "$completedQuizUser out of $totQuizUser",
-                    fractionCompleted = fractionQuiz,
-                    progressBar = true)
-                ActivityRow(
-                    paddingValues = rowWithBarPadding,
-                    header = "Subjects Completed",
-                    text = "$completedSubjectsUser out of $totSubjectsUser",
-                    fractionCompleted = fractionSubject,
-                    progressBar = true
-                )
-                ActivityRow(
-                    paddingValues = middleRowPadding,
-                    header = "Questions Added",
-                    text = user!!.questionsAdded.toString(),
-                    fractionCompleted = null,
-                    progressBar = false
-                )
-                ActivityRow(
-                    paddingValues = lastRowPadding,
-                    header = "Questions Reported",
-                    text = user!!.questionsReported.toString(),
-                    fractionCompleted = null,
-                    progressBar = false
-                )
-            }
-        }
-    }
-}
-
-fun totScoreUser(userId : String, sharedViewModel : SharedViewModel) : Int {
-    return sharedViewModel.userViewModel.getPoints(userId);
-}
-
-fun completedSubjectsUser(sharedViewModel: SharedViewModel, userId: String): Int {
-    return sharedViewModel.subjectViewModel.completedSubjectsUser(userId)
-}
-
-fun completedQuizUser(sharedViewModel: SharedViewModel, userId: String) : Int {
-    return (sharedViewModel.quizViewModel.getQuizzesCompletedByUser(userId))!!.size
-}
-
-fun totQuizUser(subjects : List<Subject>, sharedViewModel: SharedViewModel): Int {
-    var totQuizzes = 0
-    for(subject in subjects){
-        totQuizzes += subject.quizIds.size
-    }
-    return totQuizzes;
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
-@SuppressLint("UnrememberedMutableState")
-@Composable
-fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
-
-    sharedViewModel.subjectViewModel.getState()
-    val allSubjectState by sharedViewModel.subjectViewModel.allSubjectsState.collectAsState()
-    val userSubjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
-
-    Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false,null)},
-        bottomBar = { BottomNavigationBar(navController = navController) },
-        content = { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-            ) {
-                Spacer(modifier = Modifier.padding(15.dp))
-                CustomSearchBar(allSubjectState,navController)
-                Spacer(modifier = Modifier.padding(15.dp))
-                Text(
-                    text = "Your Subjects",
-                    fontWeight = FontWeight.Bold,
-                    color = customizedBlue,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
-                if(userSubjectState.isEmpty()) {
-                    Box(modifier = Modifier
-                        .fillMaxSize(0.8f)
-                        .align(Alignment.CenterHorizontally),){
-                        Text(
-                            text = "Search your subjects to add them!",
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Gray,
-                            modifier = Modifier
-                                .align(Center)
-                                .fillMaxWidth(0.8f),
-                            textAlign = TextAlign.Center,
-                            fontSize = 24.sp,
-
-                            )
-                    }
-
-                }
-                /*if(userSubjectState[0] != null) {*/
-                    LazyGrid(
-                        route = "subject_screen/",
-                        navController,
-                        sharedViewModel
-                    )
-                //}
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
-    val subjects = sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
-    val pagerState = rememberPagerState()
-    Scaffold(
-        topBar = {AppBar(navController = navController,true,false,sharedViewModel, false,null)},
-        bottomBar = { BottomNavigationBar(navController = navController) },
-        modifier = Modifier.fillMaxHeight(1f)
-    ) { padding ->
-        Column(modifier = Modifier.fillMaxHeight(1f)){
-            Column(
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier.fillMaxHeight(0.1f)
-            ){
-                ScreenTitle("Ranking")
-            }
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight(0.8f)
-        ) {
-            Spacer(modifier = Modifier.size(10.dp))
-            Slider(subjects, pagerState, sharedViewModel, navController)
-        }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxHeight(0.1f).fillMaxWidth()) {
-                Spacer(modifier = Modifier.size(5.dp))
-                DotsIndicator(
-                    totalDots = subjects.size,
-                    selectedIndex = pagerState.currentPage,
-                    selectedColor = customizedBlue,
-                    unSelectedColor = customGray
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            if(subjects.isEmpty()){
-                Text("Add some subjects to get started! You will be able to confront your results with the other users.",
-                    fontWeight = FontWeight.Bold,
-                    color = customizedBlue,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(30.dp).border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
-            }
-    }
-}
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("Range", "CoroutineCreationDuringComposition")
@@ -479,7 +196,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     if (user!!.exams.isEmpty() && (googleAccount != null)) {
                         Column(
                             modifier = Modifier
-                                .height(200.dp)//.fillMaxSize()
+                                .height(200.dp)
                                 .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -513,7 +230,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                 }
                                 val date = getStringDate(item.exam.date)
                                 Card(
-                                    onClick = { /* TO DO */ },
+                                    onClick = {  },
                                     enabled = false,
                                     backgroundColor = Color.White,
                                     border = BorderStroke(1.dp, customLightGray),
@@ -527,7 +244,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .wrapContentHeight()
-                                        //.padding(horizontal = 8.dp)
                                     ) {
                                         Box(contentAlignment = Center,
                                             modifier = Modifier
@@ -563,33 +279,28 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                             ) {
                                                 Text(
                                                     text = name,
-                                                    //lineHeight = 23.sp,
                                                     fontSize = if (item.notes == null) 26.sp else 24.sp,
                                                     fontWeight = FontWeight.Normal,
                                                     textAlign = TextAlign.Left,
                                                     modifier = Modifier
-                                                        // .weight(1f)
                                                         .padding(
                                                             start = 0.dp,
                                                             top = 5.dp,
                                                             end = 8.dp,
                                                             bottom = 0.dp
                                                         )
-                                                        //   .border(1.dp, Color.Blue, RectangleShape)
                                                         .align(Alignment.CenterVertically)
                                                 )
                                             }
                                             if (item.notes != null) {
                                                 Row(
                                                     modifier = Modifier
-                                                        // .weight(1f)
                                                         .padding(
                                                             start = 10.dp,
                                                             top = 2.dp,
                                                             end = 8.dp,
                                                             bottom = 5.dp
                                                         )
-                                                        // .border(1.dp, Color.Yellow, RectangleShape)
                                                         .wrapContentHeight()
                                                 ) {
                                                     Text(
@@ -601,8 +312,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                         textAlign = TextAlign.Left,
                                                         color = Color.Gray,
                                                         modifier = Modifier
-
-                                                        //    .border(1.dp, Color.Green, RectangleShape)
                                                     )
                                                     Text(
                                                         text = item.notes,
@@ -614,7 +323,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                                                         color = Color.Gray,
                                                         modifier = Modifier
                                                             .padding(start = 5.dp)
-                                                            //   .border(1.dp, Color.Red, RectangleShape)
                                                             .wrapContentHeight()
                                                     )
                                                 }
@@ -627,13 +335,12 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         }
                     }
                 }
-                if (googleAccount != null) { //&& calendarService != null?
+                if (googleAccount != null) {
                     FloatingActionButton(
                         onClick = { signInGoogle.updateUI(googleAccount!!) },
                         backgroundColor = Color.White,
                         modifier = Modifier
                             .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                            // .align(Alignment.End)
                             .align(Alignment.BottomEnd)
                             .size(40.dp)
                     ) {
@@ -650,7 +357,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent)
-                        //   .border(2.dp, Color.Red, RectangleShape)
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -659,7 +365,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                         modifier = Modifier
                             .weight(1f)
                             .align(CenterVertically)
-                        // .border(2.dp, Color.Green, RectangleShape)
                     ) {
                     if (googleAccount == null) {
                         googleLoginButton(
@@ -671,7 +376,7 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                             sharedViewModel = sharedViewModel
                         )
                     } else if (calExamsId == null && notNow.value) {
-                        println("creare")
+                    } else if (calExamsId == null && notNow.value) {
                         googleLoginButton(
                             text = "Create the Exam Calendar",
                             loadingText = "Creating...",
@@ -684,22 +389,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                 }
                 }
             }
-            /*if (googleAccount != null) { //&& calendarService != null?
-                FloatingActionButton(
-                    onClick = { signInGoogle.updateUI(googleAccount!!) },
-                    backgroundColor = Color.White,
-                    modifier = Modifier
-                        .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                        .align(Alignment.End)
-                        .size(60.dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.google_calendar_new_logo_icon_159141),
-                        contentDescription = "Google Calendar"
-                    )
-                }
-            }*/
-
         }
     }
 

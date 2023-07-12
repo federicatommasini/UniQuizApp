@@ -3,7 +3,6 @@ package com.polimi.dima.uniquizapp.ui.composables
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
-import android.util.Patterns
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,14 +35,12 @@ import androidx.compose.ui.text.style.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.focus.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.api.client.util.Strings.isNullOrEmpty
 import com.polimi.dima.uniquizapp.BottomNavItem
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 
@@ -55,7 +52,6 @@ import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 import kotlinx.coroutines.runBlocking
 
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SignUp(navController: NavController, sharedViewModel: SharedViewModel) {
 

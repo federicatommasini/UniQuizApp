@@ -24,7 +24,7 @@ import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 fun CustomTextField(field: MutableState<String>,
                     nameField: String,
                     customImageVector: ImageVector?,
-                    focusRequester: FocusRequester,//? = null,
+                    focusRequester: FocusRequester,
                     keyboardActions: KeyboardActions,
                     fraction : Float
 ){
