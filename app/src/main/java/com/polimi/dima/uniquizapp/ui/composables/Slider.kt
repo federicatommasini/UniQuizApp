@@ -72,11 +72,7 @@ fun Slider(subjects : List<Subject>, pagerState: PagerState, sharedViewModel: Sh
                                 color = customizedBlue
                             )
                         }
-
-
                         Ranking(subjects[index],sharedViewModel, navController)
-
-
             }
         }
         }

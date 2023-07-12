@@ -33,11 +33,11 @@ fun LazyGrid(route: String, navController: NavController, sharedViewModel: Share
     sharedViewModel.subjectViewModel.getSubjectsByUser(sharedViewModel.user!!.id)
     val subjectState by sharedViewModel.subjectViewModel.userSubjectsState.collectAsState()
 
-    LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp),
+    LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 150.dp),
         contentPadding = PaddingValues(
-            start = 12.dp,
+            start = 20.dp,
             top = 16.dp,
-            end = 12.dp,
+            end = 20.dp,
             bottom = 70.dp
         ),
         modifier = Modifier.background(Color.White),
@@ -48,9 +48,9 @@ fun LazyGrid(route: String, navController: NavController, sharedViewModel: Share
                     shape = RoundedCornerShape(30),
                     backgroundColor = customLightGray,
                     modifier = Modifier
-                        .padding(4.dp)
-                        .height(80.dp)
-                        .width(100.dp)
+                        .padding(10.dp)
+                        .height(100.dp)
+                        .width(120.dp)
                 ){
                     Box() {
                         Text(text = item.name,

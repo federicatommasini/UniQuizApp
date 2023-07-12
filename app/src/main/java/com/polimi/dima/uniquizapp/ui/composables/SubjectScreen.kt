@@ -143,9 +143,8 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
 
             }
             else {
-                var counter = 0
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 250.dp),
+                    columns = GridCells.Fixed(1),
                     contentPadding = PaddingValues(
                         start = 12.dp,
                         top = 16.dp,
@@ -155,11 +154,12 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                     content = {
                         if(null!= urls && !urls!!.isEmpty())
                             items(urls){ item ->
+                                Column(){
                                 Row(){
                                     Image(painter = painterResource(id = R.drawable.pdf_icon),
                                         contentDescription = "pdf",
                                         contentScale = ContentScale.FillWidth,
-                                        modifier = Modifier.fillMaxSize(0.2f)
+                                        modifier = Modifier.weight(0.2f)
                                     )
                                     val separated = item.split("/").toTypedArray()
                                     var text = separated[separated.size-1]
@@ -171,7 +171,7 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold ,
                                         textAlign = TextAlign.Center,
-                                        modifier = Modifier
+                                        modifier = Modifier.weight(0.8f)
                                             .align(Alignment.CenterVertically)
                                             .clickable {
                                                 sharedViewModel.addUrl(item)
@@ -179,12 +179,15 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                                             }
                                     )
                                 }
-                                if(counter>0 && counter <= urls.size){
+                                Log.d("item ", item)
+                                Log.d("last ", urls[urls.size-1])
+                                if(!item.equals(urls[urls.size-1])){
+                                    Log.d("IF ", "ciao")
                                     Spacer(modifier = Modifier.padding(10.dp))
                                     Divider(color = customLightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
                                     Spacer(modifier = Modifier.padding(10.dp))
                                 }
-                                counter +=1
+                                }
                             }
                     })
 

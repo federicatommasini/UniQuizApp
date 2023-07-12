@@ -253,6 +253,7 @@ fun Subjects(navController: NavController, sharedViewModel: SharedViewModel) {
                     .fillMaxSize()
                     .padding(padding)
             ) {
+                Spacer(modifier = Modifier.padding(15.dp))
                 CustomSearchBar(allSubjectState,navController)
                 Spacer(modifier = Modifier.padding(15.dp))
                 Text(
@@ -285,26 +286,31 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
         bottomBar = { BottomNavigationBar(navController = navController) },
         modifier = Modifier.fillMaxHeight(1f)
     ) { padding ->
-        ScreenTitle("Ranking")
+        Column(modifier = Modifier.fillMaxHeight(1f)){
+            Column(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxHeight(0.1f)
+            ){
+                ScreenTitle("Ranking")
+            }
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier = Modifier.fillMaxHeight(0.8f)
         ) {
-
+            Spacer(modifier = Modifier.size(10.dp))
             Slider(subjects, pagerState, sharedViewModel, navController)
-
+        }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier=Modifier.size(20.dp))
+                modifier = Modifier.fillMaxHeight(0.1f).fillMaxWidth()) {
+                Spacer(modifier = Modifier.size(5.dp))
                 DotsIndicator(
                     totalDots = subjects.size,
                     selectedIndex = pagerState.currentPage,
                     selectedColor = customizedBlue,
                     unSelectedColor = customGray
                 )
+                Spacer(modifier = Modifier.size(10.dp))
             }
             if(subjects.isEmpty()){
                 Text("Add some subjects to get started! You will be able to confront your results with the other users.",
@@ -315,8 +321,8 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
                     fontSize = 20.sp
                 )
             }
-        }
     }
+}
 }
 
 @OptIn(ExperimentalMaterialApi::class)

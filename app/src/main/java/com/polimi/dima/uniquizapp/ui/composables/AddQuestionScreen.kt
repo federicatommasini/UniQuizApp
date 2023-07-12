@@ -1,5 +1,6 @@
 package com.polimi.dima.uniquizapp.ui.composables
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +57,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
     val keyboardController = LocalSoftwareKeyboardController.current
     val answers = remember { mutableListOf(mutableStateOf(""),mutableStateOf(""),mutableStateOf(""),mutableStateOf("")) }
     val answersFocusRequester = remember { mutableListOf(FocusRequester(),FocusRequester(),FocusRequester(),FocusRequester()) }
-    val message = remember { mutableStateOf("") }
+    var message =  ""
     val subjectId = sharedViewModel.subject!!.id
     val quizzes = sharedViewModel.quizViewModel.getAll(subjectId)
     val items = mutableListOf<String>()
@@ -200,11 +201,15 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                 ) {
                     Button(
                         onClick = {
+                            for(c in checkedState)
+                                Log.d("non ne posso piu", c.toString())
                         if((quizValue.value=="New Quiz" &&  !checkingVoidField(listOf(quizValue, newQuizName, questionText, answers[0], answers[1], answers[2], answers[3])))
                             || (quizValue.value!=="New Quiz" && !checkingVoidField(listOf(quizValue, questionText, answers[0], answers[1], answers[2], answers[3]))))
-                            message.value = "Complete all fields to add"
+                            message = "Complete all fields to add"
                         else if(quizValue.value=="New Quiz" && items.contains(newQuizName.value))
-                            message.value = "A quiz with this name already exists"
+                            message = "A quiz with this name already exists"
+                        else if(!checkedState[0].value && !checkedState[1].value && !checkedState[2].value && !checkedState[3].value)
+                            message = "Check the correct answer!"
                         else {
                             var list: MutableList<Answer> = mutableListOf()
                             for( (index,a) in answers.withIndex())
@@ -239,7 +244,7 @@ fun AddQuestionScreen(navController: NavController,sharedViewModel: SharedViewMo
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
                     Text(
-                        text = message.value,
+                        text = message,
                         color = Color.Red)
                 }
 
