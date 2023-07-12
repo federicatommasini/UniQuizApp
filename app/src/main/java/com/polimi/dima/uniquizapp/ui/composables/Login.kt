@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +33,7 @@ import com.polimi.dima.uniquizapp.MainActivity
 import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.LoginRequest
+import com.polimi.dima.uniquizapp.ui.composables.TestTags.LOGIN_BUTTON
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
 import com.polimi.dima.uniquizapp.ui.theme.whiteBackground
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
@@ -94,7 +96,7 @@ fun Login(navController: NavController, sharedViewModel: SharedViewModel) {
                     ) {
                         Text(
                             text = "UniQuiz",
-                            fontSize = 32.sp,
+                            fontSize = 28.sp,
                             color = customizedBlue,
                             style = TextStyle(fontWeight = FontWeight.Bold, letterSpacing = 2.sp),
                             textAlign = TextAlign.Center,
@@ -204,7 +206,7 @@ fun loginFields(sharedViewModel : SharedViewModel, navController: NavController,
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(58.dp)
-                    .padding(start = 60.dp, end = 60.dp)
+                    .padding(start = 60.dp, end = 60.dp).testTag(LOGIN_BUTTON)
             ) {
                 Text(text = "Login",
                     fontSize = 28.sp,

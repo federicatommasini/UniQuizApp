@@ -1,6 +1,5 @@
 package com.polimi.dima.uniquizapp.ui.viewModels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,7 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SharedViewModel : ViewModel() {
+open class SharedViewModel : ViewModel() {
 
     private val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
     private val uniRepo = UniversityRepository(uniApi)

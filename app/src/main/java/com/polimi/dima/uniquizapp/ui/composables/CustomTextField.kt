@@ -16,8 +16,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.polimi.dima.uniquizapp.ui.composables.TestTags.CUSTOM_TEXT_FIELD
 import com.polimi.dima.uniquizapp.ui.theme.grayBackground
 
 @Composable
@@ -41,7 +43,7 @@ fun CustomTextField(field: MutableState<String>,
         modifier = Modifier
             .fillMaxWidth(fraction)
             .background(grayBackground, RoundedCornerShape(20.dp))
-            .focusRequester(focusRequester ?: FocusRequester()),
+            .focusRequester(focusRequester ?: FocusRequester()).testTag(CUSTOM_TEXT_FIELD),
         trailingIcon = {
             if(customImageVector!=null)
                 Icon(imageVector = customImageVector!!, contentDescription = null) },

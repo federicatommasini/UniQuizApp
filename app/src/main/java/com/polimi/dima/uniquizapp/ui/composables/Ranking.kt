@@ -77,7 +77,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                             ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.5f)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))
-                        Text(text=user.firstName + user.lastName, modifier = Modifier.weight(0.45f))
+                        Text(text=user.username, modifier = Modifier.weight(0.45f))
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text = map.get(item.key).toString(), modifier = Modifier.weight(0.1f))
                         Spacer(modifier = Modifier.weight(0.05f))
