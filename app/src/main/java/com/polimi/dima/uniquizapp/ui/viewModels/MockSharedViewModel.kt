@@ -90,7 +90,7 @@ class ExamMockViewModel() {
         var exam : Exam= Exam("1", examRequest.subjectId, Date(examRequest.date))
         var userExam = UserExam(exam,userId)
         newList += userExam
-        user.exams = newList
+       // user.exams = newList
         return user
     }
     fun getExams(user : User){
