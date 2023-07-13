@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.polimi.dima.uniquizapp.Screen
 import com.polimi.dima.uniquizapp.data.model.Subject
+import com.polimi.dima.uniquizapp.ui.composables.TestTags.ARGUMENT_TEXT
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 import com.polimi.dima.uniquizapp.ui.viewModels.SharedViewModel
 
@@ -63,7 +65,7 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
                     border = BorderStroke(1.dp, customLightGray),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
+                        .height(100.dp).testTag(ARGUMENT_TEXT)
                 ){
                     Box() {
                         Text(
