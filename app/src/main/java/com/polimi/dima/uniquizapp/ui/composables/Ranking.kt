@@ -86,7 +86,6 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         modifier = Modifier.fillMaxWidth(1f)
                     ) {
                         Box(contentAlignment = Alignment.Center,modifier = Modifier.weight(0.3f)){
-
                             Card(
                                 shape = CircleShape,
                                 modifier = Modifier
@@ -101,8 +100,6 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                                     contentScale = ContentScale.Crop
                                 )
                             }
-
-                            //ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.2f)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text=user.username, modifier = Modifier.weight(0.45f))
@@ -122,5 +119,4 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                 }
             }
         })
-
 }
