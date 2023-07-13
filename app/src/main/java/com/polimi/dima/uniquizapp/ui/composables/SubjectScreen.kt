@@ -56,7 +56,6 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
     val urls = sharedViewModel.subjectViewModel.getDocumentUrls(subjectId!!)
     var present : Boolean = false
     sharedViewModel.quizViewModel.getAll(subject!!.id)
-    var added by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {AppBar(navController = navController,false, true,sharedViewModel, false,null)}
@@ -94,10 +93,10 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                             .weight(0.2f)
                             .align(Alignment.CenterVertically),
                         onClick = {val user = sharedViewModel.userViewModel.addSubjectToUser(subject!!,sharedViewModel.user!!.id)
-                            added = true
+                            //added = true
                             sharedViewModel.addUser(user)},
                         content = {
-                            if(!added){
+                            if(!present){
                                 Text(
                                     text = "Add",
                                     fontWeight = FontWeight.Bold ,
