@@ -72,7 +72,6 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
                 Button(
                     onClick = {
                         navController.navigate(route = "subject_screen/" + subject.id){
-                            sharedViewModel.resetPoints()
                             popUpTo(Screen.SubjectScreen.route){
                                 inclusive = true
                             }

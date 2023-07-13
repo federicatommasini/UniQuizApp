@@ -51,12 +51,15 @@ fun ArgumentsGrid(subject: Subject, sharedViewModel: SharedViewModel, route: Str
             items(state){ item ->
                 Card(
                     onClick = {
-                        if(sharedViewModel.user!!.subjectIds.contains(subject.id))
+                        if(sharedViewModel.user!!.subjectIds.contains(subject.id)){
+
+                            sharedViewModel.resetPoints()
                             navController.navigate(route = route + item.id + "/"+0){
                                 popUpTo(Screen.QuizScreen.route){
                                     inclusive = true
                                 }
                             }
+                        }
                         else isPopupVisible.value=true
                     },
                     backgroundColor = Color.White,
