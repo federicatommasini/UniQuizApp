@@ -19,17 +19,17 @@ import retrofit2.http.Path
 import javax.inject.Inject
 
 @HiltViewModel
-class QuizViewModel @Inject constructor(
+open class QuizViewModel @Inject constructor(
     private val quizRepo: QuizRepository
 ): ViewModel() {
 
     private val _allQuizzesState = MutableStateFlow(emptyList<Quiz>())
-    val allQuizzesState: StateFlow<List<Quiz>> = _allQuizzesState.asStateFlow()
+    open val allQuizzesState: StateFlow<List<Quiz>> = _allQuizzesState.asStateFlow()
 
     private val _allCompletedQuizzesState = MutableStateFlow(emptyList<Quiz?>())
-    val allCompletedQuizzesState: StateFlow<List<Quiz?>> = _allCompletedQuizzesState.asStateFlow()
+    open val allCompletedQuizzesState: StateFlow<List<Quiz?>> = _allCompletedQuizzesState.asStateFlow()
 
-    fun getAll(subjectId : String) : List<Quiz> {
+    open fun getAll(subjectId : String) : List<Quiz> {
         viewModelScope.launch{
             val response = runBlocking {
                 quizRepo.getQuizzesBySubject(subjectId)
@@ -38,7 +38,7 @@ class QuizViewModel @Inject constructor(
         }
         return allQuizzesState.value
     }
-    fun getQuizById(quizId : String) : Quiz?{
+    open fun getQuizById(quizId : String) : Quiz?{
         var quiz : Quiz? = null
         viewModelScope.launch{
             val response = runBlocking { quizRepo.getQuizById(quizId) }
@@ -47,13 +47,13 @@ class QuizViewModel @Inject constructor(
         return quiz
     }
 
-    fun addScore(quizId: String, userId: String, score: Int){
+    open fun addScore(quizId: String, userId: String, score: Int){
         viewModelScope.launch{
             val response = runBlocking {quizRepo.addScore(quizId,userId,score)}
         }
     }
 
-    fun addQuestion(request: NewQuestionRequest) : Subject?{
+    open fun addQuestion(request: NewQuestionRequest) : Subject?{
         var subject: Subject? = null
         viewModelScope.launch{
             val response = runBlocking{quizRepo.addQuestion(request)}
@@ -62,7 +62,7 @@ class QuizViewModel @Inject constructor(
         return subject
     }
 
-    fun getQuizzesCompletedByUser(userId : String) : List<Quiz?>{
+    open fun getQuizzesCompletedByUser(userId : String) : List<Quiz?>{
         viewModelScope.launch{
             val response = runBlocking{ quizRepo.getQuizzesCompletedByUser(userId)}
             _allCompletedQuizzesState.value = response
@@ -70,7 +70,7 @@ class QuizViewModel @Inject constructor(
         return allCompletedQuizzesState.value
     }
 
-    fun addReport(quizId : String, index : Int, userId : String, message: String) : User?{
+    open fun addReport(quizId : String, index : Int, userId : String, message: String) : User?{
         var user: User? = null
         viewModelScope.launch{
             val response = runBlocking { quizRepo.addReport(quizId,index,userId,message) }

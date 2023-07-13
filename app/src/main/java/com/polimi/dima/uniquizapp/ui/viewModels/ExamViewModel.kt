@@ -16,25 +16,25 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class ExamViewModel @Inject constructor(
+open class ExamViewModel @Inject constructor(
     private val examRepo: ExamRepository
 ): ViewModel() {
 
     private val _userState = MutableStateFlow<User?>(null)
-    val userState: StateFlow<User?> = _userState.asStateFlow()
+    open val userState: StateFlow<User?> = _userState.asStateFlow()
 
     private val _examState = MutableStateFlow<List<UserExam?>>(emptyList<UserExam>())
-    val examState : StateFlow<List<UserExam?>> = _examState.asStateFlow()
+    open val examState : StateFlow<List<UserExam?>> = _examState.asStateFlow()
 
 
-    suspend fun addExam(userId : String, examRequest : ExamRequest) : User {
+    open suspend fun addExam(userId : String, examRequest : ExamRequest) : User {
         val response = runBlocking {
             examRepo.addExam(userId, examRequest)
         }
         _examState.value = response.exams
         return response
     }
-    fun getExams(user : User){
+    open fun getExams(user : User){
         viewModelScope.launch{
             _examState.value = user.exams
         }

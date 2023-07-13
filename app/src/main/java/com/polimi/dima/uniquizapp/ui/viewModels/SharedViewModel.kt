@@ -31,24 +31,24 @@ open class SharedViewModel : ViewModel() {
 
     private val uniApi = ApiModule.provideUniversityApi(ApiModule.provideRetrofit())
     private val uniRepo = UniversityRepository(uniApi)
-    val uniViewModel = UniversityViewModel(uniRepo)
+    open val uniViewModel = UniversityViewModel(uniRepo)
 
     private val userApi = ApiModule.provideUserApi(ApiModule.provideRetrofit())
     private val userRepo = UserRepository(userApi)
-    val userViewModel = UserViewModel(userRepo)
+    open val userViewModel = UserViewModel(userRepo)
 
     private val subjectApi = ApiModule.provideSubjectApi(ApiModule.provideRetrofit())
     private val subjectRepo = SubjectRepository(subjectApi)
-    val subjectViewModel = SubjectViewModel(subjectRepo)
+    open val subjectViewModel = SubjectViewModel(subjectRepo)
     var documentUrl by mutableStateOf<String?>(null)
 
     private val quizApi = ApiModule.provideQuizApi(ApiModule.provideRetrofit())
     private val quizRepo = QuizRepository(quizApi)
-    val quizViewModel = QuizViewModel(quizRepo)
+    open val quizViewModel = QuizViewModel(quizRepo)
 
     private val examApi = ApiModule.provideExamApi(ApiModule.provideRetrofit())
     private val examRepo = ExamRepository(examApi)
-    val examViewModel = ExamViewModel(examRepo)
+    open val examViewModel = ExamViewModel(examRepo)
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -93,8 +93,7 @@ open class SharedViewModel : ViewModel() {
         }
     }
 
-    var user by mutableStateOf<User?>(null)
-        private set
+    open var user by mutableStateOf<User?>(null)
 
     var googleAccount by mutableStateOf<GoogleSignInAccount?>(null)
         private set
@@ -105,9 +104,9 @@ open class SharedViewModel : ViewModel() {
     var calendarId by mutableStateOf<String?>(null)
         private set
 
-    var points by mutableStateOf(0)
-    var quiz by mutableStateOf<Quiz?>(null)
-    var subject by mutableStateOf<Subject?>(null)
+    open var points by mutableStateOf(0)
+    open var quiz by mutableStateOf<Quiz?>(null)
+    open var subject by mutableStateOf<Subject?>(null)
 
     fun addUser(newUser : User){
         user = newUser
