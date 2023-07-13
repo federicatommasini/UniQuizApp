@@ -72,7 +72,7 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth(1f)
                     ) {
-                        Box(modifier = Modifier.weight(0.3f)){
+                        Box(contentAlignment = Alignment.Center,modifier = Modifier.weight(0.3f)){
                             ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.5f)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))

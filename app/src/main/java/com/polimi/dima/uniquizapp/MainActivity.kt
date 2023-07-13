@@ -28,6 +28,7 @@ class MainActivity : androidx.activity.ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        actionBar!!.hide()
         setContent {
             UniQuizAppTheme {
                 navController = rememberNavController()

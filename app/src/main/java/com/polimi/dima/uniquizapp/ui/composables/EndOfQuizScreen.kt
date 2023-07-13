@@ -50,12 +50,12 @@ fun EndOfQuizScreen (navController: NavController, sharedViewModel: SharedViewMo
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxHeight(1f)
+                .fillMaxHeight()
                 .padding(30.dp)
                 .background(Color.White)
         ) {
-            Text(text, textAlign = TextAlign.Center, color = customizedBlue, fontSize = 30.sp, modifier = Modifier.weight(0.1f).fillMaxWidth())
-            Box(modifier = Modifier.weight(0.8f).fillMaxWidth().align(Alignment.CenterHorizontally),
+            Text(text, textAlign = TextAlign.Center, color = customizedBlue, fontSize = 30.sp, modifier = Modifier.weight(0.2f).fillMaxWidth())
+            Box(modifier = Modifier.weight(0.7f).fillMaxWidth().align(Alignment.CenterHorizontally),
             contentAlignment = Alignment.Center){
                 if(points <= quiz!!.questions.size/2){
                     Image(painter = painterResource(id = R.drawable.fail_image), contentDescription = "QuizFailImage", modifier = Modifier.align(Alignment.Center))
