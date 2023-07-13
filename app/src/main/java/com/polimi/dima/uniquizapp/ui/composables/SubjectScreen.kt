@@ -13,10 +13,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -81,30 +84,43 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                 for( s in userSubjectState)
                     if(s.equals(subject))
                         present = true
-                if(!present){
+                //if(!present){
                     Button(
                         colors = ButtonDefaults.buttonColors(backgroundColor = customLightGray),
                         shape = CircleShape,
+                        enabled = !present,
                         modifier = Modifier
                             .weight(0.2f)
                             .align(Alignment.CenterVertically),
                         onClick = {val user = sharedViewModel.userViewModel.addSubjectToUser(subject!!,sharedViewModel.user!!.id)
+                            //added = true
                             sharedViewModel.addUser(user)},
                         content = {
-                            Text(
-                                text = "Add",
-                                fontWeight = FontWeight.Bold ,
-                                color = customizedBlue
-                            )
+                            if(!present){
+                                Text(
+                                    text = "Add",
+                                    fontWeight = FontWeight.Bold ,
+                                    color = customizedBlue
+                                )
+                            }else {
+                                Icon(imageVector = Icons.Default.Done,
+                                    contentDescription = "Added",
+                                    tint = customizedBlue
+                                )
+                            }
+
                         }
                     )
-                }else {
+                /*}else {
                     Spacer(modifier = Modifier
                         .weight(0.2f)
                         .padding(end = 10.dp))
-                }
+                }*/
+
+
 
             }
+
             var selectedItem by remember { mutableStateOf(0) }
             val items = listOf("Arguments", "Documents")
             TabRow(
@@ -190,7 +206,8 @@ fun SubjectScreen(navController: NavController, subjectId: String?, sharedViewMo
                             }
                     })
 
-            }}
+            }
+        }
     }
 }
 

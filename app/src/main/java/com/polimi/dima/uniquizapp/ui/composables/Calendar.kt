@@ -523,7 +523,7 @@ private fun onlyFutureExams(allExams : List<UserExam>) : List<UserExam>{
     return onlyFutureExams
 }
 
-@Composable
+/*@Composable
 fun AutoDismissAlert(
     message: String,
     durationInSeconds : Int,
@@ -540,4 +540,4 @@ fun AutoDismissAlert(
     ){
         Text(text = message)
     }
-}
+}*/
