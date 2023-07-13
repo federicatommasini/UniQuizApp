@@ -376,7 +376,6 @@ fun Calendar(navController: NavController, sharedViewModel: SharedViewModel) {
                             sharedViewModel = sharedViewModel
                         )
                     } else if (calExamsId == null && notNow.value) {
-                    } else if (calExamsId == null && notNow.value) {
                         googleLoginButton(
                             text = "Create the Exam Calendar",
                             loadingText = "Creating...",
