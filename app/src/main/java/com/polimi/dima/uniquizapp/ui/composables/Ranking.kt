@@ -2,12 +2,17 @@ package com.polimi.dima.uniquizapp.ui.composables
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -22,12 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
+import com.polimi.dima.uniquizapp.R
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.ui.theme.customLightGray
 import com.polimi.dima.uniquizapp.ui.theme.customizedBlue
@@ -58,6 +68,9 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         count = i+1
                 }
                 val user = sharedViewModel.userViewModel.getUserById(item.key)
+                val painter = rememberImagePainter(
+                    if(user.profilePicUrl != "") {user.profilePicUrl}
+                    else {R.drawable.ic_user})
                 Card(
                     onClick = { },
                     backgroundColor = Color.White,
@@ -73,7 +86,23 @@ fun Ranking(subject: Subject, sharedViewModel: SharedViewModel, navController: N
                         modifier = Modifier.fillMaxWidth(1f)
                     ) {
                         Box(contentAlignment = Alignment.Center,modifier = Modifier.weight(0.3f)){
-                            ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.5f)
+
+                            Card(
+                                shape = CircleShape,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .aspectRatio(1f)
+                                    .align(Alignment.Center),
+                            ) {
+                                Image(
+                                    painter = painter, contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            //ProfileImage(user = user, sharedViewModel = sharedViewModel,false,0.2f)
                         }
                         Spacer(modifier = Modifier.weight(0.05f))
                         Text(text=user.username, modifier = Modifier.weight(0.45f))
