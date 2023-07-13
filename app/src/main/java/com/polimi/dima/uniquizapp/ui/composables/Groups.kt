@@ -3,9 +3,11 @@ package com.polimi.dima.uniquizapp.ui.composables
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,33 +45,43 @@ fun Groups(navController: NavController, sharedViewModel: SharedViewModel){
             ){
                 ScreenTitle("Ranking")
             }
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight(0.8f)
-            ) {
-                Spacer(modifier = Modifier.size(10.dp))
-                Slider(subjects, pagerState, sharedViewModel, navController)
+            if(!subjects.isEmpty()){
+
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxHeight(0.8f)
+                ) {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Slider(subjects, pagerState, sharedViewModel, navController)
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxHeight(0.1f).fillMaxWidth()) {
+                    Spacer(modifier = Modifier.size(5.dp))
+                    DotsIndicator(
+                        totalDots = subjects.size,
+                        selectedIndex = pagerState.currentPage,
+                        selectedColor = customizedBlue,
+                        unSelectedColor = customGray
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxHeight(0.1f).fillMaxWidth()) {
-                Spacer(modifier = Modifier.size(5.dp))
-                DotsIndicator(
-                    totalDots = subjects.size,
-                    selectedIndex = pagerState.currentPage,
-                    selectedColor = customizedBlue,
-                    unSelectedColor = customGray
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            if(subjects.isEmpty()){
-                Text("Add some subjects to get started! You will be able to confront your results with the other users.",
-                    fontWeight = FontWeight.Bold,
-                    color = customizedBlue,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(30.dp).border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
+            else{
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text("Add some subjects to get started! You will be able to confront your results with the other users.",
+                        fontWeight = FontWeight.Bold,
+                        color = customizedBlue,
+                        modifier = Modifier.align(Alignment.Center).padding(30.dp).border(1.5.dp, customizedBlue, RoundedCornerShape(10.dp)),
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp
+                    )
+                }
+
             }
         }
     }
