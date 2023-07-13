@@ -71,7 +71,7 @@ fun FloatingActionButtons(navController: NavController){
                     contentColor = Color.White,
                     modifier = Modifier.padding(vertical = 8.dp)
                 ) {
-                    Icon(Icons.Filled.Info, "")
+                    Icon(Icons.Filled.Info, "Info")
                 }
             }
             Row(
@@ -90,7 +90,7 @@ fun FloatingActionButtons(navController: NavController){
                 backgroundColor = customizedBlue,
                 contentColor = Color.White,
                 modifier = Modifier.padding(vertical = 8.dp),
-                icon = { Icon(Icons.Filled.Edit, "", modifier = Modifier.align(Alignment.End))},
+                icon = { Icon(Icons.Filled.Edit, "Edit", modifier = Modifier.align(Alignment.End))},
                 text = { Text("Add a quiz",  modifier = Modifier.align(Alignment.Start)) }
 
             )
@@ -105,7 +105,7 @@ fun FloatingActionButtons(navController: NavController){
                 backgroundColor = customizedBlue,
                 contentColor = Color.White
             ) {
-                Icon(Icons.Filled.Add, "")
+                Icon(Icons.Filled.Add, "Plus")
             }
         }
     }

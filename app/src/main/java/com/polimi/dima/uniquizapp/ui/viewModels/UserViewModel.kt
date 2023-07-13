@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class UserViewModel @Inject constructor(
+open class UserViewModel @Inject constructor(
     private val userRepo: UserRepository
 ): ViewModel() {
 
@@ -42,7 +42,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun login(loginRequest : LoginRequest) : User? {
+    open fun login(loginRequest : LoginRequest) : User? {
         viewModelScope.launch{
             val response = runBlocking { userRepo.login(loginRequest)}
             if(response.validity== ResponseValidity.VALID)
@@ -72,7 +72,7 @@ class UserViewModel @Inject constructor(
         return _loginState.value
     }
 
-    fun addSubjectToUser(subject : Subject, userId : String) : User {
+    open fun addSubjectToUser(subject : Subject, userId : String) : User {
         var user : User? = null
         viewModelScope.launch{
             user = runBlocking { userRepo.addSubject(subject, userId) }
@@ -88,7 +88,7 @@ class UserViewModel @Inject constructor(
         return _loginState.value
     }
 
-    fun getUserById(userId: String) : User {
+    open fun getUserById(userId: String) : User {
         var user : User? = null
         viewModelScope.launch{
             user = runBlocking { userRepo.getUserById( userId) }

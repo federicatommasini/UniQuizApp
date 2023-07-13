@@ -12,11 +12,6 @@ import org.mockito.Mockito
 class CustomSearchBarTest{
     @get:Rule
     val composeTestRule = createComposeRule()
-    @Mock
-    val navController: NavController = Mockito.mock(NavController::class.java)
-    @Mock
-    val sharedViewModel: SharedViewModel = Mockito.mock(SharedViewModel::class.java)
-
     @Test
     fun custom_searchbar_isDisplayed(){
         val items : List<Subject> = listOf(

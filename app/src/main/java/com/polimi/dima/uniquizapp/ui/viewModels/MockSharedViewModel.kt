@@ -10,9 +10,12 @@ import com.polimi.dima.uniquizapp.data.di.ApiModule
 import com.polimi.dima.uniquizapp.data.model.Answer
 import com.polimi.dima.uniquizapp.data.model.Exam
 import com.polimi.dima.uniquizapp.data.model.ExamRequest
+import com.polimi.dima.uniquizapp.data.model.LoginRequest
 import com.polimi.dima.uniquizapp.data.model.NewQuestionRequest
 import com.polimi.dima.uniquizapp.data.model.Question
 import com.polimi.dima.uniquizapp.data.model.Quiz
+import com.polimi.dima.uniquizapp.data.model.RegistrationRequest
+import com.polimi.dima.uniquizapp.data.model.ResponseValidity
 import com.polimi.dima.uniquizapp.data.model.Subject
 import com.polimi.dima.uniquizapp.data.model.User
 import com.polimi.dima.uniquizapp.data.model.UserExam
@@ -157,4 +160,35 @@ class QuizMockViewModel(quizRepo: QuizRepository) : QuizViewModel(quizRepo){
             listOf(UserExam(Exam("1","2", format.parse(dateString)),null)), "",0,1)
         return user
     }
+}
+
+class UserMockViewModel(userRepository: UserRepository) : UserViewModel(userRepository){
+
+    override fun login(loginRequest : LoginRequest) : User? {
+        val dateString = "2023-07-19"
+        val format = SimpleDateFormat("yyyy-MM-dd")
+       return User("1","username","email@gmail.com","password",
+           "John","Doe","Polimi", listOf("1","2","3"),
+           listOf(UserExam(Exam("1","2", format.parse(dateString)),null)), "",0,0
+       )
+    }
+
+    override fun addSubjectToUser(subject : Subject, userId : String) : User {
+        val dateString = "2023-07-19"
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        return   User("1","username","email@gmail.com","password",
+            "John","Doe","Polimi", listOf("1","2","3"),
+            listOf(UserExam(Exam("1","2", format.parse(dateString)),null)), "",0,0
+        )
+    }
+
+    override fun getUserById(userId: String) : User {
+        val dateString = "2023-07-19"
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        return   User("1","username","email@gmail.com","password",
+            "John","Doe","Polimi", listOf("1","2","3"),
+            listOf(UserExam(Exam("1","2", format.parse(dateString)),null)), "",0,0
+        )
+    }
+
 }
